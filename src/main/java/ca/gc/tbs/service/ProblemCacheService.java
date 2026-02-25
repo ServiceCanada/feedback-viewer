@@ -20,19 +20,18 @@ public class ProblemCacheService {
   @Scheduled(cron = "0 0 0 * * *")
   @CacheEvict(value = {"distinctUrls", "processedProblems"}, allEntries = true)
   public void clearCacheDaily() {
-    LOGGER.info("Evicting all caches at midnight");
+    LOGGER.info("Evicting caches at midnight");
   }
 
   @Cacheable("processedProblems")
   public List<Problem> getProcessedProblems() {
-    LOGGER.info("Fetching all processed problems from repository (cache miss or initial load).");
+    LOGGER.info("Loading processed problems cache...");
     return problemRepository.findAllProcessedProblems();
   }
 
-
   @Cacheable("distinctUrls")
   public List<String> getDistinctProcessedUrlsForCache() {
-    LOGGER.info("Fetching distinct processed URLs from repository (cache miss or initial load).");
+    LOGGER.info("Loading distinct URLs cache...");
     return problemRepository.findDistinctProcessedUrls();
   }
 }

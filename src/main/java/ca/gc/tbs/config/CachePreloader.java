@@ -23,16 +23,10 @@ public class CachePreloader {
 
     @EventListener(ApplicationStartedEvent.class)
     public void preloadCaches() {
-        LOGGER.info("Starting cache preloading process...");
-        LOGGER.info("Preloading distinct URLs cache...");
+        LOGGER.info("Starting cache preloading...");
         problemCacheService.getDistinctProcessedUrlsForCache();
-        LOGGER.info("Distinct URLs cache preloaded.");
-        LOGGER.info("Preloading processed problems cache...");
         problemCacheService.getProcessedProblems();
-        LOGGER.info("Processed problems cache preloaded.");
-        LOGGER.info("Preloading problem dates cache...");
         problemDateService.getProblemDates();
-        LOGGER.info("Problem dates cache preloaded.");
-        LOGGER.info("All caches preloaded successfully.");
+        LOGGER.info("Cache preloading complete.");
     }
 }
