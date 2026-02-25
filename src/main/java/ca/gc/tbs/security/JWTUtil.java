@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -67,7 +66,7 @@ public class JWTUtil {
     List<String> authorities =
         userDetails.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.toList());
+            .toList();
     claims.put("authorities", authorities);
     return createToken(claims, userDetails.getUsername());
   }

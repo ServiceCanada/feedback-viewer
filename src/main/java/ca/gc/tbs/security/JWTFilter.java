@@ -3,7 +3,6 @@ package ca.gc.tbs.security;
 import ca.gc.tbs.service.UserService;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +47,7 @@ public class JWTFilter extends OncePerRequestFilter {
       if (jwtUtil.validateToken(token, userDetails)) {
         List<String> authorities =
             ((List<?>) jwtUtil.extractClaim(token, claims -> claims.get("authorities")))
-                .stream().map(Object::toString).collect(Collectors.toList());
+                .stream().map(Object::toString).toList();
         if (authorities.contains("ADMIN") || authorities.contains("API")) {
           UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
               new UsernamePasswordAuthenticationToken(

@@ -3,7 +3,6 @@ package ca.gc.tbs.controller;
 import ca.gc.tbs.domain.User;
 import ca.gc.tbs.service.UserService;
 import java.util.List;
-import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +69,7 @@ public class UserController {
         boolean enabled = user.isEnabled();
         List<String> roles = user.getRoles().stream()
             .map(ca.gc.tbs.domain.Role::getRole)
-            .collect(Collectors.toList());
+            .toList();
 
         String status = isEn
             ? (enabled ? "Enabled" : "Awaiting approval")

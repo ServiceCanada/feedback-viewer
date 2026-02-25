@@ -44,14 +44,14 @@ public class DashboardService {
                     p -> new AbstractMap.SimpleEntry<>(p.getUrl(), p.getProblemDate()),
                     Collectors.collectingAndThen(Collectors.toList(), list -> {
                         Problem p = new Problem();
-                        p.setUrl(list.get(0).getUrl());
-                        p.setProblemDate(list.get(0).getProblemDate());
+                        p.setUrl(list.getFirst().getUrl());
+                        p.setProblemDate(list.getFirst().getProblemDate());
                         p.setUrlEntries(list.size());
-                        p.setInstitution(list.get(0).getInstitution());
-                        p.setTitle(list.get(0).getTitle());
-                        p.setLanguage(list.get(0).getLanguage());
-                        p.setSection(list.get(0).getSection());
-                        p.setTheme(list.get(0).getTheme());
+                        p.setInstitution(list.getFirst().getInstitution());
+                        p.setTitle(list.getFirst().getTitle());
+                        p.setLanguage(list.getFirst().getLanguage());
+                        p.setSection(list.getFirst().getSection());
+                        p.setTheme(list.getFirst().getTheme());
                         return p;
                     })))
                 .values());
