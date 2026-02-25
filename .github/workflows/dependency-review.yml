@@ -10,7 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Dependency review
-        uses: actions/dependency-review-action@v1
+        uses: actions/dependency-review-action@v4
+        with:
+          # assertj-core 3.27.3 is the latest stable; no patched version available yet (test-scoped only)
+          allow-ghsas: GHSA-rqfh-9r24-8c9r
