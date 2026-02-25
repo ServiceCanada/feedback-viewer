@@ -19,30 +19,29 @@ public class ProblemDateService {
   public Map<String, String> getProblemDates() {
     logger.info("Calculating problem dates based on fiscal quarters (cache miss or initial load).");
     LocalDate currentDate = LocalDate.now();
-    LocalDate earliestDate;
-    LocalDate latestDate;
-
-    int currentMonth = currentDate.getMonthValue();
     int currentYear = currentDate.getYear();
+    Month currentMonth = currentDate.getMonth();
 
     // Determine the current fiscal quarter and calculate the date range
-    if (currentMonth >= Month.APRIL.getValue() && currentMonth <= Month.JUNE.getValue()) {
-      // Q1 (April 1 - June 30) - Show Q4 (previous year) and Q1 (current year)
-      earliestDate = LocalDate.of(currentYear - 1, Month.OCTOBER, 1);
-      latestDate = LocalDate.of(currentYear, Month.JUNE, 30);
-    } else if (currentMonth >= Month.JULY.getValue() && currentMonth <= Month.SEPTEMBER.getValue()) {
-      // Q2 (July 1 - September 30) - Show Q1 and Q2
-      earliestDate = LocalDate.of(currentYear, Month.APRIL, 1);
-      latestDate = LocalDate.of(currentYear, Month.SEPTEMBER, 30);
-    } else if (currentMonth >= Month.OCTOBER.getValue() && currentMonth <= Month.DECEMBER.getValue()) {
-      // Q3 (October 1 - December 31) - Show Q2 and Q3
-      earliestDate = LocalDate.of(currentYear, Month.JULY, 1);
-      latestDate = LocalDate.of(currentYear, Month.DECEMBER, 31);
-    } else {
-      // Q4 (January 1 - March 31) - Show Q3 (previous year) and Q4 (current year)
-      earliestDate = LocalDate.of(currentYear - 1, Month.JULY, 1);
-      latestDate = LocalDate.of(currentYear, Month.MARCH, 31);
-    }
+    record DateRange(LocalDate start, LocalDate end) {}
+
+    DateRange range = switch (currentMonth) {
+      case APRIL, MAY, JUNE ->
+        // Q1 (April 1 - June 30) - Show Q4 (previous year) and Q1 (current year)
+        new DateRange(LocalDate.of(currentYear - 1, Month.OCTOBER, 1), LocalDate.of(currentYear, Month.JUNE, 30));
+      case JULY, AUGUST, SEPTEMBER ->
+        // Q2 (July 1 - September 30) - Show Q1 and Q2
+        new DateRange(LocalDate.of(currentYear, Month.APRIL, 1), LocalDate.of(currentYear, Month.SEPTEMBER, 30));
+      case OCTOBER, NOVEMBER, DECEMBER ->
+        // Q3 (October 1 - December 31) - Show Q2 and Q3
+        new DateRange(LocalDate.of(currentYear, Month.JULY, 1), LocalDate.of(currentYear, Month.DECEMBER, 31));
+      case JANUARY, FEBRUARY, MARCH ->
+        // Q4 (January 1 - March 31) - Show Q3 (previous year) and Q4 (current year)
+        new DateRange(LocalDate.of(currentYear - 1, Month.JULY, 1), LocalDate.of(currentYear, Month.MARCH, 31));
+    };
+
+    LocalDate earliestDate = range.start();
+    LocalDate latestDate = range.end();
 
     Map<String, String> resultMap = new HashMap<>();
     resultMap.put("earliestDate", earliestDate.format(DateTimeFormatter.ISO_LOCAL_DATE));

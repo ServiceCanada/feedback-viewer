@@ -53,6 +53,6 @@ public class CustomTopTaskRepositoryImpl implements CustomTopTaskRepository {
     // Extract the task names from the aggregation results
     return results.getMappedResults().stream()
         .map(map -> (String) map.get("_id"))
-        .collect(java.util.stream.Collectors.toList());
+        .toList();
   }
 }

@@ -1,12 +1,14 @@
 package ca.gc.tbs.security;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +18,17 @@ import org.springframework.stereotype.Service;
 public class JWTUtil {
   @Value("${jwt.secret.key}")
   private String SECRET_KEY;
+
+  private SecretKey getSigningKey() {
+    byte[] keyBytes = SECRET_KEY.getBytes(StandardCharsets.UTF_8);
+    // Ensure key is at least 256 bits (32 bytes) for HS256
+    if (keyBytes.length < 32) {
+      byte[] paddedKey = new byte[32];
+      System.arraycopy(keyBytes, 0, paddedKey, 0, keyBytes.length);
+      return Keys.hmacShaKeyFor(paddedKey);
+    }
+    return Keys.hmacShaKeyFor(keyBytes);
+  }
 
   public String extractUsername(String token) {
     return extractClaim(token, Claims::getSubject);
@@ -32,15 +45,14 @@ public class JWTUtil {
 
   private Claims extractAllClaims(String token) {
     try {
-      return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+      return Jwts.parser()
+          .verifyWith(getSigningKey())
+          .build()
+          .parseSignedClaims(token)
+          .getPayload();
     } catch (MalformedJwtException ex) {
-      // Handle malformed JWT token
       throw new RuntimeException("Invalid token: Malformed JWT token", ex);
-    } catch (ExpiredJwtException
-        | UnsupportedJwtException
-        | SignatureException
-        | IllegalArgumentException ex) {
-      // Handle other exceptions related to JWT token validation
+    } catch (ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
       throw new RuntimeException("Invalid token: " + ex.getMessage(), ex);
     }
   }
@@ -54,18 +66,18 @@ public class JWTUtil {
     List<String> authorities =
         userDetails.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.toList());
+            .toList();
     claims.put("authorities", authorities);
     return createToken(claims, userDetails.getUsername());
   }
 
   private String createToken(Map<String, Object> claims, String subject) {
     return Jwts.builder()
-        .setClaims(claims)
-        .setSubject(subject)
-        .setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-        .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+        .claims(claims)
+        .subject(subject)
+        .issuedAt(new Date(System.currentTimeMillis()))
+        .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+        .signWith(getSigningKey())
         .compact();
   }
 

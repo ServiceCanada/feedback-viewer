@@ -15,10 +15,10 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -27,7 +27,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -55,13 +54,33 @@ import ca.gc.tbs.service.UserService;
 public class TopTaskController {
 
   private static final Logger LOG = LoggerFactory.getLogger(TopTaskController.class);
-  @Autowired private TopTaskRepository topTaskRepository;
+
+  private final TopTaskRepository topTaskRepository;
+
   private int totalDistinctTasks = 0;
 
   private int totalTaskCount = 0;
-  @Autowired private UserService userService;
 
-  @Autowired private ProblemDateService problemDateService;
+  private final UserService userService;
+
+  private final ProblemDateService problemDateService;
+
+  private final MongoTemplate mongoTemplate;
+
+  private final JWTUtil jwtUtil;
+
+  public TopTaskController(
+      TopTaskRepository topTaskRepository,
+      UserService userService,
+      ProblemDateService problemDateService,
+      MongoTemplate mongoTemplate,
+      JWTUtil jwtUtil) {
+    this.topTaskRepository = topTaskRepository;
+    this.userService = userService;
+    this.problemDateService = problemDateService;
+    this.mongoTemplate = mongoTemplate;
+    this.jwtUtil = jwtUtil;
+  }
   private static final Map<String, List<String>> institutionMappings = new HashMap<>();
 
   static {
@@ -490,22 +509,11 @@ public class TopTaskController {
   public DataTablesOutput<TopTaskSurvey> list(
       @Valid DataTablesInput input, HttpServletRequest request) {
 
-    // Log request details for debugging
-    LOG.info("=== TopTaskData Request Debug ===");
-    LOG.info("Request URL: {}", request.getRequestURL());
-    LOG.info("Query String: {}", request.getQueryString());
-    LOG.info("Query String Length: {}", request.getQueryString() != null ? request.getQueryString().length() : 0);
-
-    // Log all parameters
-    request.getParameterMap().forEach((key, values) -> {
-      LOG.info("Parameter '{}': {}", key, Arrays.toString(values));
-    });
-
     String pageLang = (String) request.getSession().getAttribute("lang");
     String departmentFilterVal = request.getParameter("department");
     String themeFilterVal = request.getParameter("theme");
     if (themeFilterVal != null) {
-        themeFilterVal = themeFilterVal.trim().replaceAll("\\s+", " "); // Trim and normalize spaces
+        themeFilterVal = themeFilterVal.trim().replaceAll("\\s+", " ");
     }
     String[] taskFilterVals = request.getParameterValues("tasks[]");
     String startDateVal = request.getParameter("startDate");
@@ -516,16 +524,6 @@ public class TopTaskController {
     boolean includeCommentsOnly = includeCommentsOnlyParam != null && includeCommentsOnlyParam.equals("true");
     String taskCompletionFilterVal = request.getParameter("taskCompletion");
     String comments = request.getParameter("comments");
-
-    // Log specific filter values
-    LOG.info("Department: {}", departmentFilterVal);
-    LOG.info("Theme (cleaned): {}", themeFilterVal);
-    LOG.info("Tasks count: {}", taskFilterVals != null ? taskFilterVals.length : 0);
-    if (taskFilterVals != null) {
-      LOG.info("Tasks: {}", Arrays.toString(taskFilterVals));
-    }
-    LOG.info("Date range: {} to {}", startDateVal, endDateVal);
-    LOG.info("Task Completion: {}", taskCompletionFilterVal);
 
     Criteria criteria = Criteria.where("processed").is("true");
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -602,7 +600,21 @@ public class TopTaskController {
 
     List<Map> distinctTaskCounts = topTaskRepository.findDistinctTaskCountsWithFilters(criteria);
     totalDistinctTasks = distinctTaskCounts.size();
-    DataTablesOutput<TopTaskSurvey> results = topTaskRepository.findAll(input, criteria);
+
+    // Use estimatedDocumentCount (metadata-based, instant) when no filters are applied,
+    // to avoid an expensive count query against CosmosDB.
+    boolean isFiltered = (startDateVal != null && endDateVal != null)
+        || (language != null && !language.isEmpty())
+        || (departmentFilterVal != null && !departmentFilterVal.isEmpty())
+        || (themeFilterVal != null && !themeFilterVal.isEmpty())
+        || (groupFilterVal != null && !groupFilterVal.isEmpty())
+        || (taskFilterVals != null && taskFilterVals.length > 0)
+        || (taskCompletionFilterVal != null && !taskCompletionFilterVal.isEmpty())
+        || (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim()))
+        || includeCommentsOnly;
+    long cachedCount = isFiltered ? -1
+        : mongoTemplate.getCollection("toptasksurvey").estimatedDocumentCount();
+    DataTablesOutput<TopTaskSurvey> results = topTaskRepository.findAll(input, criteria, cachedCount);
 
     totalTaskCount = (int) results.getRecordsFiltered();
     return results;
@@ -679,9 +691,9 @@ public class TopTaskController {
       }
 
       final int[] rowNum = {1};
-      try (ServletOutputStream outputStream = response.getOutputStream()) {
-        mongoTemplate.stream(query, TopTaskSurvey.class)
-            .forEachRemaining(
+      try (ServletOutputStream outputStream = response.getOutputStream();
+           java.util.stream.Stream<TopTaskSurvey> stream = mongoTemplate.stream(query, TopTaskSurvey.class)) {
+        stream.forEach(
                 survey -> {
                   try {
                     Row row = sheet.createRow(rowNum[0]++);
@@ -783,8 +795,8 @@ public class TopTaskController {
                 + " Theme,Sampling Institution,Sampling Grouping,Sampling Task\n");
 
         // Stream and write data
-        mongoTemplate.stream(query, TopTaskSurvey.class)
-            .forEachRemaining(
+        try (java.util.stream.Stream<TopTaskSurvey> stream = mongoTemplate.stream(query, TopTaskSurvey.class)) {
+          stream.forEach(
                 survey -> {
                   try {
                     writer.write(
@@ -821,6 +833,7 @@ public class TopTaskController {
                     LOG.error("Error writing CSV row: {}", e.getMessage());
                   }
                 });
+        }
 
         writer.flush();
         LOG.info("CSV export completed successfully");
@@ -985,8 +998,6 @@ public class TopTaskController {
         .collect(Collectors.toList());
   }
 
-  @Autowired private MongoTemplate mongoTemplate;
-  @Autowired private JWTUtil jwtUtil;
 
   @GetMapping("/api/toptasks")
   public ResponseEntity<?> getProblemsJson(
@@ -1223,11 +1234,4 @@ public class TopTaskController {
       return input.replaceAll("([\\\\.|^$|()\\[\\]{}*+?])", "\\\\$1");
   }
 
-  public UserService getUserService() {
-    return userService;
-  }
-
-  public void setUserService(UserService userService) {
-    this.userService = userService;
-  }
 }
