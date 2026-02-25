@@ -5,6 +5,7 @@ import ca.gc.tbs.domain.User;
 import ca.gc.tbs.repository.ProblemRepository;
 import ca.gc.tbs.security.JWTUtil;
 import ca.gc.tbs.service.ErrorKeywordService;
+import ca.gc.tbs.service.ProblemCacheService;
 import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
 import org.apache.poi.ss.usermodel.Row;
@@ -29,10 +30,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDate;
@@ -57,6 +58,9 @@ public class ProblemController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProblemCacheService problemCacheService;
 
     private static final Map<String, List<String>> institutionMappings = new HashMap<>();
     private static final Map<String, List<String>> sectionMappings = new HashMap<>();
@@ -770,30 +774,31 @@ public class ProblemController {
 
             // Stream and write data in batches
             final int[] rowNum = {1};
-            mongoTemplate.stream(query, Problem.class)
-                    .forEachRemaining(
-                            problem -> {
-                                Row row = sheet.createRow(rowNum[0]++);
-                                row.createCell(0).setCellValue(problem.getProblemDate());
-                                row.createCell(1).setCellValue(problem.getTimeStamp());
-                                row.createCell(2).setCellValue(problem.getProblemDetails());
-                                row.createCell(3).setCellValue(problem.getLanguage());
-                                row.createCell(4).setCellValue(problem.getTitle());
-                                row.createCell(5).setCellValue(problem.getUrl());
-                                row.createCell(6).setCellValue(problem.getInstitution());
-                                row.createCell(7).setCellValue(problem.getSection());
-                                row.createCell(8).setCellValue(problem.getTheme());
-                                row.createCell(9).setCellValue(problem.getDeviceType());
-                                row.createCell(10).setCellValue(problem.getBrowser());
+            try (java.util.stream.Stream<Problem> stream = mongoTemplate.stream(query, Problem.class)) {
+                stream.forEach(
+                        problem -> {
+                            Row row = sheet.createRow(rowNum[0]++);
+                            row.createCell(0).setCellValue(problem.getProblemDate());
+                            row.createCell(1).setCellValue(problem.getTimeStamp());
+                            row.createCell(2).setCellValue(problem.getProblemDetails());
+                            row.createCell(3).setCellValue(problem.getLanguage());
+                            row.createCell(4).setCellValue(problem.getTitle());
+                            row.createCell(5).setCellValue(problem.getUrl());
+                            row.createCell(6).setCellValue(problem.getInstitution());
+                            row.createCell(7).setCellValue(problem.getSection());
+                            row.createCell(8).setCellValue(problem.getTheme());
+                            row.createCell(9).setCellValue(problem.getDeviceType());
+                            row.createCell(10).setCellValue(problem.getBrowser());
 
-                                if (rowNum[0] % 100 == 0) {
-                                    try {
-                                        ((SXSSFSheet) sheet).flushRows(100); // Flush rows every 100 rows
-                                    } catch (IOException e) {
-                                        LOG.error("Error flushing rows", e);
-                                    }
+                            if (rowNum[0] % 100 == 0) {
+                                try {
+                                    ((SXSSFSheet) sheet).flushRows(100);
+                                } catch (IOException e) {
+                                    LOG.error("Error flushing rows", e);
                                 }
-                            });
+                            }
+                        });
+            }
 
             // Write the workbook to the output stream
             workbook.write(outputStream);
@@ -910,31 +915,28 @@ public class ProblemController {
                             + " Details,Language,Title,URL,Institution,Section,Theme,Device Type,Browser\n");
 
             // Stream and write data
-            mongoTemplate.stream(query, Problem.class)
-                    .forEachRemaining(
-                            new java.util.function.Consumer<Problem>() {
-                                @Override
-                                public void accept(Problem problem) {
-                                    try {
-                                        writer.write(
-                                                String.format(
-                                                        "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
-                                                        escapeCSV(problem.getProblemDate()),
-                                                        escapeCSV(problem.getTimeStamp()),
-                                                        escapeCSV(problem.getProblemDetails()),
-                                                        escapeCSV(problem.getLanguage()),
-                                                        escapeCSV(problem.getTitle()),
-                                                        escapeCSV(problem.getUrl()),
-                                                        escapeCSV(problem.getInstitution()),
-                                                        escapeCSV(problem.getSection()),
-                                                        escapeCSV(problem.getTheme()),
-                                                        escapeCSV(problem.getDeviceType()),
-                                                        escapeCSV(problem.getBrowser())));
-                                    } catch (IOException e) {
-                                        LOG.error("Error writing CSV data", e);
-                                    }
-                                }
-                            });
+            try (java.util.stream.Stream<Problem> stream = mongoTemplate.stream(query, Problem.class)) {
+                stream.forEach(problem -> {
+                    try {
+                        writer.write(
+                                String.format(
+                                        "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+                                        escapeCSV(problem.getProblemDate()),
+                                        escapeCSV(problem.getTimeStamp()),
+                                        escapeCSV(problem.getProblemDetails()),
+                                        escapeCSV(problem.getLanguage()),
+                                        escapeCSV(problem.getTitle()),
+                                        escapeCSV(problem.getUrl()),
+                                        escapeCSV(problem.getInstitution()),
+                                        escapeCSV(problem.getSection()),
+                                        escapeCSV(problem.getTheme()),
+                                        escapeCSV(problem.getDeviceType()),
+                                        escapeCSV(problem.getBrowser())));
+                    } catch (IOException e) {
+                        LOG.error("Error writing CSV data", e);
+                    }
+                });
+            }
         } finally {
             writer.close();
         }
@@ -981,12 +983,12 @@ public class ProblemController {
     @ResponseBody
     public DataTablesOutput<Problem> list(@Valid DataTablesInput input, HttpServletRequest request) {
         String pageLang = (String) request.getSession().getAttribute("lang");
-        String language = request.getParameter("language"); // Existing language parameter handling
-        String department = request.getParameter("department"); // Retrieve the department parameter
-        String comments = request.getParameter("comments"); // Retrieve the comments filter parameter
-        String theme = request.getParameter("theme"); // Retrieve the theme filter parameter
-        String section = request.getParameter("section"); // Retrieve the section filter parameter
-        String url = request.getParameter("url"); // Retrieve the url filter parameter
+        String language = request.getParameter("language");
+        String department = request.getParameter("department");
+        String comments = request.getParameter("comments");
+        String theme = request.getParameter("theme");
+        String section = request.getParameter("section");
+        String url = request.getParameter("url");
         Boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
@@ -1051,6 +1053,7 @@ public class ProblemController {
         }
         DataTablesOutput<Problem> results;
 
+        // Use -1 to skip slow count queries on CosmosDB - repository will use estimate
         if (error_keyword) {
             // Build regex pattern from all keywords
             Set<String> keywordsToCheck = new HashSet<>();
@@ -1059,15 +1062,15 @@ public class ProblemController {
             keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
 
             if (!keywordsToCheck.isEmpty()) {
-                LOG.debug("Checking {} error keywords", keywordsToCheck.size());
                 criteria.and("problemDetails").regex(String.join("|", keywordsToCheck), "i");
-                results = problemRepository.findAll(input, criteria);
+                results = problemRepository.findAll(input, criteria, -1);
             } else {
-                results = problemRepository.findAll(input, criteria);
+                results = problemRepository.findAll(input, criteria, -1);
             }
         } else {
-            results = problemRepository.findAll(input, criteria);
+            results = problemRepository.findAll(input, criteria, -1);
         }
+        
         // Update institution names in the results based on the language
         setInstitution(results, pageLang);
         // Return the updated results

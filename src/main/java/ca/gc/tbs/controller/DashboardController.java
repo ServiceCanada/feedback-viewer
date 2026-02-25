@@ -16,8 +16,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -499,6 +499,8 @@ public class DashboardController {
     @GetMapping(value = "/chartData")
     @ResponseBody
     public List<Map<String, Object>> commentsByDate(HttpServletRequest request) {
+        long startTime = System.currentTimeMillis();
+        
         Boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
         String comments = request.getParameter("comments");
         String startDate = request.getParameter("startDate");
@@ -509,10 +511,16 @@ public class DashboardController {
         String url = request.getParameter("url");
         String department = request.getParameter("department");
 
+        // Build base filter criteria
         Criteria criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
+        
+        // Add date filtering to exclude future dates
+        LocalDate currentDate = LocalDate.now();
+        criteria.and("problemDate").lte(currentDate.format(DateTimeFormatter.ISO_LOCAL_DATE));
 
         List<Criteria> regexCriteria = new ArrayList<>();
 
+        // Add error keyword filtering if enabled
         if (error_keyword) {
             Set<String> keywordsToCheck = new HashSet<>();
             keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
@@ -524,16 +532,16 @@ public class DashboardController {
                         .map(Pattern::quote)
                         .collect(Collectors.joining("|"));
                 regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
-                //criteria.and("problemDetails").regex(combinedRegex, "i");
             }
-
         }
-        // Comment filter, if set
+        
+        // Add comment filtering if provided
         if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
             String escapedComment = escapeSpecialRegexCharacters(comments.trim());
             regexCriteria.add(Criteria.where("problemDetails").regex(escapedComment, "i"));
         }
 
+        // Combine all criteria
         Criteria finalCriteria;
         if (!regexCriteria.isEmpty()) {
             List<Criteria> ands = new ArrayList<>();
@@ -543,9 +551,8 @@ public class DashboardController {
         } else {
             finalCriteria = criteria;
         }
-        boolean useDatabase = error_keyword || (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim()));
-        if (useDatabase) {
-        // MongoDB aggregation by problemDate
+
+        // OPTIMIZED: Always use MongoDB aggregation by problemDate
         GroupOperation groupByDate = Aggregation.group("problemDate").count().as("comments");
         SortOperation sortByDate = Aggregation.sort(Sort.Direction.ASC, "_id");
         Aggregation agg = Aggregation.newAggregation(
@@ -553,47 +560,22 @@ public class DashboardController {
                 groupByDate,
                 sortByDate
         );
+        
         AggregationResults<Document> aggResults = mongoTemplate.aggregate(agg, "problem", Document.class);
 
         // Build dailyCommentsList
         List<Map<String, Object>> dailyCommentsList = new ArrayList<>();
         for (Document doc : aggResults) {
             Map<String, Object> map = new HashMap<>();
-            map.put("date", doc.getString("_id")); // group by "problemDate"
+            map.put("date", doc.getString("_id"));
             map.put("comments", doc.getInteger("comments", 0));
             dailyCommentsList.add(map);
         }
-        return dailyCommentsList;
-    }
-
-        if (problems == null) {
-            return new ArrayList<>();
-        }
-        Map<String, Integer> dateToCommentCountMap = new HashMap<>();
-
-        // Sort problems by date in ascending order
-        problems.sort(Comparator.comparing(Problem::getProblemDate));
-        for (Problem problem : problems) {
-            if (problem != null && problem.getProblemDate() != null) {
-                String date = problem.getProblemDate();
-                Integer urlEntries = problem.getUrlEntries();
-                // Update the count for the given date
-                dateToCommentCountMap.merge(date, urlEntries, Integer::sum);
-            }
-        }
-        // Convert the map to a list of maps
-        List<Map<String, Object>> dailyCommentsList = new ArrayList<>();
-        dateToCommentCountMap.forEach(
-                (date, count) -> {
-                    Map<String, Object> dateComments = new HashMap<>();
-                    dateComments.put("date", date);
-                    dateComments.put("comments", count);
-                    dailyCommentsList.add(dateComments);
-                });
-
-        // Sort the list by date in ascending order
-        dailyCommentsList.sort(Comparator.comparing(map -> (String) map.get("date")));
-
+        
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        LOGGER.info("OPTIMIZED commentsByDate() - Time: {}ms, Results: {} dates",
+                elapsedTime, dailyCommentsList.size());
+        
         return dailyCommentsList;
     }
 
@@ -662,7 +644,9 @@ public class DashboardController {
     @ResponseBody
     public DataTablesOutput<Problem> getDashboardData(
             @Valid DataTablesInput input, HttpServletRequest request) {
+        long startTime = System.currentTimeMillis();
         long beforeUsedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        
         String pageLang = (String) request.getSession().getAttribute("lang");
         String department = request.getParameter("department");
         String startDate = request.getParameter("startDate");
@@ -674,208 +658,94 @@ public class DashboardController {
         String theme = request.getParameter("theme");
         Boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
 
-        //error keyword filtering
+        // Build base filter criteria (already includes date range check)
+        Criteria criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
+
+        List<Criteria> regexCriteria = new ArrayList<>();
+
+        // Add error keyword filtering if enabled
         if (error_keyword) {
-
-            Criteria criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
-
-            List<Criteria> regexCriteria = new ArrayList<>();//added for combined regex
-
-            // Build regex pattern from all keywords
             Set<String> keywordsToCheck = new HashSet<>();
             keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
             keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
             keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
 
-
             if (!keywordsToCheck.isEmpty()) {
-                regexCriteria.add(Criteria.where("problemDetails").regex(String.join("|", keywordsToCheck), "i"));
+                String combinedRegex = keywordsToCheck.stream()
+                        .map(Pattern::quote)
+                        .collect(Collectors.joining("|"));
+                regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
             }
-            // Comment filter regex
-            if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
-                String safeComments = escapeSpecialRegexCharacters(comments.trim());
-                regexCriteria.add(Criteria.where("problemDetails").regex(safeComments, "i"));
-            }
-
-            // Combine base criteria with all regex criteria with .andOperator()
-            Criteria finalCriteria;
-            if (!regexCriteria.isEmpty()) {
-                List<Criteria> ands = new ArrayList<>();
-                ands.add(criteria);
-                ands.addAll(regexCriteria);
-                finalCriteria = new Criteria().andOperator(ands.toArray(new Criteria[0]));
-            } else {
-                finalCriteria = criteria;
-            }
-
-            // Aggregation for error keywords
-            MatchOperation match = Aggregation.match(finalCriteria);
-            GroupOperation groupByUrl = Aggregation.group("url")
-                    .first("url").as("url")
-                    .first("problemDate").as("problemDate")
-                    .first("institution").as("institution")
-                    .first("title").as("title")
-                    .first("language").as("language")
-                    .first("section").as("section")
-                    .first("theme").as("theme")
-                    .count().as("urlEntries");
-            SortOperation sortByEntriesDesc = Aggregation.sort(Sort.Direction.DESC, "urlEntries");
-
-            Aggregation agg = Aggregation.newAggregation(
-                    match,
-                    groupByUrl,
-                    sortByEntriesDesc,
-                    Aggregation.skip((long) input.getStart()),
-                    Aggregation.limit(input.getLength())
-            );
-
-            AggregationResults<Problem> results = mongoTemplate.aggregate(agg, "problem", Problem.class);
-            List<Problem> groupedProblems = results.getMappedResults();
-
-            // Total comments and pages
-            totalPages = mongoTemplate.aggregate(
-                    Aggregation.newAggregation(match, groupByUrl), "problem", Problem.class
-            ).getMappedResults().size();
-            totalComments =(int) mongoTemplate.count(Query.query(finalCriteria), "problem");
-
-
-            // Create a DataTablesOutput instance
-            DataTablesOutput<Problem> output = new DataTablesOutput<>();
-            output.setData(groupedProblems);
-            output.setDraw(input.getDraw());
-            output.setRecordsTotal(groupedProblems.size());
-            output.setRecordsFiltered(groupedProblems.size());
-
-            // Adjust institution names based on language (same as normal dashboard)
-            setInstitution(output, pageLang);
-
-            return output;
-
-        //comments filtering
-        } else if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
-
-            Criteria criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
-
-            // Only use the comment as a regex filter
-            String escapedComment = escapeSpecialRegexCharacters(comments.trim());
-            LOGGER.info("Applying comment-only regex: '{}'", escapedComment);
-            criteria.and("problemDetails").regex(escapedComment, "i");
-
-            // Aggregation
-            MatchOperation match = Aggregation.match(criteria);
-            GroupOperation groupByUrl = Aggregation.group("url")
-                    .first("url").as("url")
-                    .first("problemDate").as("problemDate")
-                    .first("institution").as("institution")
-                    .first("title").as("title")
-                    .first("language").as("language")
-                    .first("section").as("section")
-                    .first("theme").as("theme")
-                    .count().as("urlEntries");
-            SortOperation sortByEntriesDesc = Aggregation.sort(Sort.Direction.DESC, "urlEntries");
-
-            // Get all groups for totals
-            List<Problem> allGroupedProblems = mongoTemplate.aggregate(
-                    Aggregation.newAggregation(match, groupByUrl),
-                    "problem",
-                    Problem.class
-            ).getMappedResults();
-
-            // Calculate totals
-            totalPages = allGroupedProblems.size();
-            totalComments = allGroupedProblems.stream().mapToInt(Problem::getUrlEntries).sum();
-
-            // Paginate for current page
-            Aggregation agg = Aggregation.newAggregation(
-                    match,
-                    groupByUrl,
-                    sortByEntriesDesc,
-                    Aggregation.skip((long) input.getStart()),
-                    Aggregation.limit(input.getLength())
-            );
-
-            AggregationResults<Problem> results = mongoTemplate.aggregate(agg, "problem", Problem.class);
-            List<Problem> groupedProblems = results.getMappedResults();
-
-            // Set up DataTablesOutput
-            DataTablesOutput<Problem> output = new DataTablesOutput<>();
-            output.setData(groupedProblems);
-            output.setDraw(input.getDraw());
-            output.setRecordsTotal(groupedProblems.size());
-            output.setRecordsFiltered(groupedProblems.size());
-
-
-            setInstitution(output, pageLang);
-
-            return output;
         }
 
-            LOGGER.debug("Retrieving dashboard data");
-            List<Problem> processedProblems = problemCacheService.getProcessedProblems();
-            LOGGER.debug("Retrieved {} problems for dashboard data", processedProblems.size());
+        // Add comment filtering if provided
+        if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
+            String escapedComment = escapeSpecialRegexCharacters(comments.trim());
+            regexCriteria.add(Criteria.where("problemDetails").regex(escapedComment, "i"));
+        }
 
-            problems =
-                    new ArrayList<>(
-                            processedProblems.stream()
-                                    .collect(
-                                            Collectors.groupingBy(
-                                                    p -> new AbstractMap.SimpleEntry<>(p.getUrl(), p.getProblemDate()),
-                                                    Collectors.collectingAndThen(
-                                                            Collectors.toList(),
-                                                            list -> {
-                                                                Problem problem = new Problem();
-                                                                problem.setUrl(list.get(0).getUrl());
-                                                                problem.setProblemDate(list.get(0).getProblemDate());
-                                                                problem.setUrlEntries(list.size());
-                                                                problem.setInstitution(list.get(0).getInstitution());
-                                                                problem.setTitle(list.get(0).getTitle());
-                                                                problem.setLanguage(list.get(0).getLanguage());
-                                                                problem.setSection(list.get(0).getSection());
-                                                                problem.setTheme(list.get(0).getTheme());
-                                                                return problem;
-                                                            })))
-                                    .values());
+        // Combine all criteria
+        Criteria finalCriteria;
+        if (!regexCriteria.isEmpty()) {
+            List<Criteria> ands = new ArrayList<>();
+            ands.add(criteria);
+            ands.addAll(regexCriteria);
+            finalCriteria = new Criteria().andOperator(ands.toArray(new Criteria[0]));
+        } else {
+            finalCriteria = criteria;
+        }
 
-            LocalDate currentDate = LocalDate.now();
-            problems = problems.stream()
-                            .filter(p -> isValidDate(p.getProblemDate(), DateTimeFormatter.ISO_LOCAL_DATE))
-                            .filter(p -> {
-                                        LocalDate problemDate =
-                                                LocalDate.parse(p.getProblemDate(), DateTimeFormatter.ISO_LOCAL_DATE);
-                                        return !problemDate.isAfter(currentDate); //was isBefore - changed to !isAfter for more entries including current date
-                                    })
-                            .collect(Collectors.toList());
-            // Apply filters
-            problems =
-                    applyFilters(problems, department, startDate, endDate, language, url, section, theme);
+        // OPTIMIZED: Use MongoDB aggregation pipeline instead of loading all data into cache
+        MatchOperation match = Aggregation.match(finalCriteria);
+        
+        // Group by URL to get counts per URL
+        GroupOperation groupByUrl = Aggregation.group("url")
+                .first("url").as("url")
+                .first("problemDate").as("problemDate")
+                .first("institution").as("institution")
+                .first("title").as("title")
+                .first("language").as("language")
+                .first("section").as("section")
+                .first("theme").as("theme")
+                .count().as("urlEntries");
+        
+        SortOperation sortByEntriesDesc = Aggregation.sort(Sort.Direction.DESC, "urlEntries");
 
-        // Sort problems by URL entries in descending order
-            problems.sort(Comparator.comparingInt(Problem::getUrlEntries).reversed());
+        // Get paginated results
+        Aggregation paginatedAgg = Aggregation.newAggregation(
+                match,
+                groupByUrl,
+                sortByEntriesDesc,
+                Aggregation.skip((long) input.getStart()),
+                Aggregation.limit(input.getLength())
+        );
 
-            // Merge problems with the same URL
-            List<Problem> mergedProblems = mergeProblems(problems);
+        AggregationResults<Problem> results = mongoTemplate.aggregate(paginatedAgg, "problem", Problem.class);
+        List<Problem> groupedProblems = results.getMappedResults();
 
-            mergedProblems.sort(Comparator.comparingInt(Problem::getUrlEntries).reversed());
-            // Calculate total comments and pages
-            totalComments = mergedProblems.stream().mapToInt(Problem::getUrlEntries).sum();
-            totalPages = mergedProblems.size();
+        // Calculate totals (only for the filtered set)
+        Aggregation totalAgg = Aggregation.newAggregation(match, groupByUrl);
+        List<Problem> allGroupedProblems = mongoTemplate.aggregate(totalAgg, "problem", Problem.class).getMappedResults();
+        
+        totalPages = allGroupedProblems.size();
+        totalComments = allGroupedProblems.stream().mapToInt(Problem::getUrlEntries).sum();
 
-        // Apply pagination
-            List<Problem> paginatedProblems =
-                    applyPagination(mergedProblems, input.getStart(), input.getLength());
+        // Create DataTablesOutput
+        DataTablesOutput<Problem> output = new DataTablesOutput<>();
+        output.setData(groupedProblems);
+        output.setDraw(input.getDraw());
+        output.setRecordsTotal(totalPages);
+        output.setRecordsFiltered(totalPages);
 
-            // Create a DataTablesOutput instance and set the paginated data
-            DataTablesOutput<Problem> output = new DataTablesOutput<>();
-            output.setData(paginatedProblems);
-            output.setDraw(input.getDraw());
-            output.setRecordsTotal(mergedProblems.size());
-            output.setRecordsFiltered(mergedProblems.size());
-
-            // Adjust institution names based on language
-            setInstitution(output, pageLang);
-            long afterUsedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            long actualMemUsed = afterUsedMem - beforeUsedMem;
-            LOGGER.info("Memory used by yourMethod(): {} bytes", actualMemUsed);
+        // Adjust institution names based on language
+        setInstitution(output, pageLang);
+        
+        long afterUsedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        long actualMemUsed = afterUsedMem - beforeUsedMem;
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        
+        LOGGER.info("OPTIMIZED getDashboardData() - Time: {}ms, Memory: {} bytes, Results: {}/{}",
+                elapsedTime, actualMemUsed, groupedProblems.size(), totalPages);
 
         return output;
     }
@@ -987,7 +857,7 @@ public class DashboardController {
 
     private List<Problem> applyLanguageFilter(List<Problem> problems, String language) {
         if (language != null && !language.isEmpty()) {
-            return problems.stream()
+            return new ArrayList<>(problems).stream()
                     .filter(problem -> problem.getLanguage().equals(language))
                     .collect(Collectors.toList());
         }
@@ -1002,7 +872,7 @@ public class DashboardController {
             LocalDate start = LocalDate.parse(startDate, formatter);
             LocalDate end = LocalDate.parse(endDate, formatter);
 
-            return problems.stream()
+            return new ArrayList<>(problems).stream()
                     .filter(problem -> isValidDate(problem.getProblemDate(), formatter))
                     .filter(
                             problem -> {
@@ -1028,7 +898,7 @@ public class DashboardController {
                 }
             }
             if (!matchingVariations.isEmpty()) {
-                return problems.stream()
+                return new ArrayList<>(problems).stream()
                         .filter(problem -> matchingVariations.contains(problem.getInstitution()))
                         .collect(Collectors.toList());
             }
@@ -1038,7 +908,7 @@ public class DashboardController {
 
     private List<Problem> applySectionFilter(List<Problem> problems, String section) {
         if (section != null && !section.isEmpty()) {
-            return problems.stream()
+            return new ArrayList<>(problems).stream()
                     .filter(problem -> sectionMappings.getOrDefault(section.toLowerCase(), Collections.singletonList(section)).contains(problem.getSection()))
                     .collect(Collectors.toList());
         }
@@ -1048,7 +918,7 @@ public class DashboardController {
     // theme
     private List<Problem> applyThemeFilter(List<Problem> problems, String theme) {
         if (theme != null && !theme.isEmpty()) {
-            return problems.stream()
+            return new ArrayList<>(problems).stream()
                     .filter(problem -> problem.getTheme().equals(theme))
                     .collect(Collectors.toList());
         }
@@ -1058,7 +928,7 @@ public class DashboardController {
     private List<Problem> applyUrlFilter(List<Problem> problems, String url) {
         if (url != null && !url.isEmpty()) {
             String filterUrl = url.toLowerCase();
-            return problems.stream()
+            return new ArrayList<>(problems).stream()
                     .filter(problem -> problem.getUrl().toLowerCase().contains(filterUrl))
                     .collect(Collectors.toList());
         }
