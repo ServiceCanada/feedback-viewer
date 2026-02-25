@@ -42,18 +42,15 @@ public class CachePreloader implements ApplicationRunner {
         long start = System.currentTimeMillis();
 
         // 1. Parallel load of base data (lowest tier)
-        ExecutorService pool = Executors.newFixedThreadPool(3);
-        try {
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             CompletableFuture<Void> problems =
-                CompletableFuture.runAsync(problemCacheService::getProcessedProblems, pool);
+                CompletableFuture.runAsync(problemCacheService::getProcessedProblems, executor);
             CompletableFuture<Void> urls =
-                CompletableFuture.runAsync(problemCacheService::getDistinctProcessedUrlsForCache, pool);
+                CompletableFuture.runAsync(problemCacheService::getDistinctProcessedUrlsForCache, executor);
             CompletableFuture<Void> dates =
-                CompletableFuture.runAsync(problemDateService::getProblemDates, pool);
+                CompletableFuture.runAsync(problemDateService::getProblemDates, executor);
 
             CompletableFuture.allOf(problems, urls, dates).join();
-        } finally {
-            pool.shutdown();
         }
 
         LOGGER.info("DB caches loaded in {}ms.", System.currentTimeMillis() - start);
