@@ -16,7 +16,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -26,7 +27,7 @@ public class UserService implements UserDetailsService {
     public static final String ADMIN_ROLE = "ADMIN";
     public static final String API_ROLE = "API";
 
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -68,14 +69,15 @@ public class UserService implements UserDetailsService {
 
     public User getCurrentUser() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
-        var username =
-                ((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername();
-        return this.findUserByEmail(username);
+        if (auth.getPrincipal() instanceof org.springframework.security.core.userdetails.User springUser) {
+            return this.findUserByEmail(springUser.getUsername());
+        }
+        return null;
     }
 
     public void saveUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setDateCreated(DATE_FORMAT.format(new Date()));
+        user.setDateCreated(DATE_FORMATTER.format(LocalDate.now()));
         Role userRole = null;
         if (this.userRepository.count() <= 0) {
             user.setEnabled(true);
@@ -89,7 +91,7 @@ public class UserService implements UserDetailsService {
 
     public void saveApiUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setDateCreated(DATE_FORMAT.format(new Date()));
+        user.setDateCreated(DATE_FORMATTER.format(LocalDate.now()));
         var apiRole = roleRepository.findByRole(API_ROLE);
         user.setRoles(new HashSet<>(Arrays.asList(apiRole)));
         userRepository.save(user);
