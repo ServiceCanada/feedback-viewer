@@ -10,6 +10,8 @@ import java.util.Scanner;
 import javax.swing.text.View;
 
 import org.apache.commons.csv.CSVFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +24,8 @@ import ca.gc.tbs.repository.ProblemRepository;
 
 @Controller
 public class ReportController {
+
+  private static final Logger log = LoggerFactory.getLogger(ReportController.class);
 
   @Autowired ProblemRepository problemRepository;
 
@@ -101,9 +105,17 @@ public class ReportController {
       text.append(s.nextLine());
       text.append("\n");
     }
-    System.out.println(text);
+    log.info("{}", text);
     s.close();
 
-    return process.waitFor();
+    Thread vt = Thread.ofVirtual().start(() -> {
+      try {
+        process.waitFor();
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
+    });
+    vt.join();
+    return process.exitValue();
   }
 }

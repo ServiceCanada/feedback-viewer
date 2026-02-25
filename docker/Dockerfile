@@ -1,5 +1,5 @@
 # Build stage
-FROM maven:3.8.3-jdk-8 AS build
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /build
 
 # Copy pom.xml and download dependencies (cached layer)
@@ -16,7 +16,7 @@ COPY secrets/gc_ip_whitelist.txt ./secrets/
 RUN mvn clean package -DskipTests
 
 # Runtime stage
-FROM eclipse-temurin:8-jre-jammy
+FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 

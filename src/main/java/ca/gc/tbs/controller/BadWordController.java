@@ -6,8 +6,8 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -70,126 +70,80 @@ public class BadWordController {
     StringBuilder builder = new StringBuilder();
     try {
       List<BadWordEntry> entries = repository.findAll();
-      
+
       for (BadWordEntry entry : entries) {
-        builder.append("<tr>");
-        
-        // Word column with strong emphasis
-        builder.append("<td><strong>").append(escapeHtml(entry.getWord())).append("</strong></td>");
-        
-        // Language column with tag
-        builder.append("<td>");
-        String langLabel = entry.getLanguage().equals("en") ? "EN" : 
-                          entry.getLanguage().equals("fr") ? "FR" : "BOTH";
-        String langClass = entry.getLanguage().equals("en") ? "tag-en" : 
-                          entry.getLanguage().equals("fr") ? "tag-fr" : "tag-both";
-        builder.append("<span class='tag tag-language ").append(langClass).append("'>")
-            .append(langLabel).append("</span>");
-        builder.append("</td>");
-        
-        // Type column with semantic colored tag
-        builder.append("<td>");
-        builder.append("<span class='tag tag-").append(entry.getType()).append("'>");
-        
-        // Translate type label based on language
-        String typeLabel;
-        if (lang.equals("fr")) {
-          switch (entry.getType()) {
-            case "profanity":
-              typeLabel = "VULGAIRE";
-              break;
-            case "threat":
-              typeLabel = "MENACE";
-              break;
-            case "allowed":
-              typeLabel = "AUTORISÉ";
-              break;
-            case "error":
-              typeLabel = "ERREUR";
-              break;
-            default:
-              typeLabel = entry.getType().toUpperCase();
-          }
-        } else {
-          typeLabel = entry.getType().toUpperCase();
-        }
-        
-        builder.append(typeLabel);
-        builder.append("</span></td>");
-        
-        // Active status column with colored tag
-        builder.append("<td>");
-        if (entry.getActive()) {
-          builder.append("<span class='tag tag-active'>")
-              .append(lang.equals("en") ? "ACTIVE" : "ACTIF")
-              .append("</span>");
-        } else {
-          builder.append("<span class='tag tag-inactive'>")
-              .append(lang.equals("en") ? "INACTIVE" : "INACTIF")
-              .append("</span>");
-        }
-        builder.append("</td>");
-        
-        // Action buttons with updated classes
-        builder.append("<td>");
-        
+        String word = escapeHtml(entry.getWord());
+        String id = entry.getId();
+        String type = entry.getType();
+        String language = entry.getLanguage();
+        boolean active = entry.getActive();
+
+        String langLabel = switch (language) {
+          case "en" -> "EN";
+          case "fr" -> "FR";
+          default -> "BOTH";
+        };
+
+        String langClass = switch (language) {
+          case "en" -> "tag-en";
+          case "fr" -> "tag-fr";
+          default -> "tag-both";
+        };
+
+        String typeLabel = (lang.equals("fr")) ? switch (type) {
+          case "profanity" -> "VULGAIRE";
+          case "threat" -> "MENACE";
+          case "allowed" -> "AUTORISÉ";
+          case "error" -> "ERREUR";
+          default -> type.toUpperCase();
+        } : type.toUpperCase();
+
+        String activeLabel = lang.equals("en") ? (active ? "ACTIVE" : "INACTIVE") : (active ? "ACTIF" : "INACTIF");
+        String activeClass = active ? "tag-active" : "tag-inactive";
+
+        String actionButtons;
         if (lang.equals("en")) {
-          // Edit button
-          builder.append("<button id='edit").append(entry.getId())
-              .append("' class='btn-action btn-edit editBtn' ")
-              .append("data-id='").append(entry.getId()).append("' ")
-              .append("data-word='").append(escapeHtml(entry.getWord())).append("' ")
-              .append("data-language='").append(entry.getLanguage()).append("' ")
-              .append("data-type='").append(entry.getType()).append("' ")
-              .append("data-active='").append(entry.getActive()).append("' ")
-              .append("title='Edit keyword'>")
-              .append("Edit</button>");
-          
-          // Toggle active button
-          if (entry.getActive()) {
-            builder.append("<button id='deactivate").append(entry.getId())
-                .append("' class='btn-action btn-deactivate deactivateBtn' title='Deactivate keyword'>")
-                .append("Deactivate</button>");
-          } else {
-            builder.append("<button id='activate").append(entry.getId())
-                .append("' class='btn-action btn-activate activateBtn' title='Activate keyword'>")
-                .append("Activate</button>");
-          }
-          
-          // Delete button
-          builder.append("<button id='delete").append(entry.getId())
-              .append("' class='btn-action btn-delete deleteBtn' title='Delete keyword'>")
-              .append("Delete</button>");
-              
+          String toggleBtn = active
+              ? """
+                <button id='deactivate%s' class='btn-action btn-deactivate deactivateBtn' title='Deactivate keyword'>Deactivate</button>"""
+                .formatted(id)
+              : """
+                <button id='activate%s' class='btn-action btn-activate activateBtn' title='Activate keyword'>Activate</button>"""
+                .formatted(id);
+
+          actionButtons = """
+              <button id='edit%s' class='btn-action btn-edit editBtn' \
+              data-id='%s' data-word='%s' data-language='%s' data-type='%s' data-active='%b' \
+              title='Edit keyword'>Edit</button>
+              %s
+              <button id='delete%s' class='btn-action btn-delete deleteBtn' title='Delete keyword'>Delete</button>"""
+              .formatted(id, id, word, language, type, active, toggleBtn, id);
         } else {
-          // French buttons
-          builder.append("<button id='edit").append(entry.getId())
-              .append("' class='btn-action btn-edit editBtn' ")
-              .append("data-id='").append(entry.getId()).append("' ")
-              .append("data-word='").append(escapeHtml(entry.getWord())).append("' ")
-              .append("data-language='").append(entry.getLanguage()).append("' ")
-              .append("data-type='").append(entry.getType()).append("' ")
-              .append("data-active='").append(entry.getActive()).append("' ")
-              .append("title='Modifier le mot-clé'>")
-              .append("Modifier</button>");
-          
-          if (entry.getActive()) {
-            builder.append("<button id='deactivate").append(entry.getId())
-                .append("' class='btn-action btn-deactivate deactivateBtn' title='Désactiver le mot-clé'>")
-                .append("Désactiver</button>");
-          } else {
-            builder.append("<button id='activate").append(entry.getId())
-                .append("' class='btn-action btn-activate activateBtn' title='Activer le mot-clé'>")
-                .append("Activer</button>");
-          }
-          
-          builder.append("<button id='delete").append(entry.getId())
-              .append("' class='btn-action btn-delete deleteBtn' title='Supprimer le mot-clé'>")
-              .append("Supprimer</button>");
+          String toggleBtn = active
+              ? """
+                <button id='deactivate%s' class='btn-action btn-deactivate deactivateBtn' title='Désactiver le mot-clé'>Désactiver</button>"""
+                .formatted(id)
+              : """
+                <button id='activate%s' class='btn-action btn-activate activateBtn' title='Activer le mot-clé'>Activer</button>"""
+                .formatted(id);
+
+          actionButtons = """
+              <button id='edit%s' class='btn-action btn-edit editBtn' \
+              data-id='%s' data-word='%s' data-language='%s' data-type='%s' data-active='%b' \
+              title='Modifier le mot-clé'>Modifier</button>
+              %s
+              <button id='delete%s' class='btn-action btn-delete deleteBtn' title='Supprimer le mot-clé'>Supprimer</button>"""
+              .formatted(id, id, word, language, type, active, toggleBtn, id);
         }
-        
-        builder.append("</td>");
-        builder.append("</tr>");
+
+        builder.append("""
+            <tr>
+              <td><strong>%s</strong></td>
+              <td><span class='tag tag-language %s'>%s</span></td>
+              <td><span class='tag tag-%s'>%s</span></td>
+              <td><span class='tag %s'>%s</span></td>
+              <td>%s</td>
+            </tr>""".formatted(word, langClass, langLabel, type, typeLabel, activeClass, activeLabel, actionButtons));
       }
     } catch (Exception e) {
       LOG.error("Error generating keywords table data", e);

@@ -5,10 +5,8 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.service.notify.NotificationClient;
@@ -16,31 +14,38 @@ import uk.gov.service.notify.NotificationClient;
 @Service
 public class EmailService {
 
-  @Value("${notify.templateid.accountenabled}")
-  private String userActivationRequestKey;
+  private record UserActivationPersonalisation(String email, String loginURL) {
+    Map<String, String> toMap() {
+      return Map.of("email", email(), "loginURL", loginURL());
+    }
+  }
 
-  @Value("${notify.templateid.useractivationrequest}")
-  private String accountEnabledKey;
 
-  @Value("${pagesuccess.loginURL}")
-  private String loginURL;
+  private final String userActivationRequestKey;
 
-  @Autowired private UserService userService;
+  private final String accountEnabledKey;
+
+  private final String loginURL;
+
+  private final UserService userService;
+
+  public EmailService(
+      @Value("${notify.templateid.accountenabled}") String userActivationRequestKey,
+      @Value("${notify.templateid.useractivationrequest}") String accountEnabledKey,
+      @Value("${pagesuccess.loginURL}") String loginURL,
+      UserService userService) {
+    this.userActivationRequestKey = userActivationRequestKey;
+    this.accountEnabledKey = accountEnabledKey;
+    this.loginURL = loginURL;
+    this.userService = userService;
+  }
 
   public String getUserActivationRequestKey() {
     return userActivationRequestKey;
   }
 
-  public void setUserActivationRequestKey(String userActivationRequestKey) {
-    this.userActivationRequestKey = userActivationRequestKey;
-  }
-
   public String getAccountEnabledKey() {
     return accountEnabledKey;
-  }
-
-  public void setAccountEnabledKey(String accountEnabledKey) {
-    this.accountEnabledKey = accountEnabledKey;
   }
 
   public NotificationClient getNotificationClient() {
@@ -64,9 +69,7 @@ public class EmailService {
   }
 
   public void sendUserActivationRequestEmail(String email) {
-    Map<String, String> personalisation = new HashMap<>();
-    personalisation.put("email", email);
-    personalisation.put("loginURL", loginURL);
+    Map<String, String> personalisation = new UserActivationPersonalisation(email, loginURL).toMap();
     List<User> admins = this.userService.findUserByRole(UserService.ADMIN_ROLE);
     for (User user : admins) {
       try {

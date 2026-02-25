@@ -3,8 +3,7 @@ package ca.gc.tbs.controller;
 import ca.gc.tbs.domain.User;
 import ca.gc.tbs.service.UserService;
 import java.util.List;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,81 +56,56 @@ public class UserController {
   }
 
   public String getData(String lang) {
-
-    String returnData = "";
     try {
       StringBuilder builder = new StringBuilder();
       List<User> users = this.service.findAllUsers();
-      if (lang.equals("en")) {
-        for (User user : users) {
-          builder.append("<tr><td>" + user.getEmail() + "</td>");
+      boolean isEn = "en".equals(lang);
 
-          builder.append("<td>" + user.getInstitution() + "</td>");
-          List<String> roles =
-              user.getRoles().stream().map(role -> role.getRole()).collect(Collectors.toList());
+      for (User user : users) {
+        String id = user.getId();
+        String email = user.getEmail();
+        String institution = user.getInstitution();
+        String dateCreated = user.getDateCreated();
+        boolean enabled = user.isEnabled();
+        List<String> roles = user.getRoles().stream()
+            .map(ca.gc.tbs.domain.Role::getRole)
+            .toList();
 
-          builder.append("<td>" + roles + "</td>");
-          builder.append("<td>" + user.getDateCreated() + "</td>");
-          builder.append("<td>" + (user.isEnabled() ? "Enabled" : "Awaiting approval") + "</td>");
-          builder.append("<td><div class='btn-group'>");
-          if (!user.isEnabled()) {
-            builder.append(
-                "<button id='enable"
-                    + user.getId()
-                    + "' class='btn btn-xs enableBtn'>Enable</button>");
-          } else {
-            builder.append(
-                "<button id='disable"
-                    + user.getId()
-                    + "' class='btn btn-xs disableBtn'>Disable</button>");
-          }
-          builder.append(
-              "<button id='delete"
-                  + user.getId()
-                  + "' class='btn btn-xs deleteBtn'>Delete</button>");
+        String status = isEn
+            ? (enabled ? "Enabled" : "Awaiting approval")
+            : (enabled ? "Activé" : "En attente d'approbation");
 
-          builder.append("</div></td>");
-          builder.append("</tr>");
-        }
-      } else {
-        for (User user : users) {
-          builder.append("<tr><td>" + user.getEmail() + "</td>");
+        String toggleLabel = isEn
+            ? (enabled ? "Disable" : "Enable")
+            : (enabled ? "Désactiver" : "Activer");
 
-          builder.append("<td>" + user.getInstitution() + "</td>");
-          List<String> roles =
-              user.getRoles().stream().map(role -> role.getRole()).collect(Collectors.toList());
+        String toggleClass = enabled ? "disableBtn" : "enableBtn";
+        String toggleIdPrefix = enabled ? "disable" : "enable";
+        String deleteLabel = isEn ? "Delete" : "Supprimer";
 
-          builder.append("<td>" + roles + "</td>");
-          builder.append("<td>" + user.getDateCreated() + "</td>");
-          builder.append(
-              "<td>" + (user.isEnabled() ? "Activé" : "En attente d'approbation") + "</td>");
-          builder.append("<td><div class='btn-group'>");
-          if (!user.isEnabled()) {
-            builder.append(
-                "<button id='enable"
-                    + user.getId()
-                    + "' class='btn btn-xs enableBtn'>Activer</button>");
-          } else {
-            builder.append(
-                "<button id='disable"
-                    + user.getId()
-                    + "' class='btn btn-xs disableBtn'>Désactiver</button>");
-          }
-          builder.append(
-              "<button id='delete"
-                  + user.getId()
-                  + "' class='btn btn-xs deleteBtn'>Supprimer</button>");
-
-          builder.append("</div></td>");
-          builder.append("</tr>");
-        }
+        builder.append("""
+            <tr>
+              <td>%s</td>
+              <td>%s</td>
+              <td>%s</td>
+              <td>%s</td>
+              <td>%s</td>
+              <td>
+                <div class='btn-group'>
+                  <button id='%s%s' class='btn btn-xs %s'>%s</button>
+                  <button id='delete%s' class='btn btn-xs deleteBtn'>%s</button>
+                </div>
+              </td>
+            </tr>""".formatted(
+            email, institution, roles, dateCreated, status,
+            toggleIdPrefix, id, toggleClass, toggleLabel,
+            id, deleteLabel));
       }
-
-      returnData = builder.toString();
+      return builder.toString();
     } catch (Exception e) {
       LOG.error(e.getMessage());
     }
-    return returnData;
+    return "";
   }
 
   @GetMapping(value = "/u/index")

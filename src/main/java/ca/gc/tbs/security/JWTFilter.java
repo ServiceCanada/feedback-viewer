@@ -3,11 +3,10 @@ package ca.gc.tbs.security;
 import ca.gc.tbs.service.UserService;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,7 +47,7 @@ public class JWTFilter extends OncePerRequestFilter {
       if (jwtUtil.validateToken(token, userDetails)) {
         List<String> authorities =
             ((List<?>) jwtUtil.extractClaim(token, claims -> claims.get("authorities")))
-                .stream().map(Object::toString).collect(Collectors.toList());
+                .stream().map(Object::toString).toList();
         if (authorities.contains("ADMIN") || authorities.contains("API")) {
           UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
               new UsernamePasswordAuthenticationToken(
