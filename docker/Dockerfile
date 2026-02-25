@@ -1,4 +1,4 @@
-FROM maven:3.8.3-jdk-8
+FROM maven:3.9.9-eclipse-temurin-21
 RUN rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y \
     # add any necessary packages here
