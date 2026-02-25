@@ -2,7 +2,6 @@ package ca.gc.tbs.config;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,9 +21,16 @@ import ca.gc.tbs.security.JWTFilter;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-  @Autowired CustomizeAuthenticationSuccessHandler customizeAuthenticationSuccessHandler;
+  private final CustomizeAuthenticationSuccessHandler customizeAuthenticationSuccessHandler;
 
-  @Autowired private JWTFilter jwtFilter;
+  private final JWTFilter jwtFilter;
+
+  public WebSecurityConfig(
+      CustomizeAuthenticationSuccessHandler customizeAuthenticationSuccessHandler,
+      JWTFilter jwtFilter) {
+    this.customizeAuthenticationSuccessHandler = customizeAuthenticationSuccessHandler;
+    this.jwtFilter = jwtFilter;
+  }
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

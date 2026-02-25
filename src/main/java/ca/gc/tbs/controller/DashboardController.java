@@ -20,7 +20,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import org.bson.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -46,16 +45,24 @@ import ca.gc.tbs.service.UserService;
 @Controller
 public class DashboardController {
 
-    @Autowired
-    private ProblemDateService problemDateService;
-    @Autowired
-    private DashboardService dashboardService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private ErrorKeywordService errorKeywordService;
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private final ProblemDateService problemDateService;
+    private final DashboardService dashboardService;
+    private final UserService userService;
+    private final ErrorKeywordService errorKeywordService;
+    private final MongoTemplate mongoTemplate;
+
+    public DashboardController(
+        ProblemDateService problemDateService,
+        DashboardService dashboardService,
+        UserService userService,
+        ErrorKeywordService errorKeywordService,
+        MongoTemplate mongoTemplate) {
+      this.problemDateService = problemDateService;
+      this.dashboardService = dashboardService;
+      this.userService = userService;
+      this.errorKeywordService = errorKeywordService;
+      this.mongoTemplate = mongoTemplate;
+    }
 
     private static final Map<String, List<String>> institutionMappings = new HashMap<>();
     private static final Map<String, List<String>> sectionMappings = new HashMap<>();
@@ -142,15 +149,15 @@ public class DashboardController {
 
     @GetMapping(value = "/dashboard")
     public ModelAndView pageFeedback(HttpServletRequest request) {
-        ModelAndView mav = new ModelAndView();
+        var mav = new ModelAndView();
         String lang = (String) request.getSession().getAttribute("lang");
         mav.addObject("lang", lang);
-        Map<String, String> dateMap = problemDateService.getProblemDates();
+        var dateMap = problemDateService.getProblemDates();
         if (dateMap != null) {
             mav.addObject("earliestDate", dateMap.get("earliestDate"));
-            LocalDate latestDate = LocalDate.parse(dateMap.get("latestDate"), DateTimeFormatter.ISO_LOCAL_DATE);
-            LocalDate previousDate = latestDate.minusDays(1);
-            String modifiedLatestDate = previousDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+            var latestDate = LocalDate.parse(dateMap.get("latestDate"), DateTimeFormatter.ISO_LOCAL_DATE);
+            var previousDate = latestDate.minusDays(1);
+            var modifiedLatestDate = previousDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
             mav.addObject("latestDate", modifiedLatestDate);
         } else {
             mav.addObject("earliestDate", "N/A");
@@ -177,10 +184,10 @@ public class DashboardController {
         boolean useDatabase = error_keyword || (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim()));
 
         if (useDatabase) {
-            Criteria criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
-            List<Criteria> regexCriteria = new ArrayList<>();
+            var criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
+            var regexCriteria = new ArrayList<Criteria>();
             if (error_keyword) {
-                Set<String> keywordsToCheck = new HashSet<>();
+                var keywordsToCheck = new HashSet<String>();
                 keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
                 keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
                 keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
@@ -193,19 +200,19 @@ public class DashboardController {
                 regexCriteria.add(Criteria.where("problemDetails").regex(escapeSpecialRegexCharacters(comments.trim()), "i"));
             }
 
-            Criteria finalCriteria = !regexCriteria.isEmpty()
+            var finalCriteria = !regexCriteria.isEmpty()
                 ? new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])))
                 : criteria;
 
-            GroupOperation groupByDate = Aggregation.group("problemDate").count().as("comments");
-            SortOperation sortByDate = Aggregation.sort(Sort.Direction.ASC, "_id");
-            AggregationResults<Document> aggResults = mongoTemplate.aggregate(
+            var groupByDate = Aggregation.group("problemDate").count().as("comments");
+            var sortByDate = Aggregation.sort(Sort.Direction.ASC, "_id");
+            var aggResults = mongoTemplate.aggregate(
                     Aggregation.newAggregation(Aggregation.match(finalCriteria), groupByDate, sortByDate),
                     "problem", Document.class);
 
-            List<Map<String, Object>> dailyCommentsList = new ArrayList<>();
+            var dailyCommentsList = new ArrayList<Map<String, Object>>();
             for (Document doc : aggResults) {
-                Map<String, Object> map = new HashMap<>();
+                var map = new HashMap<String, Object>();
                 map.put("date", doc.getString("_id"));
                 map.put("comments", doc.getInteger("comments", 0));
                 dailyCommentsList.add(map);
@@ -213,19 +220,19 @@ public class DashboardController {
             return dailyCommentsList;
         }
 
-        DashboardService.DashboardStats stats = dashboardService.getDashboardStats();
-        List<Problem> problemsByDate = stats.problemsByDate();
+        var stats = dashboardService.getDashboardStats();
+        var problemsByDate = stats.problemsByDate();
 
-        Map<String, Integer> dateToCommentCountMap = new HashMap<>();
+        var dateToCommentCountMap = new HashMap<String, Integer>();
         for (Problem problem : problemsByDate) {
             if (problem != null && problem.getProblemDate() != null) {
                 dateToCommentCountMap.merge(problem.getProblemDate(), problem.getUrlEntries(), Integer::sum);
             }
         }
 
-        List<Map<String, Object>> dailyCommentsList = new ArrayList<>();
+        var dailyCommentsList = new ArrayList<Map<String, Object>>();
         dateToCommentCountMap.forEach((date, count) -> {
-            Map<String, Object> entry = new HashMap<>();
+            var entry = new HashMap<String, Object>();
             entry.put("date", date);
             entry.put("comments", count);
             dailyCommentsList.add(entry);
@@ -254,15 +261,15 @@ public class DashboardController {
             return getDashboardDataViaAggregation(input, pageLang, startDate, endDate, theme, section, language, url, department, comments, error_keyword);
         }
 
-        DashboardService.DashboardStats stats = dashboardService.getDashboardStats();
-        List<Problem> filtered = applyFilters(new ArrayList<>(stats.problemsByDate()), department, startDate, endDate, language, url, section, theme);
-        List<Problem> merged = mergeProblems(filtered);
+        var stats = dashboardService.getDashboardStats();
+        var filtered = applyFilters(new ArrayList<>(stats.problemsByDate()), department, startDate, endDate, language, url, section, theme);
+        var merged = mergeProblems(filtered);
         merged.sort(Comparator.comparingInt(Problem::getUrlEntries).reversed());
 
         int filteredTotalPages = merged.size();
-        List<Problem> page = merged.stream().skip(input.getStart()).limit(input.getLength()).collect(Collectors.toList());
+        var page = merged.stream().skip(input.getStart()).limit(input.getLength()).collect(Collectors.toList());
 
-        DataTablesOutput<Problem> output = new DataTablesOutput<>();
+        var output = new DataTablesOutput<Problem>();
         output.setData(page);
         output.setDraw(input.getDraw());
         output.setRecordsTotal(filteredTotalPages);
@@ -277,10 +284,10 @@ public class DashboardController {
             String language, String url, String department,
             String comments, boolean error_keyword) {
 
-        Criteria criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
-        List<Criteria> regexCriteria = new ArrayList<>();
+        var criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
+        var regexCriteria = new ArrayList<Criteria>();
         if (error_keyword) {
-            Set<String> keywords = new HashSet<>();
+            var keywords = new HashSet<String>();
             keywords.addAll(errorKeywordService.getEnglishKeywords());
             keywords.addAll(errorKeywordService.getFrenchKeywords());
             keywords.addAll(errorKeywordService.getBilingualKeywords());
@@ -296,8 +303,8 @@ public class DashboardController {
             criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
         }
 
-        MatchOperation match = Aggregation.match(criteria);
-        GroupOperation groupByUrl = Aggregation.group("url")
+        var match = Aggregation.match(criteria);
+        var groupByUrl = Aggregation.group("url")
                 .first("url").as("url")
                 .first("problemDate").as("problemDate")
                 .first("institution").as("institution")
@@ -306,13 +313,13 @@ public class DashboardController {
                 .first("section").as("section")
                 .first("theme").as("theme")
                 .count().as("urlEntries");
-        SortOperation sortDesc = Aggregation.sort(Sort.Direction.DESC, "urlEntries");
+        var sortDesc = Aggregation.sort(Sort.Direction.DESC, "urlEntries");
 
-        List<Problem> page = mongoTemplate.aggregate(
+        var page = mongoTemplate.aggregate(
                 Aggregation.newAggregation(match, groupByUrl, sortDesc, Aggregation.skip((long) input.getStart()), Aggregation.limit(input.getLength())),
                 "problem", Problem.class).getMappedResults();
 
-        Document totalsDoc = mongoTemplate.aggregate(
+        var totalsDoc = mongoTemplate.aggregate(
                 Aggregation.newAggregation(match, groupByUrl, Aggregation.group().count().as("pages").sum("urlEntries").as("comments")),
                 "problem", Document.class).getUniqueMappedResult();
 
@@ -321,7 +328,7 @@ public class DashboardController {
             totalP = totalsDoc.getInteger("pages", 0);
         }
 
-        DataTablesOutput<Problem> output = new DataTablesOutput<>();
+        var output = new DataTablesOutput<Problem>();
         output.setData(page);
         output.setDraw(input.getDraw());
         output.setRecordsTotal(totalP);
@@ -331,8 +338,8 @@ public class DashboardController {
     }
 
     private Criteria buildFilterCriteria(String startDate, String endDate, String theme, String section, String language, String url, String department) {
-        Criteria criteria = Criteria.where("processed").is("true");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        var criteria = Criteria.where("processed").is("true");
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
             criteria.and("problemDate").gte(startDate).lte(endDate);
         }
@@ -343,7 +350,7 @@ public class DashboardController {
         if (language != null && !language.isEmpty()) criteria.and("language").is(language);
         if (url != null && !url.isEmpty()) criteria.and("url").regex(url, "i");
         if (department != null && !department.isEmpty()) {
-            Set<String> variations = new HashSet<>();
+            var variations = new HashSet<String>();
             for (List<String> list : institutionMappings.values()) {
                 if (list.stream().anyMatch(v -> v.equalsIgnoreCase(department))) variations.addAll(list);
             }
@@ -353,11 +360,11 @@ public class DashboardController {
     }
 
     private List<Problem> applyFilters(List<Problem> problems, String department, String startDate, String endDate, String language, String url, String section, String theme) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        Stream<Problem> stream = problems.stream();
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        var stream = problems.stream();
 
         if (department != null && !department.isEmpty()) {
-            Set<String> variations = new HashSet<>();
+            var variations = new HashSet<String>();
             for (List<String> list : institutionMappings.values()) {
                 if (list.stream().anyMatch(v -> v.equalsIgnoreCase(department))) variations.addAll(list);
             }
@@ -365,8 +372,8 @@ public class DashboardController {
         }
 
         if (startDate != null && endDate != null) {
-            LocalDate start = LocalDate.parse(startDate, formatter);
-            LocalDate end = LocalDate.parse(endDate, formatter);
+            var start = LocalDate.parse(startDate, formatter);
+            var end = LocalDate.parse(endDate, formatter);
             stream = stream.filter(p -> {
                 try {
                     LocalDate d = LocalDate.parse(p.getProblemDate(), formatter);
@@ -386,7 +393,7 @@ public class DashboardController {
     }
 
     private List<Problem> mergeProblems(List<Problem> problems) {
-        Map<String, Problem> map = new LinkedHashMap<>();
+        var map = new LinkedHashMap<String, Problem>();
         for (Problem p : problems) {
             map.merge(p.getUrl(), p, (o, n) -> {
                 Problem updated = new Problem(o);
@@ -412,6 +419,4 @@ public class DashboardController {
         return input.replaceAll("([\\\\.^$|()\\[\\]{}*+?])", "\\\\$1");
     }
 
-    public UserService getUserService() { return userService; }
-    public void setUserService(UserService userService) { this.userService = userService; }
 }

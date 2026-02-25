@@ -15,7 +15,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -47,20 +46,36 @@ public class ProblemController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProblemController.class);
 
-    @Autowired
-    private ProblemRepository problemRepository;
+    private final ProblemRepository problemRepository;
 
-    @Autowired
-    private ProblemDateService problemDateService;
+    private final ProblemDateService problemDateService;
 
-    @Autowired
-    private ErrorKeywordService errorKeywordService;
+    private final ErrorKeywordService errorKeywordService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private ProblemCacheService problemCacheService;
+    private final ProblemCacheService problemCacheService;
+
+    private final MongoTemplate mongoTemplate;
+
+    private final JWTUtil jwtUtil;
+
+    public ProblemController(
+        ProblemRepository problemRepository,
+        ProblemDateService problemDateService,
+        ErrorKeywordService errorKeywordService,
+        UserService userService,
+        ProblemCacheService problemCacheService,
+        MongoTemplate mongoTemplate,
+        JWTUtil jwtUtil) {
+      this.problemRepository = problemRepository;
+      this.problemDateService = problemDateService;
+      this.errorKeywordService = errorKeywordService;
+      this.userService = userService;
+      this.problemCacheService = problemCacheService;
+      this.mongoTemplate = mongoTemplate;
+      this.jwtUtil = jwtUtil;
+    }
 
     private static final Map<String, List<String>> institutionMappings = new HashMap<>();
     private static final Map<String, List<String>> sectionMappings = new HashMap<>();
@@ -481,10 +496,6 @@ public class ProblemController {
         }
     }
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
-    @Autowired
-    private JWTUtil jwtUtil;
 
     @GetMapping("/api/problems")
     public ResponseEntity<?> getProblemsJson(
@@ -505,7 +516,7 @@ public class ProblemController {
         }
 
         if (userName != null) {
-            User user = userService.findUserByEmail(userName);
+            var user = userService.findUserByEmail(userName);
             if (!userService.isAdmin(user) && !userService.isAPI(user)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body("Access denied. Only API users & Admins can access this endpoint.");
@@ -528,14 +539,14 @@ public class ProblemController {
 
         for (String param : requestParams.keySet()) {
             if (!validParams.contains(param)) {
-                Map<String, String> errorResponse = new HashMap<>();
+                var errorResponse = new HashMap<String, String>();
                 errorResponse.put("error", "Invalid parameter: " + param);
                 return ResponseEntity.badRequest().body(errorResponse);
             }
         }
 
-        Criteria criteria = new Criteria("processed").is("true");
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        var criteria = new Criteria("processed").is("true");
+        var dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         // Ensure only one type of date filter is used
         if ((startDate != null || endDate != null)
@@ -554,8 +565,8 @@ public class ProblemController {
                 return ResponseEntity.badRequest().body(errorResponse);
             } else {
                 try {
-                    LocalDate start = LocalDate.parse(startDate, dateFormat);
-                    LocalDate end = LocalDate.parse(endDate, dateFormat);
+                    var start = LocalDate.parse(startDate, dateFormat);
+                    var end = LocalDate.parse(endDate, dateFormat);
                     if (end.isBefore(start)) {
                         Map<String, String> errorResponse = new HashMap<>();
                         errorResponse.put("error", "endDate must be greater than or equal to startDate.");
@@ -578,8 +589,8 @@ public class ProblemController {
                 return ResponseEntity.badRequest().body(errorResponse);
             } else {
                 try {
-                    LocalDate processedStart = LocalDate.parse(processedStartDate, dateFormat);
-                    LocalDate processedEnd = LocalDate.parse(processedEndDate, dateFormat);
+                    var processedStart = LocalDate.parse(processedStartDate, dateFormat);
+                    var processedEnd = LocalDate.parse(processedEndDate, dateFormat);
                     if (processedEnd.isBefore(processedStart)) {
                         Map<String, String> errorResponse = new HashMap<>();
                         errorResponse.put(
@@ -611,7 +622,7 @@ public class ProblemController {
             criteria.and("url").regex(url, "i");
         }
 
-        Query query = new Query(criteria);
+        var query = new Query(criteria);
         query
                 .fields()
                 .exclude("_id")
@@ -632,12 +643,12 @@ public class ProblemController {
                 .exclude("autoTagProcessed")
                 .exclude("_class");
 
-        List<Document> documents = mongoTemplate.find(query, Document.class, "problem");
+        var documents = mongoTemplate.find(query, Document.class, "problem");
         return ResponseEntity.ok(documents);
     }
 
     private Criteria applyDepartmentFilter(Criteria criteria, String department) {
-        Set<String> matchingVariations = new HashSet<>();
+        var matchingVariations = new HashSet<String>();
         for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
             if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
                 matchingVariations.addAll(entry.getValue());
@@ -672,10 +683,10 @@ public class ProblemController {
         Criteria criteria = Criteria.where("processed").is("true");
 
         // Apply filters (similar to the existing method)
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (startDate != null && endDate != null) {
-            LocalDate start = LocalDate.parse(startDate, formatter);
-            LocalDate end = LocalDate.parse(endDate, formatter);
+            var start = LocalDate.parse(startDate, formatter);
+            var end = LocalDate.parse(endDate, formatter);
             criteria.and("problemDate").gte(start.format(formatter)).lte(end.format(formatter));
         }
         if (theme != null && !theme.isEmpty()) {
@@ -688,7 +699,7 @@ public class ProblemController {
             criteria.and("language").is(language);
         }
         if (titles != null && titles.length > 0) {
-            List<Criteria> titleCriterias = new ArrayList<>();
+            var titleCriterias = new ArrayList<Criteria>();
             for (String title : titles) {
                 titleCriterias.add(Criteria.where("title").is(title));
             }
@@ -701,7 +712,7 @@ public class ProblemController {
             criteria.and("url").regex(url, "i");
         }
         if (department != null && !department.isEmpty()) {
-            Set<String> matchingVariations = new HashSet<>();
+            var matchingVariations = new HashSet<String>();
             for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
                 if (entry.getValue().stream()
                         .anyMatch(variation -> variation.equalsIgnoreCase(department))) {
@@ -720,7 +731,7 @@ public class ProblemController {
         // Apply error keyword filter
         if (error_keyword) {
             // Build regex pattern from all keywords
-            Set<String> keywordsToCheck = new HashSet<>();
+            var keywordsToCheck = new HashSet<String>();
             keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
             keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
             keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
@@ -731,7 +742,7 @@ public class ProblemController {
             }
         }
 
-        Query query = new Query(criteria);
+        var query = new Query(criteria);
         query
                 .fields()
                 .include("problemDate")
@@ -767,7 +778,7 @@ public class ProblemController {
                     "Device Type",
                     "Browser"
             };
-            Row headerRow = sheet.createRow(0);
+            var headerRow = sheet.createRow(0);
             for (int i = 0; i < columns.length; i++) {
                 headerRow.createCell(i).setCellValue(columns[i]);
             }
@@ -829,10 +840,10 @@ public class ProblemController {
         Criteria criteria = Criteria.where("processed").is("true");
 
         // Apply filters (similar to the list method)
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (startDate != null && endDate != null) {
-            LocalDate start = LocalDate.parse(startDate, formatter);
-            LocalDate end = LocalDate.parse(endDate, formatter);
+            var start = LocalDate.parse(startDate, formatter);
+            var end = LocalDate.parse(endDate, formatter);
             criteria.and("problemDate").gte(start.format(formatter)).lte(end.format(formatter));
         }
 
@@ -848,7 +859,7 @@ public class ProblemController {
                     .regex(Pattern.compile(Pattern.quote(language), Pattern.CASE_INSENSITIVE));
         }
         if (titles != null && titles.length > 0) {
-            List<Criteria> titleCriterias = new ArrayList<>();
+            var titleCriterias = new ArrayList<Criteria>();
             for (String title : titles) {
                 titleCriterias.add(Criteria.where("title").is(title));
             }
@@ -861,7 +872,7 @@ public class ProblemController {
             criteria.and("url").regex(url, "i");
         }
         if (department != null && !department.isEmpty()) {
-            Set<String> matchingVariations = new HashSet<>();
+            var matchingVariations = new HashSet<String>();
             for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
                 if (entry.getValue().stream()
                         .anyMatch(variation -> variation.equalsIgnoreCase(department))) {
@@ -880,7 +891,7 @@ public class ProblemController {
         // Apply error keyword filter
         if (error_keyword) {
             // Build regex pattern from all keywords
-            Set<String> keywordsToCheck = new HashSet<>();
+            var keywordsToCheck = new HashSet<String>();
             keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
             keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
             keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
@@ -891,7 +902,7 @@ public class ProblemController {
             }
         }
 
-        Query query = new Query(criteria);
+        var query = new Query(criteria);
         query
                 .fields()
                 .include("problemDate")
@@ -907,34 +918,30 @@ public class ProblemController {
                 .include("browser");
 
         // Stream results directly to the response
-        Writer writer = response.getWriter();
+        var writer = response.getWriter();
         try {
             // Write CSV header
-            writer.write(
-                    "Problem Date,Time Stamp (UTC),Problem"
-                            + " Details,Language,Title,URL,Institution,Section,Theme,Device Type,Browser\n");
+            writer.write("""
+                Problem Date,Time Stamp (UTC),Problem Details,Language,Title,URL,Institution,Section,Theme,Device Type,Browser
+                """);
 
             // Stream and write data
             try (java.util.stream.Stream<Problem> stream = mongoTemplate.stream(query, Problem.class)) {
                 stream.forEach(problem -> {
-                    try {
-                        writer.write(
-                                String.format(
-                                        "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
-                                        escapeCSV(problem.getProblemDate()),
-                                        escapeCSV(problem.getTimeStamp()),
-                                        escapeCSV(problem.getProblemDetails()),
-                                        escapeCSV(problem.getLanguage()),
-                                        escapeCSV(problem.getTitle()),
-                                        escapeCSV(problem.getUrl()),
-                                        escapeCSV(problem.getInstitution()),
-                                        escapeCSV(problem.getSection()),
-                                        escapeCSV(problem.getTheme()),
-                                        escapeCSV(problem.getDeviceType()),
-                                        escapeCSV(problem.getBrowser())));
-                    } catch (IOException e) {
-                        LOG.error("Error writing CSV data", e);
-                    }
+                    writer.write(
+                            String.format(
+                                    "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+                                    escapeCSV(problem.getProblemDate()),
+                                    escapeCSV(problem.getTimeStamp()),
+                                    escapeCSV(problem.getProblemDetails()),
+                                    escapeCSV(problem.getLanguage()),
+                                    escapeCSV(problem.getTitle()),
+                                    escapeCSV(problem.getUrl()),
+                                    escapeCSV(problem.getInstitution()),
+                                    escapeCSV(problem.getSection()),
+                                    escapeCSV(problem.getTheme()),
+                                    escapeCSV(problem.getDeviceType()),
+                                    escapeCSV(problem.getBrowser())));
                 });
             }
         } finally {
@@ -951,11 +958,11 @@ public class ProblemController {
 
     @GetMapping(value = "/pageFeedback")
     public ModelAndView pageFeedback(HttpServletRequest request) throws Exception {
-        ModelAndView mav = new ModelAndView();
+        var mav = new ModelAndView();
         String lang = (String) request.getSession().getAttribute("lang");
 
         // Fetch the aggregation results
-        Map<String, String> dateMap = problemDateService.getProblemDates();
+        var dateMap = problemDateService.getProblemDates();
 
         if (dateMap != null) {
             mav.addObject("earliestDate", dateMap.get("earliestDate"));
@@ -994,12 +1001,12 @@ public class ProblemController {
         String endDate = request.getParameter("endDate");
         String[] titles = request.getParameterValues("titles[]");
 
-        Criteria criteria = Criteria.where("processed").is("true");
+        var criteria = Criteria.where("processed").is("true");
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (startDate != null && endDate != null) {
-            LocalDate start = LocalDate.parse(startDate, formatter);
-            LocalDate end = LocalDate.parse(endDate, formatter);
+            var start = LocalDate.parse(startDate, formatter);
+            var end = LocalDate.parse(endDate, formatter);
             criteria.and("problemDate").gte(start.format(formatter)).lte(end.format(formatter));
         }
 
@@ -1016,7 +1023,7 @@ public class ProblemController {
 
         if (titles != null && titles.length > 0) {
             // Create a list to hold the title criteria
-            List<Criteria> titleCriterias = new ArrayList<>();
+            var titleCriterias = new ArrayList<Criteria>();
             // Iterate over the titles and add each one as a criterion
             for (String title : titles) {
                 titleCriterias.add(Criteria.where("title").is(title));
@@ -1034,7 +1041,7 @@ public class ProblemController {
         }
         // Department filtering based on institutionMappings
         if (department != null && !department.isEmpty()) {
-            Set<String> matchingVariations = new HashSet<>();
+            var matchingVariations = new HashSet<String>();
             // Filter variations based on department:
             for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
                 if (entry.getValue().stream()
@@ -1054,7 +1061,7 @@ public class ProblemController {
         DataTablesOutput<Problem> results;
 
         if (error_keyword) {
-            Set<String> keywordsToCheck = new HashSet<>();
+            var keywordsToCheck = new HashSet<String>();
             keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
             keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
             keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
@@ -1109,11 +1116,4 @@ public class ProblemController {
         }
     }
 
-    public UserService getUserService() {
-        return userService;
-    }
-
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
 }

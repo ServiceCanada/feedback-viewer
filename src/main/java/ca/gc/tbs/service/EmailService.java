@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.service.notify.NotificationClient;
@@ -16,31 +15,31 @@ import uk.gov.service.notify.NotificationClient;
 @Service
 public class EmailService {
 
-  @Value("${notify.templateid.accountenabled}")
-  private String userActivationRequestKey;
+  private final String userActivationRequestKey;
 
-  @Value("${notify.templateid.useractivationrequest}")
-  private String accountEnabledKey;
+  private final String accountEnabledKey;
 
-  @Value("${pagesuccess.loginURL}")
-  private String loginURL;
+  private final String loginURL;
 
-  @Autowired private UserService userService;
+  private final UserService userService;
+
+  public EmailService(
+      @Value("${notify.templateid.accountenabled}") String userActivationRequestKey,
+      @Value("${notify.templateid.useractivationrequest}") String accountEnabledKey,
+      @Value("${pagesuccess.loginURL}") String loginURL,
+      UserService userService) {
+    this.userActivationRequestKey = userActivationRequestKey;
+    this.accountEnabledKey = accountEnabledKey;
+    this.loginURL = loginURL;
+    this.userService = userService;
+  }
 
   public String getUserActivationRequestKey() {
     return userActivationRequestKey;
   }
 
-  public void setUserActivationRequestKey(String userActivationRequestKey) {
-    this.userActivationRequestKey = userActivationRequestKey;
-  }
-
   public String getAccountEnabledKey() {
     return accountEnabledKey;
-  }
-
-  public void setAccountEnabledKey(String accountEnabledKey) {
-    this.accountEnabledKey = accountEnabledKey;
   }
 
   public NotificationClient getNotificationClient() {

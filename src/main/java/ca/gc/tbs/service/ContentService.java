@@ -101,7 +101,7 @@ public class ContentService {
     }
     content = StringUtils.normalizeSpace(content);
 
-    String newContent = badWords.censor(content);
+    var newContent = badWords.censor(content);
     if (!newContent.contentEquals(content)) {
       content = newContent;
       logger.debug("Profanity filtered");
@@ -192,29 +192,29 @@ public class ContentService {
 
     try {
       // Tokenize the content
-      TokenizerME tokenizer = new TokenizerME(tokenizerModel);
-      String[] tokens = tokenizer.tokenize(content);
+      var tokenizer = new TokenizerME(tokenizerModel);
+      var tokens = tokenizer.tokenize(content);
 
       // Find person names
-      NameFinderME nameFinder = new NameFinderME(nerModel);
-      Span[] nameSpans = nameFinder.find(tokens);
+      var nameFinder = new NameFinderME(nerModel);
+      var nameSpans = nameFinder.find(tokens);
 
       if (nameSpans.length == 0) {
         return content;
       }
 
-      Set<String> commonPronouns =
-          new HashSet<>(Arrays.asList("he", "she", "him", "her", "his", "hers"));
+      var commonPronouns =
+          new HashSet<String>(Arrays.asList("he", "she", "him", "her", "his", "hers"));
 
       // Process spans in reverse order to preserve character offsets
-      List<Span> spanList = new ArrayList<>(Arrays.asList(nameSpans));
+      var spanList = new ArrayList<>(Arrays.asList(nameSpans));
       Collections.reverse(spanList);
 
-      StringBuilder sb = new StringBuilder(content);
+      var sb = new StringBuilder(content);
 
       for (Span span : spanList) {
         // Build the name text from tokens
-        StringBuilder nameBuilder = new StringBuilder();
+        var nameBuilder = new StringBuilder();
         for (int i = span.getStart(); i < span.getEnd(); i++) {
           if (i > span.getStart()) {
             nameBuilder.append(" ");

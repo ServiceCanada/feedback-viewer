@@ -27,7 +27,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -55,13 +54,33 @@ import ca.gc.tbs.service.UserService;
 public class TopTaskController {
 
   private static final Logger LOG = LoggerFactory.getLogger(TopTaskController.class);
-  @Autowired private TopTaskRepository topTaskRepository;
+
+  private final TopTaskRepository topTaskRepository;
+
   private int totalDistinctTasks = 0;
 
   private int totalTaskCount = 0;
-  @Autowired private UserService userService;
 
-  @Autowired private ProblemDateService problemDateService;
+  private final UserService userService;
+
+  private final ProblemDateService problemDateService;
+
+  private final MongoTemplate mongoTemplate;
+
+  private final JWTUtil jwtUtil;
+
+  public TopTaskController(
+      TopTaskRepository topTaskRepository,
+      UserService userService,
+      ProblemDateService problemDateService,
+      MongoTemplate mongoTemplate,
+      JWTUtil jwtUtil) {
+    this.topTaskRepository = topTaskRepository;
+    this.userService = userService;
+    this.problemDateService = problemDateService;
+    this.mongoTemplate = mongoTemplate;
+    this.jwtUtil = jwtUtil;
+  }
   private static final Map<String, List<String>> institutionMappings = new HashMap<>();
 
   static {
@@ -979,8 +998,6 @@ public class TopTaskController {
         .collect(Collectors.toList());
   }
 
-  @Autowired private MongoTemplate mongoTemplate;
-  @Autowired private JWTUtil jwtUtil;
 
   @GetMapping("/api/toptasks")
   public ResponseEntity<?> getProblemsJson(
@@ -1217,11 +1234,4 @@ public class TopTaskController {
       return input.replaceAll("([\\\\.|^$|()\\[\\]{}*+?])", "\\\\$1");
   }
 
-  public UserService getUserService() {
-    return userService;
-  }
-
-  public void setUserService(UserService userService) {
-    this.userService = userService;
-  }
 }

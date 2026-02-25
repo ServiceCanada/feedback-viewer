@@ -28,14 +28,18 @@ public class UserService implements UserDetailsService {
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    //make it an autowired required false
-    @Autowired(required = false)
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    public UserService(
+        UserRepository userRepository,
+        RoleRepository roleRepository,
+        @Autowired(required = false) BCryptPasswordEncoder bCryptPasswordEncoder) {
+      this.userRepository = userRepository;
+      this.roleRepository = roleRepository;
+      this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -46,7 +50,7 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> findUserByRole(String role) {
-        Role oRole = this.roleRepository.findByRole(role);
+        var oRole = this.roleRepository.findByRole(role);
         return userRepository.findByRolesContaining(oRole);
     }
 
@@ -63,8 +67,8 @@ public class UserService implements UserDetailsService {
     }
 
     public User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username =
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        var username =
                 ((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername();
         return this.findUserByEmail(username);
     }
@@ -86,7 +90,7 @@ public class UserService implements UserDetailsService {
     public void saveApiUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setDateCreated(DATE_FORMAT.format(new Date()));
-        Role apiRole = roleRepository.findByRole(API_ROLE);
+        var apiRole = roleRepository.findByRole(API_ROLE);
         user.setRoles(new HashSet<>(Arrays.asList(apiRole)));
         userRepository.save(user);
     }
@@ -114,13 +118,13 @@ public class UserService implements UserDetailsService {
     }
 
     public void enable(String id) {
-        User user = this.findUserById(id);
+        var user = this.findUserById(id);
         user.setEnabled(true);
         userRepository.save(user);
     }
 
     public void enableAdmin(String email) {
-        User user = this.findUserByEmail(email);
+        var user = this.findUserByEmail(email);
         user.setRoles(new HashSet<>(Arrays.asList(roleRepository.findByRole(ADMIN_ROLE))));
         user.setEnabled(true);
         userRepository.save(user);
@@ -129,9 +133,9 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        User user = userRepository.findByEmail(email);
+        var user = userRepository.findByEmail(email);
         if (user != null && user.isEnabled()) {
-            List<GrantedAuthority> authorities = getUserAuthority(user.getRoles());
+            var authorities = getUserAuthority(user.getRoles());
             return buildUserForAuthentication(user, authorities);
         } else {
             throw new UsernameNotFoundException("username not found");
@@ -139,13 +143,13 @@ public class UserService implements UserDetailsService {
     }
 
     private List<GrantedAuthority> getUserAuthority(Set<Role> userRoles) {
-        Set<GrantedAuthority> roles = new HashSet<>();
+        var roles = new HashSet<GrantedAuthority>();
         userRoles.forEach(
                 (role) -> {
                     roles.add(new SimpleGrantedAuthority(role.getRole()));
                 });
 
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>(roles);
+        var grantedAuthorities = new ArrayList<>(roles);
         return grantedAuthorities;
     }
 
