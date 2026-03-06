@@ -137,15 +137,38 @@ public class DashboardController {
 
     @RequestMapping(value = "/pageFeedback/totalCommentsCount")
     @ResponseBody
-    public String totalCommentsCount() {
-        return String.valueOf(dashboardService.getDashboardStats().totalComments());
+    public String totalCommentsCount(HttpServletRequest request) {
+        String comments = request.getParameter("comments");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String theme = request.getParameter("theme");
+        String section = request.getParameter("section");
+        String language = request.getParameter("language");
+        String url = request.getParameter("url");
+        String department = request.getParameter("department");
+        boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
+
+        Totals t = getTotalPagesAndComments(comments, startDate, endDate, theme, section, language, url, department, error_keyword);
+        return String.valueOf(t.comments());
     }
 
     @RequestMapping(value = "/pageFeedback/totalPagesCount")
     @ResponseBody
-    public String totalPagesCount() {
-        return String.valueOf(dashboardService.getDashboardStats().totalPages());
-    }
+    public String totalPagesCount(HttpServletRequest request) {
+        String comments = request.getParameter("comments");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String theme = request.getParameter("theme");
+        String section = request.getParameter("section");
+        String language = request.getParameter("language");
+        String url = request.getParameter("url");
+        String department = request.getParameter("department");
+        boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
+
+        Totals t = getTotalPagesAndComments(comments, startDate, endDate, theme, section, language, url, department, error_keyword);
+        return String.valueOf(t.pages());
+        }
+
 
     @GetMapping(value = "/dashboard")
     public ModelAndView pageFeedback(HttpServletRequest request) {
@@ -221,7 +244,7 @@ public class DashboardController {
         }
 
         var stats = dashboardService.getDashboardStats();
-        var problemsByDate = stats.problemsByDate();
+        var problemsByDate = applyFilters(new ArrayList<>(stats.problemsByDate()), department, startDate, endDate, language, url, section, theme);
 
         var dateToCommentCountMap = new HashMap<String, Integer>();
         for (Problem problem : problemsByDate) {
@@ -417,6 +440,54 @@ public class DashboardController {
 
     private String escapeSpecialRegexCharacters(String input) {
         return input.replaceAll("([\\\\.^$|()\\[\\]{}*+?])", "\\\\$1");
+    }
+
+    //helper to record totals for pages and comments
+    private record Totals(int pages, int comments) {
+    }
+
+    //Calculate total pages and comments based on filters, optimizing for cases with regex filters by using MongoDB aggregation, and in-memory filtering/merging when no regex filters are applied
+    private Totals getTotalPagesAndComments(String comments, String startDate, String endDate, String theme, String section, String language, String urlParam, String department, boolean error_keyword) {
+        boolean hasRegexFilter = error_keyword || (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim()));
+
+        if (hasRegexFilter) {
+            var criteria = buildFilterCriteria(startDate, endDate, theme, section, language, urlParam, department);
+            var regexCriteria = new ArrayList<Criteria>();
+            if (error_keyword) {
+                var keywords = new HashSet<String>();
+                keywords.addAll(errorKeywordService.getEnglishKeywords());
+                keywords.addAll(errorKeywordService.getFrenchKeywords());
+                keywords.addAll(errorKeywordService.getBilingualKeywords());
+                if (!keywords.isEmpty()) {
+                    String combinedRegex = keywords.stream().map(Pattern::quote).collect(Collectors.joining("|"));
+                    regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
+                }
+            }
+            if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
+                regexCriteria.add(Criteria.where("problemDetails").regex(escapeSpecialRegexCharacters(comments.trim()), "i"));
+            }
+            if (!regexCriteria.isEmpty()) {
+                criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
+            }
+
+            var match = Aggregation.match(criteria);
+            var groupByUrl = Aggregation.group("url").count().as("urlEntries");
+
+            var totalsDoc = mongoTemplate.aggregate(
+                    Aggregation.newAggregation(match, groupByUrl, Aggregation.group().count().as("pages").sum("urlEntries").as("comments")),
+                    "problem", Document.class).getUniqueMappedResult();
+
+            int pages = totalsDoc != null ? totalsDoc.getInteger("pages", 0) : 0;
+            int commentsCount = totalsDoc != null ? totalsDoc.getInteger("comments", 0) : 0;
+            return new Totals(pages, commentsCount);
+        }
+        // If no regex filter, we can use in-memory filtering and merging
+        var stats = dashboardService.getDashboardStats();
+        var filtered = applyFilters(new ArrayList<>(stats.problemsByDate()), department, startDate, endDate, language, urlParam, section, theme);
+        var merged = mergeProblems(filtered);
+        int pages = merged.size();
+        int commentsCount = merged.stream().mapToInt(Problem::getUrlEntries).sum();
+        return new Totals(pages, commentsCount);
     }
 
 }
