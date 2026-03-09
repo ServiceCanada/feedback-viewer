@@ -5,6 +5,33 @@ $(document).ready(function () {
     return searchParams.get(param);
   }
 
+  function buildFilterQueryString() {
+    const params = [];
+    if ($("#section").val()) params.push("section=" + encodeURIComponent($("#section").val()));
+    if ($("#theme").val()) params.push("theme=" + encodeURIComponent($("#theme").val()));
+    if ($("#url").val()) params.push("url=" + encodeURIComponent($("#url").val()));
+    if ($("#language").val()) params.push("language=" + encodeURIComponent($("#language").val()));
+    if ($("#department").val()) params.push("department=" + encodeURIComponent($("#department").val()));
+    if ($("#comments").val()) params.push("comments=" + encodeURIComponent($("#comments").val()));
+    if ($("#errorComments").is(":checked")) params.push("error_keyword=true");
+
+    // dateRangePicker: include startDate/endDate if present
+    if ($("#dateRangePicker").length) {
+      try {
+        const dr = $("#dateRangePicker").data("daterangepicker");
+        if (dr && dr.startDate && dr.endDate) {
+          params.push("startDate=" + encodeURIComponent(dr.startDate.format("YYYY-MM-DD")));
+          params.push("endDate=" + encodeURIComponent(dr.endDate.format("YYYY-MM-DD")));
+        }
+      } catch (e) {
+        // ignore if dateRangePicker not available yet
+      }
+    }
+
+    return params.length ? "?" + params.join("&") : "";
+  }
+
+
   // Utility function to format numbers with comma separators
   function formatNumberWithCommas(number) {
     if (number == null || number === '') return number;
@@ -263,8 +290,12 @@ $(document).ready(function () {
   });
 
   function fetchTotalCommentsCount() {
-    fetch("/pageFeedback/totalCommentsCount")
-      .then((response) => response.text())
+    const qs = buildFilterQueryString();
+    fetch("/pageFeedback/totalCommentsCount" + qs, { cache: "no-store" })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network response was not ok: " + response.status);
+        return response.text();
+      })
       .then((totalCommentsCount) => {
         // Update the total comments count in the <span class="number"> element with comma formatting
         $(".stat .totalCommentCount").text(formatNumberWithCommas(totalCommentsCount));
@@ -275,8 +306,12 @@ $(document).ready(function () {
   }
 
   function fetchTotalPagesCount() {
-    fetch("/pageFeedback/totalPagesCount")
-      .then((response) => response.text())
+    const qs = buildFilterQueryString();
+    fetch("/pageFeedback/totalPagesCount" + qs, { cache: "no-store" })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network response was not ok: " + response.status);
+        return response.text();
+      })
       .then((totalPagesCount) => {
         // Update the total pages count in the <span class="number"> element with comma formatting
         $(".stat .totalPagesCount").text(formatNumberWithCommas(totalPagesCount));
@@ -363,7 +398,8 @@ $(document).ready(function () {
         rollingAverages.push(parseInt(average));
     }
     return rollingAverages;
-}function fetchDataAndCreateChart() {
+}
+function fetchDataAndCreateChart() {
 //error keyword filter
   const errorKeywordChecked = $("#errorComments").prop("checked");
   let url = "/chartData";
