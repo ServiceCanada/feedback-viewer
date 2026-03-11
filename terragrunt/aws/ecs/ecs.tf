@@ -69,6 +69,16 @@ module "feedback_viewer" {
       value = "true"
     }
   ]
+  # Container health check - ECS won't mark the container healthy until /health returns 0.
+  # startPeriod gives the JVM/Spring 60s to boot before failures are counted.
+  container_health_check = {
+    command     = ["CMD-SHELL", "wget -q -O /dev/null http://localhost:3001/health || exit 1"]
+    interval    = 15
+    timeout     = 5
+    retries     = 3
+    startPeriod = 60
+  }
+
   container_linux_parameters = {}
   container_ulimits = [
     {
