@@ -37,6 +37,7 @@ public class WebSecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/createApiUser").hasAuthority("ADMIN")
             .requestMatchers("/authenticate").permitAll()
+            .requestMatchers("/health", "/actuator/health").permitAll()
             .requestMatchers("/api/user/**").hasRole("USER")
             .requestMatchers("/", "/checkExists", "/error", "/enableAdmin", "/login", "/signup", "/success").permitAll()
             .requestMatchers("/u/**").hasAnyAuthority("ADMIN")
