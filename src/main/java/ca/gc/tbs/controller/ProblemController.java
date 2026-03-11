@@ -823,8 +823,9 @@ public class ProblemController {
     @GetMapping("/exportCSV")
     public void exportCSV(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=\"feedback_export.csv\"");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/csv; charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''feedback_export.csv");
 
         String[] titles = request.getParameterValues("titles[]");
         String language = request.getParameter("language");
@@ -917,35 +918,40 @@ public class ProblemController {
                 .include("deviceType")
                 .include("browser");
 
+
         // Stream results directly to the response
-        var writer = response.getWriter();
-        try {
+        try (Writer writer = response.getWriter()) {
+            writer.write("\uFEFF");
+
             // Write CSV header
             writer.write("""
-                Problem Date,Time Stamp (UTC),Problem Details,Language,Title,URL,Institution,Section,Theme,Device Type,Browser
-                """);
+                    Problem Date,Time Stamp (UTC),Problem Details,Language,Title,URL,Institution,Section,Theme,Device Type,Browser
+                    """);
 
             // Stream and write data
             try (java.util.stream.Stream<Problem> stream = mongoTemplate.stream(query, Problem.class)) {
                 stream.forEach(problem -> {
-                    writer.write(
-                            String.format(
-                                    "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
-                                    escapeCSV(problem.getProblemDate()),
-                                    escapeCSV(problem.getTimeStamp()),
-                                    escapeCSV(problem.getProblemDetails()),
-                                    escapeCSV(problem.getLanguage()),
-                                    escapeCSV(problem.getTitle()),
-                                    escapeCSV(problem.getUrl()),
-                                    escapeCSV(problem.getInstitution()),
-                                    escapeCSV(problem.getSection()),
-                                    escapeCSV(problem.getTheme()),
-                                    escapeCSV(problem.getDeviceType()),
-                                    escapeCSV(problem.getBrowser())));
+                    try {
+                        writer.write(
+                                String.format(
+                                        "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+                                        escapeCSV(problem.getProblemDate()),
+                                        escapeCSV(problem.getTimeStamp()),
+                                        escapeCSV(problem.getProblemDetails()),
+                                        escapeCSV(problem.getLanguage()),
+                                        escapeCSV(problem.getTitle()),
+                                        escapeCSV(problem.getUrl()),
+                                        escapeCSV(problem.getInstitution()),
+                                        escapeCSV(problem.getSection()),
+                                        escapeCSV(problem.getTheme()),
+                                        escapeCSV(problem.getDeviceType()),
+                                        escapeCSV(problem.getBrowser())
+                                ));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
             }
-        } finally {
-            writer.close();
         }
     }
 
