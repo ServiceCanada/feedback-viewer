@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,7 +26,10 @@ public class GcIpValidationService {
     private final ObjectMapper objectMapper;
 
     public GcIpValidationService() {
-        this.restTemplate = new RestTemplate();
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(5000);
+        factory.setReadTimeout(5000);
+        this.restTemplate = new RestTemplate(factory);
         this.objectMapper = new ObjectMapper();
     }
 
