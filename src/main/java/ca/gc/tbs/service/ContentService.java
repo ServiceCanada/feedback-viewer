@@ -42,19 +42,31 @@ public class ContentService {
   private static final Pattern EMAIL_PATTERN =
       Pattern.compile("([a-zA-Z0-9_+\\-\\.]+)\\s*@\\s*([a-zA-Z0-9_\\-\\.]+)(?:\\s*[\\.,]\\s*([a-zA-Z]{0,10}))?");
 
-  // Address patterns for English and French street addresses
+  // Address patterns for English and French street addresses (Patterns A, B, C, D)
+
+  // Pattern A: NUMBER + (DIRECTION) + WORD(S) + SUFFIX + (DIRECTION)
   private static final Pattern ADDRESS_PATTERN_1 =
-      Pattern.compile("(?i)\\b(\\d{1,6}[A-Za-z]?)\\s+([A-Za-z][A-Za-z''\\-]*(?:\\s+[A-Za-z][A-Za-z''\\-]*){0,3})\\s+" +
-          "(?:st|street|ave|avenue|av|av\\.|rd|road|dr|drive|blvd|boulevard|boul|boul\\.|ln|lane|ct|court|pl|place|ter|terrace|terr|pkwy|parkway|cir|circle|hwy|highway|rue|chemin|ch|ch\\.|chem|chem\\.|route|rte|all[ée]e?|all\\.|allee|cours|voie|terrain|terrasse|rang|promenade|prom|prom\\.)" +
-          "(?:\\s+(?:n|s|e|w|ne|nw|se|sw|o|no|so))?\\b");
+      Pattern.compile("(?i)\\b(\\d{1,6}[A-Za-zÀ-ÿ]?)\\s+" +
+          "(?:(?:n|s|e|w|ne|nw|se|sw|o|no|so|north|south|east|west)\\s+)?" +
+          "(?:(?:\\d{1,2}(?:st|nd|rd|th)|[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ''\\-]*)(?:\\s+(?:\\d{1,2}(?:st|nd|rd|th)|[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ''\\-]*)){0,3})\\s+" +
+          "(?:street|avenue|road|drive|boulevard|lane|court|place|terrace|parkway|circle|highway|way|loop|trail|pike|row|crescent|close|point|green|grove|gate|heights|landing|link|manor|park|ridge|rise|square|view|walk|crossing|meadow|garden|gardens|glen|heath|hollow|knoll|mews|village|shore|shores|hill|hills|acres|valley|rue|chemin|route|terrasse|rang|promenade|cours|voie|terrain|all[ée]e?|st|ave|av|av\\.|rd|dr|blvd|boul|boul\\.|ln|ct|pl|ter|terr|pkwy|cir|ci|hwy|wy|trl|cres|cr|cl|pt|gr|gv|ga|ht|hts|ld|lk|mr|pa|pk|rg|ri|rw|sq|tc|vi|vw|wk|co|ba|bv|hl|tr|cv|li|me|gd|mt|ca|gw|ce|he|sm|rp|al|ch|ch\\.|chem|chem\\.|rte|all\\.|allee|prom|prom\\.)" +
+          "(?:\\s+(?:n|s|e|w|ne|nw|se|sw|o|no|so|north|south|east|west))?\\b");
 
+  // Pattern B: NUMBER + SUFFIX + (FR_ARTICLES) + WORD(S)
   private static final Pattern ADDRESS_PATTERN_2 =
-      Pattern.compile("(?i)\\b(\\d{1,6}[A-Za-z]?)\\s+(?:n|s|e|w|ne|nw|se|sw|o|no|so)\\s+([A-Za-z][A-Za-z''\\-]*(?:\\s+[A-Za-z][A-Za-z''\\-]*){0,3})\\s+" +
-          "(?:st|street|ave|avenue|av|av\\.|rd|road|dr|drive|blvd|boulevard|boul|boul\\.|ln|lane|ct|court|pl|place|ter|terrace|terr|pkwy|parkway|cir|circle|hwy|highway|rue|chemin|ch|ch\\.|chem|chem\\.|route|rte|all[ée]e?|all\\.|allee|cours|voie|terrain|terrasse|rang|promenade|prom|prom\\.)\\b");
+      Pattern.compile("(?i)\\b(\\d{1,6}[A-Za-zÀ-ÿ]?),?\\s+" +
+          "(?:street|avenue|road|drive|boulevard|lane|court|place|terrace|parkway|circle|highway|way|loop|trail|pike|row|crescent|close|point|green|grove|gate|heights|landing|link|manor|park|ridge|rise|square|view|walk|crossing|meadow|garden|gardens|glen|heath|hollow|knoll|mews|village|shore|shores|hill|hills|acres|valley|rue|chemin|route|terrasse|rang|promenade|cours|voie|terrain|all[ée]e?|st|ave|av|av\\.|rd|dr|blvd|boul|boul\\.|ln|ct|pl|ter|terr|pkwy|cir|ci|hwy|wy|trl|cres|cr|cl|pt|gr|gv|ga|ht|hts|ld|lk|mr|pa|pk|rg|ri|rw|sq|tc|vi|vw|wk|co|ba|bv|hl|tr|cv|li|me|gd|mt|ca|gw|ce|he|sm|rp|al|ch|ch\\.|chem|chem\\.|rte|all\\.|allee|prom|prom\\.)\\s+" +
+          "(?:de\\s+la\\s+|du\\s+|des\\s+|de\\s+|le\\s+|la\\s+|les\\s+|d'|l')?" +
+          "(?:(?:\\d{1,2}(?:st|nd|rd|th)|[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ''\\-]*)(?:\\s+(?:\\d{1,2}(?:st|nd|rd|th)|[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ''\\-]*)){0,3})\\b");
 
+  // Pattern C: NUMBER + SUFFIX
   private static final Pattern ADDRESS_PATTERN_3 =
-      Pattern.compile("(?i)\\b(\\d{1,6}[A-Za-z]?)\\s+([A-Za-z][A-Za-z''\\-]*(?:\\s+[A-Za-z][A-Za-z''\\-]*){0,3})\\s+" +
-          "(?:st|street|ave|avenue|av|av\\.|rd|road|dr|drive|blvd|boulevard|boul|boul\\.|ln|lane|ct|court|pl|place|ter|terrace|terr|pkwy|parkway|cir|circle|hwy|highway|rue|chemin|ch|ch\\.|chem|chem\\.|route|rte|all[ée]e?|all\\.|allee|cours|voie|terrain|terrasse|rang|promenade|prom|prom\\.)\\b");
+      Pattern.compile("(?i)\\b(\\d{1,6}[A-Za-zÀ-ÿ]?)\\s+" +
+          "(?:street|avenue|road|drive|boulevard|lane|court|place|terrace|parkway|circle|highway|way|loop|trail|pike|row|crescent|close|point|green|grove|gate|heights|landing|link|manor|park|ridge|rise|square|view|walk|crossing|meadow|garden|gardens|glen|heath|hollow|knoll|mews|village|shore|shores|hill|hills|acres|valley|rue|chemin|route|terrasse|rang|promenade|cours|voie|terrain|all[ée]e?|st|ave|av|av\\.|rd|dr|blvd|boul|boul\\.|ln|ct|pl|ter|terr|pkwy|cir|ci|hwy|wy|trl|cres|cr|cl|pt|gr|gv|ga|ht|hts|ld|lk|mr|pa|pk|rg|ri|rw|sq|tc|vi|vw|wk|co|ba|bv|hl|tr|cv|li|me|gd|mt|ca|gw|ce|he|sm|rp|al|ch|ch\\.|chem|chem\\.|rte|all\\.|allee|prom|prom\\.)\\b");
+
+  // Pattern D: SUFFIX + NUMBER
+  private static final Pattern ADDRESS_PATTERN_4 =
+      Pattern.compile("(?i)\\b(?:street|avenue|road|drive|boulevard|lane|court|place|terrace|parkway|circle|highway|way|loop|trail|pike|row|crescent|close|point|green|grove|gate|heights|landing|link|manor|park|ridge|rise|square|view|walk|crossing|meadow|garden|gardens|glen|heath|hollow|knoll|mews|village|shore|shores|hill|hills|acres|valley|rue|chemin|route|terrasse|rang|promenade|cours|voie|terrain|all[ée]e?|st|ave|av|av\\.|rd|dr|blvd|boul|boul\\.|ln|ct|pl|ter|terr|pkwy|cir|ci|hwy|wy|trl|cres|cr|cl|pt|gr|gv|ga|ht|hts|ld|lk|mr|pa|pk|rg|ri|rw|sq|tc|vi|vw|wk|co|ba|bv|hl|tr|cv|li|me|gd|mt|ca|gw|ce|he|sm|rp|al|ch|ch\\.|chem|chem\\.|rte|all\\.|allee|prom|prom\\.)\\s+(\\d{1,6}[A-Za-zÀ-ÿ]?)\\b");
 
   // Apache OpenNLP models
   private TokenizerModel tokenizerModel;
@@ -175,9 +187,10 @@ public class ContentService {
   }
 
   private String cleanStreetAddress(String content) {
-    content = ADDRESS_PATTERN_2.matcher(content).replaceAll("### #### ######");
     content = ADDRESS_PATTERN_1.matcher(content).replaceAll("### #### ######");
+    content = ADDRESS_PATTERN_2.matcher(content).replaceAll("### #### ######");
     content = ADDRESS_PATTERN_3.matcher(content).replaceAll("### #### ######");
+    content = ADDRESS_PATTERN_4.matcher(content).replaceAll("### #### ######");
     return content;
   }
 
