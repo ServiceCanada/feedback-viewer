@@ -725,8 +725,9 @@ public class ProblemController {
         }
         var regexCriteria = new ArrayList<Criteria>();
 
-        if (comments != null && !comments.isEmpty()) {
-            String safeComments = escapeSpecialRegexCharacters(comments);
+        String trimmedComments = comments != null ? comments.trim() : null;
+        if (trimmedComments != null && !trimmedComments.isEmpty() && !"null".equalsIgnoreCase(trimmedComments)) {
+            String safeComments = escapeSpecialRegexCharacters(trimmedComments);
             regexCriteria.add(Criteria.where("problemDetails").regex(safeComments, "i"));
         }
 
@@ -745,7 +746,6 @@ public class ProblemController {
         if (!regexCriteria.isEmpty()) {
             criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
         }
-
 
         var query = new Query(criteria);
         query
@@ -891,8 +891,8 @@ public class ProblemController {
         }
         var regexCriteria = new ArrayList<Criteria>();
 
-        if (comments != null && !comments.isEmpty()) {
-            String safeComments = escapeSpecialRegexCharacters(comments);
+        if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
+            String safeComments = escapeSpecialRegexCharacters(comments.trim());
             regexCriteria.add(Criteria.where("problemDetails").regex(safeComments, "i"));
         }
 
@@ -1071,7 +1071,8 @@ public class ProblemController {
 
         var regexCriteria = new ArrayList<Criteria>();
         // Comments filtering
-        if (comments != null && !comments.trim().isEmpty()) {
+        if (comments != null && !comments.trim().isEmpty()
+                && !"null".equalsIgnoreCase(comments.trim())) {
             String safeComments = escapeSpecialRegexCharacters(comments.trim());
             regexCriteria.add(Criteria.where("problemDetails").regex(safeComments, "i"));
         }
