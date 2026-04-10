@@ -723,33 +723,29 @@ public class ProblemController {
                 criteria.and("institution").in(matchingVariations);
             }
         }
-        List<String> problemDetailsRegexParts = new ArrayList<>();
+        var regexCriteria = new ArrayList<Criteria>();
 
         if (comments != null && !comments.isEmpty()) {
             String safeComments = escapeSpecialRegexCharacters(comments);
-            problemDetailsRegexParts.add(safeComments);
+            regexCriteria.add(Criteria.where("problemDetails").regex(safeComments, "i"));
         }
 
         if (error_keyword) {
-            var keywordsToCheck = new HashSet<String>();
-            keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
+            var keywords = new HashSet<String>();
+            keywords.addAll(errorKeywordService.getEnglishKeywords());
+            keywords.addAll(errorKeywordService.getFrenchKeywords());
+            keywords.addAll(errorKeywordService.getBilingualKeywords());
 
-            if (!keywordsToCheck.isEmpty()) {
-                LOG.debug("Checking {} error keywords for Excel export", keywordsToCheck.size());
-                String keywordsRegex = keywordsToCheck.stream()
-                        .map(Pattern::quote)
-                        .collect(Collectors.joining("|"));
-                problemDetailsRegexParts.add(keywordsRegex);
+            if (!keywords.isEmpty()) {
+                String combinedRegex = keywords.stream().map(Pattern::quote).collect(Collectors.joining("|"));
+                regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
             }
         }
 
-        if (!problemDetailsRegexParts.isEmpty()) {
-            String combinedRegex = problemDetailsRegexParts.stream()
-                    .collect(Collectors.joining("|"));
-            criteria.and("problemDetails").regex(combinedRegex, "i");
+        if (!regexCriteria.isEmpty()) {
+            criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
         }
+
 
         var query = new Query(criteria);
         query
@@ -893,34 +889,27 @@ public class ProblemController {
                 criteria.and("institution").in(matchingVariations);
             }
         }
-        // Combine both comment and error keyword filters into ONE regex
-        List<String> problemDetailsRegexParts = new ArrayList<>();
+        var regexCriteria = new ArrayList<Criteria>();
 
         if (comments != null && !comments.isEmpty()) {
             String safeComments = escapeSpecialRegexCharacters(comments);
-            problemDetailsRegexParts.add(safeComments);
+            regexCriteria.add(Criteria.where("problemDetails").regex(safeComments, "i"));
         }
 
         if (error_keyword) {
-            var keywordsToCheck = new HashSet<String>();
-            keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
+            var keywords = new HashSet<String>();
+            keywords.addAll(errorKeywordService.getEnglishKeywords());
+            keywords.addAll(errorKeywordService.getFrenchKeywords());
+            keywords.addAll(errorKeywordService.getBilingualKeywords());
 
-            if (!keywordsToCheck.isEmpty()) {
-                LOG.debug("Checking {} error keywords for export", keywordsToCheck.size());
-                String keywordsRegex = keywordsToCheck.stream()
-                        .map(Pattern::quote)
-                        .collect(Collectors.joining("|"));
-                problemDetailsRegexParts.add(keywordsRegex);
+            if (!keywords.isEmpty()) {
+                String combinedRegex = keywords.stream().map(Pattern::quote).collect(Collectors.joining("|"));
+                regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
             }
         }
 
-        // Apply SINGLE combined regex instead of multiple
-        if (!problemDetailsRegexParts.isEmpty()) {
-            String combinedRegex = problemDetailsRegexParts.stream()
-                    .collect(Collectors.joining("|"));
-            criteria.and("problemDetails").regex(combinedRegex, "i");
+        if (!regexCriteria.isEmpty()) {
+            criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
         }
 
         var query = new Query(criteria);
@@ -1079,34 +1068,28 @@ public class ProblemController {
                 criteria.and("institution").in(matchingVariations);
             }
         }
+
+        var regexCriteria = new ArrayList<Criteria>();
         // Comments filtering
-        List<String> problemDetailsRegexParts = new ArrayList<>();
-
         if (comments != null && !comments.trim().isEmpty()) {
-            // Use your existing helper to escape special regex characters for user input
             String safeComments = escapeSpecialRegexCharacters(comments.trim());
-            problemDetailsRegexParts.add(safeComments);
+            regexCriteria.add(Criteria.where("problemDetails").regex(safeComments, "i"));
         }
-
+        //error keywords filtering
         if (error_keyword) {
-            var keywordsToCheck = new HashSet<String>();
-            keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
+            var keywords = new HashSet<String>();
+            keywords.addAll(errorKeywordService.getEnglishKeywords());
+            keywords.addAll(errorKeywordService.getFrenchKeywords());
+            keywords.addAll(errorKeywordService.getBilingualKeywords());
 
-            if (!keywordsToCheck.isEmpty()) {
-                // Quote each keyword to prevent regex metacharacter issues, then join with |
-                String keywordsRegex = keywordsToCheck.stream()
-                        .map(Pattern::quote)
-                        .collect(Collectors.joining("|"));
-                problemDetailsRegexParts.add(keywordsRegex);
+            if (!keywords.isEmpty()) {
+                String combinedRegex = keywords.stream().map(Pattern::quote).collect(Collectors.joining("|"));
+                regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
             }
         }
 
-        if (!problemDetailsRegexParts.isEmpty()) {
-            // Combine parts into a single alternation regex and apply only once
-            String combinedRegex = problemDetailsRegexParts.stream().collect(Collectors.joining("|"));
-            criteria.and("problemDetails").regex(combinedRegex, "i");
+        if (!regexCriteria.isEmpty()) {
+            criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
         }
 
         DataTablesOutput<Problem> results;
