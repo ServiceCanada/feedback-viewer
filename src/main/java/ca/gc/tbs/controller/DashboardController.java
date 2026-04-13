@@ -220,24 +220,7 @@ public class DashboardController {
 
         if (useDatabase) {
             var criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
-            var regexCriteria = new ArrayList<Criteria>();
-            if (error_keyword) {
-                var keywordsToCheck = new HashSet<String>();
-                keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
-                keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
-                keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
-                if (!keywordsToCheck.isEmpty()) {
-                    String combinedRegex = keywordsToCheck.stream().map(Pattern::quote).collect(Collectors.joining("|"));
-                    regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
-                }
-            }
-            if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
-                regexCriteria.add(Criteria.where("problemDetails").regex(escapeSpecialRegexCharacters(comments.trim()), "i"));
-            }
-
-            var finalCriteria = !regexCriteria.isEmpty()
-                ? new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])))
-                : criteria;
+            var finalCriteria = applyRegexCriteria(criteria, comments, error_keyword);
 
             var groupByDate = Aggregation.group("problemDate").count().as("comments");
             var sortByDate = Aggregation.sort(Sort.Direction.ASC, "_id");
@@ -320,23 +303,7 @@ public class DashboardController {
             String comments, boolean error_keyword) {
 
         var criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
-        var regexCriteria = new ArrayList<Criteria>();
-        if (error_keyword) {
-            var keywords = new HashSet<String>();
-            keywords.addAll(errorKeywordService.getEnglishKeywords());
-            keywords.addAll(errorKeywordService.getFrenchKeywords());
-            keywords.addAll(errorKeywordService.getBilingualKeywords());
-            if (!keywords.isEmpty()) {
-                String combinedRegex = keywords.stream().map(Pattern::quote).collect(Collectors.joining("|"));
-                regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
-            }
-        }
-        if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
-            regexCriteria.add(Criteria.where("problemDetails").regex(escapeSpecialRegexCharacters(comments.trim()), "i"));
-        }
-        if (!regexCriteria.isEmpty()) {
-            criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
-        }
+        criteria = applyRegexCriteria(criteria, comments, error_keyword);
 
         var match = Aggregation.match(criteria);
         var groupByUrl = Aggregation.group("url")
@@ -454,6 +421,27 @@ public class DashboardController {
         return input.replaceAll("([\\\\.^$|()\\[\\]{}*+?])", "\\\\$1");
     }
 
+    private Criteria applyRegexCriteria(Criteria criteria, String comments, boolean error_keyword) {
+        var regexCriteria = new ArrayList<Criteria>();
+        if (error_keyword) {
+            var keywords = new HashSet<String>();
+            keywords.addAll(errorKeywordService.getEnglishKeywords());
+            keywords.addAll(errorKeywordService.getFrenchKeywords());
+            keywords.addAll(errorKeywordService.getBilingualKeywords());
+            if (!keywords.isEmpty()) {
+                String combinedRegex = keywords.stream().map(Pattern::quote).collect(Collectors.joining("|"));
+                regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
+            }
+        }
+        if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
+            regexCriteria.add(Criteria.where("problemDetails").regex(escapeSpecialRegexCharacters(comments.trim()), "i"));
+        }
+        if (!regexCriteria.isEmpty()) {
+            criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
+        }
+        return criteria;
+    }
+
     //helper to record totals for pages and comments
     private record Totals(int pages, int comments) {
     }
@@ -464,23 +452,7 @@ public class DashboardController {
 
         if (hasRegexFilter) {
             var criteria = buildFilterCriteria(startDate, endDate, theme, section, language, urlParam, department);
-            var regexCriteria = new ArrayList<Criteria>();
-            if (error_keyword) {
-                var keywords = new HashSet<String>();
-                keywords.addAll(errorKeywordService.getEnglishKeywords());
-                keywords.addAll(errorKeywordService.getFrenchKeywords());
-                keywords.addAll(errorKeywordService.getBilingualKeywords());
-                if (!keywords.isEmpty()) {
-                    String combinedRegex = keywords.stream().map(Pattern::quote).collect(Collectors.joining("|"));
-                    regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
-                }
-            }
-            if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
-                regexCriteria.add(Criteria.where("problemDetails").regex(escapeSpecialRegexCharacters(comments.trim()), "i"));
-            }
-            if (!regexCriteria.isEmpty()) {
-                criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
-            }
+            criteria = applyRegexCriteria(criteria, comments, error_keyword);
 
             var match = Aggregation.match(criteria);
             var groupByUrl = Aggregation.group("url").count().as("urlEntries");
@@ -613,36 +585,21 @@ public class DashboardController {
         boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
 
         var criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
-        var regexCriteria = new ArrayList<Criteria>();
-
-        String trimmedComments = comments != null ? comments.trim() : null;
-        if (trimmedComments != null && !trimmedComments.isEmpty() && !"null".equalsIgnoreCase(trimmedComments)) {
-            regexCriteria.add(Criteria.where("problemDetails").regex(escapeSpecialRegexCharacters(trimmedComments), "i"));
-        }
-
-        if (error_keyword) {
-            var keywords = new HashSet<String>();
-            keywords.addAll(errorKeywordService.getEnglishKeywords());
-            keywords.addAll(errorKeywordService.getFrenchKeywords());
-            keywords.addAll(errorKeywordService.getBilingualKeywords());
-            if (!keywords.isEmpty()) {
-                String combinedRegex = keywords.stream().map(Pattern::quote).collect(Collectors.joining("|"));
-                regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
-            }
-        }
-
-        if (!regexCriteria.isEmpty()) {
-            criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
-        }
-
-        return criteria;
+        return applyRegexCriteria(criteria, comments, error_keyword);
     }
 
     private String escapeCSV(String value) {
         if (value == null) {
             return "";
         }
-        return "\"" + value.replace("\"", "\"\"") + "\"";
+        String sanitized = value;
+        if (!sanitized.isEmpty()) {
+            char firstChar = sanitized.charAt(0);
+            if (firstChar == '=' || firstChar == '+' || firstChar == '-' || firstChar == '@') {
+                sanitized = "'" + sanitized;
+            }
+        }
+        return "\"" + sanitized.replace("\"", "\"\"") + "\"";
     }
 
 }

@@ -54,6 +54,13 @@ $(document).ready(function () {
       debounceTimer = setTimeout(() => func.apply(context, args), delay);
     };
   }
+  function downloadDashboardExport(endpoint) {
+    var url = new URL(window.location.origin + endpoint);
+    var params = getFilterParams();
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    window.location.href = url.toString();
+  }
+
   function getFilterParams() {
     var params = {};
 
@@ -241,27 +248,17 @@ $(document).ready(function () {
       {
         extend: "csvHtml5",
         className: "btn btn-default",
-        action: function (e, dt, button, config) {
+        action: function (e) {
           e.preventDefault();
-          var url = new URL(window.location.origin + '/dashboardExportCSV');
-          var params = getFilterParams();
-          Object.keys(params).forEach(key => {
-            url.searchParams.append(key, params[key]);
-          });
-          window.location.href = url.toString();
+          downloadDashboardExport('/dashboardExportCSV');
         },
       },
       {
         extend: "excelHtml5",
         className: "btn btn-default",
-        action: function (e, dt, button, config) {
+        action: function (e) {
           e.preventDefault();
-          var url = new URL(window.location.origin + '/dashboardExportExcel');
-          var params = getFilterParams();
-          Object.keys(params).forEach(key => {
-            url.searchParams.append(key, params[key]);
-          });
-          window.location.href = url.toString();
+          downloadDashboardExport('/dashboardExportExcel');
         },
       },
     ],
@@ -383,17 +380,11 @@ $(document).ready(function () {
   });
 
   $("#downloadCSV").on("click", function () {
-    var url = new URL(window.location.origin + '/dashboardExportCSV');
-    var params = getFilterParams();
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-    window.location.href = url.toString();
+    downloadDashboardExport('/dashboardExportCSV');
   });
 
   $("#downloadExcel").on("click", function () {
-    var url = new URL(window.location.origin + '/dashboardExportExcel');
-    var params = getFilterParams();
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-    window.location.href = url.toString();
+    downloadDashboardExport('/dashboardExportExcel');
   });
 
   //  $(document).on("click", "a[href*='design.canada.ca'], a[href*='conception.canada.ca']", function (e) {
