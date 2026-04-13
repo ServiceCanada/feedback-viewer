@@ -80,6 +80,27 @@ $(document).ready(function () {
     dt.ajax.reload();
   }
 
+  function getFilterParams() {
+    var params = {
+      language: $("#language").val(),
+      error_keyword: $("#errorComments").prop("checked"),
+      department: $("#department").val(),
+      comments: $("#comments").val(),
+      section: $("#section").val(),
+      theme: $("#theme").val(),
+      url: $("#url").val()
+    };
+
+    var dateRangePickerValue = $("#dateRangePicker").val();
+    if (dateRangePickerValue) {
+      var dateRange = $("#dateRangePicker").data('daterangepicker');
+      params.startDate = dateRange.startDate.format('YYYY-MM-DD');
+      params.endDate = dateRange.endDate.format('YYYY-MM-DD');
+    }
+
+    return params;
+  }
+
   function resetFilters() {
     // Reset select elements to their default option (usually the first one)
     $("#department").val("");
@@ -231,24 +252,40 @@ $(document).ready(function () {
         extend: "csvHtml5",
         className: "btn btn-default",
         exportOptions: {
-          columns: [2, 1, 3, 0, 4, 5], // This will export only visible columns
+          columns: [2, 1, 3, 0, 4, 5],
           modifier: {
-            page: "all", // This tells DataTables to export data from all pages, not just the current page
+            page: "all",
           },
         },
-        action: newexportaction,
+        action: function (e, dt, button, config) {
+          e.preventDefault();
+          var url = new URL(window.location.origin + '/exportCSV');
+          var params = getFilterParams();
+          Object.keys(params).forEach(key => {
+            url.searchParams.append(key, params[key]);
+          });
+          window.location.href = url.toString();
+        },
         filename: (isFrench ? "Outil_de_retroaction-" : "Page_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2),
       },
       {
         extend: "excelHtml5",
         className: "btn btn-default",
         exportOptions: {
-          columns: [2, 1, 3, 0, 4, 5], // This will export only visible columns
+          columns: [2, 1, 3, 0, 4, 5],
           modifier: {
-            page: "all", // This tells DataTables to export data from all pages, not just the current page
+            page: "all",
           },
         },
-        action: newexportaction,
+        action: function (e, dt, button, config) {
+          e.preventDefault();
+          var url = new URL(window.location.origin + '/exportExcel');
+          var params = getFilterParams();
+          Object.keys(params).forEach(key => {
+            url.searchParams.append(key, params[key]);
+          });
+          window.location.href = url.toString();
+        },
         filename: (isFrench ? "Outil_de_retroaction-" : "Page_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2),
       },
     ],
@@ -369,13 +406,19 @@ $(document).ready(function () {
     table.ajax.reload();
   });
 
-  $("#downloadCSV").on("click", function () {
-    table.button(".buttons-csv").trigger();
-  });
+$("#downloadCSV").on("click", function () {
+  var url = new URL(window.location.origin + '/exportCSV');
+  var params = getFilterParams();
+  Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+  window.location.href = url.toString();
+});
 
-  $("#downloadExcel").on("click", function () {
-    table.button(".buttons-excel").trigger();
-  });
+$("#downloadExcel").on("click", function () {
+  var url = new URL(window.location.origin + '/exportExcel');
+  var params = getFilterParams();
+  Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+  window.location.href = url.toString();
+});
 
   //  $(document).on("click", "a[href*='design.canada.ca'], a[href*='conception.canada.ca']", function (e) {
   //    e.preventDefault(); // Prevent the default link behavior
