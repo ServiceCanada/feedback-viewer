@@ -54,42 +54,32 @@ $(document).ready(function () {
       debounceTimer = setTimeout(() => func.apply(context, args), delay);
     };
   }
-  function newexportaction(e, dt, button, config) {
-    var self = this;
-    var oldStart = dt.settings()[0]._iDisplayStart;
-    dt.one("preXhr", function (e, s, data) {
-      // Just this once, load all data from the server...
-      data.start = 0;
-      data.length = 2147483647;
-      dt.one("preDraw", function (e, settings) {
-        if (button[0].className.indexOf("buttons-excel") >= 0) {
-          $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
-        } else if (button[0].className.indexOf("buttons-csv") >= 0) {
-          $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
-        }
-        dt.one("preXhr", function (e, s, data) {
-          // DataTables thinks the first item displayed is index 0, but we're not drawing that.
-          // Set the property to what it was before exporting.
-          settings._iDisplayStart = oldStart;
-          data.start = oldStart;
-        }); // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
-        setTimeout(dt.ajax.reload, 0); // Prevent rendering of the full data to the DOM
-        return false;
-      });
-    }); // Requery the server with the new one-time export settings
-    dt.ajax.reload();
-  }
-
   function getFilterParams() {
-    var params = {
-      language: $("#language").val(),
-      error_keyword: $("#errorComments").prop("checked"),
-      department: $("#department").val(),
-      comments: $("#comments").val(),
-      section: $("#section").val(),
-      theme: $("#theme").val(),
-      url: $("#url").val()
-    };
+    var params = {};
+
+    var language = $("#language").val();
+    if (language) params.language = language;
+
+    var department = $("#department").val();
+    if (department) params.department = department;
+
+    var commentsVal = $("#comments").val();
+    if (commentsVal && commentsVal.trim() !== "") {
+      params.comments = commentsVal.trim();
+    }
+
+    var section = $("#section").val();
+    if (section) params.section = section;
+
+    var theme = $("#theme").val();
+    if (theme) params.theme = theme;
+
+    var url = $("#url").val();
+    if (url) params.url = url;
+
+    if ($("#errorComments").prop("checked")) {
+      params.error_keyword = "true";
+    }
 
     var dateRangePickerValue = $("#dateRangePicker").val();
     if (dateRangePickerValue) {
@@ -251,42 +241,28 @@ $(document).ready(function () {
       {
         extend: "csvHtml5",
         className: "btn btn-default",
-        exportOptions: {
-          columns: [2, 1, 3, 0, 4, 5],
-          modifier: {
-            page: "all",
-          },
-        },
         action: function (e, dt, button, config) {
           e.preventDefault();
-          var url = new URL(window.location.origin + '/exportCSV');
+          var url = new URL(window.location.origin + '/dashboardExportCSV');
           var params = getFilterParams();
           Object.keys(params).forEach(key => {
             url.searchParams.append(key, params[key]);
           });
           window.location.href = url.toString();
         },
-        filename: (isFrench ? "Outil_de_retroaction-" : "Page_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2),
       },
       {
         extend: "excelHtml5",
         className: "btn btn-default",
-        exportOptions: {
-          columns: [2, 1, 3, 0, 4, 5],
-          modifier: {
-            page: "all",
-          },
-        },
         action: function (e, dt, button, config) {
           e.preventDefault();
-          var url = new URL(window.location.origin + '/exportExcel');
+          var url = new URL(window.location.origin + '/dashboardExportExcel');
           var params = getFilterParams();
           Object.keys(params).forEach(key => {
             url.searchParams.append(key, params[key]);
           });
           window.location.href = url.toString();
         },
-        filename: (isFrench ? "Outil_de_retroaction-" : "Page_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2),
       },
     ],
     columns: [
@@ -406,19 +382,19 @@ $(document).ready(function () {
     table.ajax.reload();
   });
 
-$("#downloadCSV").on("click", function () {
-  var url = new URL(window.location.origin + '/exportCSV');
-  var params = getFilterParams();
-  Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-  window.location.href = url.toString();
-});
+  $("#downloadCSV").on("click", function () {
+    var url = new URL(window.location.origin + '/dashboardExportCSV');
+    var params = getFilterParams();
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    window.location.href = url.toString();
+  });
 
-$("#downloadExcel").on("click", function () {
-  var url = new URL(window.location.origin + '/exportExcel');
-  var params = getFilterParams();
-  Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-  window.location.href = url.toString();
-});
+  $("#downloadExcel").on("click", function () {
+    var url = new URL(window.location.origin + '/dashboardExportExcel');
+    var params = getFilterParams();
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    window.location.href = url.toString();
+  });
 
   //  $(document).on("click", "a[href*='design.canada.ca'], a[href*='conception.canada.ca']", function (e) {
   //    e.preventDefault(); // Prevent the default link behavior
