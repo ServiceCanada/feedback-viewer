@@ -474,13 +474,14 @@ public class DashboardController {
         return new Totals(pages, commentsCount);
     }
 
-    @GetMapping("/dashboardExportExcel")
+    @GetMapping("/dashboard/exportExcel")
     public void exportExcel(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader("Content-Disposition", "attachment; filename=\"dashboard_export.xlsx\"");
-
         String pageLang = (String) request.getSession().getAttribute("lang");
+        String filename = buildExportFilename(pageLang, ".xlsx");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+
         var results = getAggregatedExportData(request);
 
         try (SXSSFWorkbook workbook = new SXSSFWorkbook(100);
@@ -520,14 +521,15 @@ public class DashboardController {
         }
     }
 
-    @GetMapping("/dashboardExportCSV")
+    @GetMapping("/dashboard/exportCSV")
     public void exportCSV(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+        String pageLang = (String) request.getSession().getAttribute("lang");
+        String filename = buildExportFilename(pageLang, ".csv");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/csv; charset=UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''dashboard_export.csv");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + filename);
 
-        String pageLang = (String) request.getSession().getAttribute("lang");
         var results = getAggregatedExportData(request);
 
         try (Writer writer = response.getWriter()) {
@@ -592,7 +594,7 @@ public class DashboardController {
         if (value == null) {
             return "";
         }
-        String sanitized = value;
+        String sanitized = value.replace("\t", " ").replace("\r", "");
         if (!sanitized.isEmpty()) {
             char firstChar = sanitized.charAt(0);
             if (firstChar == '=' || firstChar == '+' || firstChar == '-' || firstChar == '@') {
@@ -600,6 +602,12 @@ public class DashboardController {
             }
         }
         return "\"" + sanitized.replace("\"", "\"\"") + "\"";
+    }
+
+    private String buildExportFilename(String lang, String extension) {
+        String prefix = "fr".equalsIgnoreCase(lang) ? "Outil_de_retroaction-" : "Page_feedback-";
+        String date = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        return prefix + date + extension;
     }
 
 }

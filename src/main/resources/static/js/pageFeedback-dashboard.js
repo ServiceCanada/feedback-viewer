@@ -55,47 +55,8 @@ $(document).ready(function () {
     };
   }
   function downloadDashboardExport(endpoint) {
-    var url = new URL(window.location.origin + endpoint);
-    var params = getFilterParams();
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-    window.location.href = url.toString();
-  }
-
-  function getFilterParams() {
-    var params = {};
-
-    var language = $("#language").val();
-    if (language) params.language = language;
-
-    var department = $("#department").val();
-    if (department) params.department = department;
-
-    var commentsVal = $("#comments").val();
-    if (commentsVal && commentsVal.trim() !== "") {
-      params.comments = commentsVal.trim();
-    }
-
-    var section = $("#section").val();
-    if (section) params.section = section;
-
-    var theme = $("#theme").val();
-    if (theme) params.theme = theme;
-
-    var url = $("#url").val();
-    if (url) params.url = url;
-
-    if ($("#errorComments").prop("checked")) {
-      params.error_keyword = "true";
-    }
-
-    var dateRangePickerValue = $("#dateRangePicker").val();
-    if (dateRangePickerValue) {
-      var dateRange = $("#dateRangePicker").data('daterangepicker');
-      params.startDate = dateRange.startDate.format('YYYY-MM-DD');
-      params.endDate = dateRange.endDate.format('YYYY-MM-DD');
-    }
-
-    return params;
+    var qs = buildFilterQueryString();
+    window.location.href = endpoint + qs;
   }
 
   function resetFilters() {
@@ -250,7 +211,7 @@ $(document).ready(function () {
         className: "btn btn-default",
         action: function (e) {
           e.preventDefault();
-          downloadDashboardExport('/dashboardExportCSV');
+          downloadDashboardExport('/dashboard/exportCSV');
         },
       },
       {
@@ -258,7 +219,7 @@ $(document).ready(function () {
         className: "btn btn-default",
         action: function (e) {
           e.preventDefault();
-          downloadDashboardExport('/dashboardExportExcel');
+          downloadDashboardExport('/dashboard/exportExcel');
         },
       },
     ],
@@ -380,11 +341,11 @@ $(document).ready(function () {
   });
 
   $("#downloadCSV").on("click", function () {
-    downloadDashboardExport('/dashboardExportCSV');
+    downloadDashboardExport('/dashboard/exportCSV');
   });
 
   $("#downloadExcel").on("click", function () {
-    downloadDashboardExport('/dashboardExportExcel');
+    downloadDashboardExport('/dashboard/exportExcel');
   });
 
   //  $(document).on("click", "a[href*='design.canada.ca'], a[href*='conception.canada.ca']", function (e) {
