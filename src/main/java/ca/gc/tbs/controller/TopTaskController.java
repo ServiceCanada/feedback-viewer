@@ -878,7 +878,8 @@ public class TopTaskController {
       criteria.and("grouping").is(group);
     }
     if (department != null && !department.isEmpty()) {
-      criteria.and("dept").regex("^" + Pattern.quote(department) + "$", "i");
+      Criteria departmentCriteria = applyDepartmentFilter(new Criteria(), department);
+      criteria = new Criteria().andOperator(criteria, departmentCriteria);
     }
 
     List<Criteria> combinedOrCriteria = new ArrayList<>();
