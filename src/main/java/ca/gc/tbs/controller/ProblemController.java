@@ -698,16 +698,6 @@ public class ProblemController {
         if (language != null && !language.isEmpty()) {
             criteria.and("language").is(language);
         }
-        if (titles != null && titles.length > 0) {
-            var titleCriterias = new ArrayList<Criteria>();
-            for (String title : titles) {
-                titleCriterias.add(Criteria.where("title").is(title));
-            }
-            criteria = new Criteria().andOperator(
-                    criteria,
-                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
-            );
-        }
         if (url != null && !url.isEmpty()) {
             criteria.and("url").regex(url, "i");
         }
@@ -722,6 +712,16 @@ public class ProblemController {
             if (!matchingVariations.isEmpty()) {
                 criteria.and("institution").in(matchingVariations);
             }
+        }
+        if (titles != null && titles.length > 0) {
+            var titleCriterias = new ArrayList<Criteria>();
+            for (String title : titles) {
+                titleCriterias.add(Criteria.where("title").is(title));
+            }
+            criteria = new Criteria().andOperator(
+                    criteria,
+                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
+            );
         }
         var regexCriteria = new ArrayList<Criteria>();
 
@@ -864,16 +864,6 @@ public class ProblemController {
                     .and("language")
                     .regex(Pattern.compile(Pattern.quote(language), Pattern.CASE_INSENSITIVE));
         }
-        if (titles != null && titles.length > 0) {
-            var titleCriterias = new ArrayList<Criteria>();
-            for (String title : titles) {
-                titleCriterias.add(Criteria.where("title").is(title));
-            }
-            criteria = new Criteria().andOperator(
-                    criteria,
-                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
-            );
-        }
         if (url != null && !url.isEmpty()) {
             criteria.and("url").regex(url, "i");
         }
@@ -888,6 +878,16 @@ public class ProblemController {
             if (!matchingVariations.isEmpty()) {
                 criteria.and("institution").in(matchingVariations);
             }
+        }
+        if (titles != null && titles.length > 0) {
+            var titleCriterias = new ArrayList<Criteria>();
+            for (String title : titles) {
+                titleCriterias.add(Criteria.where("title").is(title));
+            }
+            criteria = new Criteria().andOperator(
+                    criteria,
+                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
+            );
         }
         var regexCriteria = new ArrayList<Criteria>();
 
@@ -1036,20 +1036,6 @@ public class ProblemController {
             criteria.and("language").is(language);
         }
 
-        if (titles != null && titles.length > 0) {
-            // Create a list to hold the title criteria
-            var titleCriterias = new ArrayList<Criteria>();
-            // Iterate over the titles and add each one as a criterion
-            for (String title : titles) {
-                titleCriterias.add(Criteria.where("title").is(title));
-            }
-            // Combine all title criteria using AND operation
-            criteria = new Criteria().andOperator(
-                    criteria,
-                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
-            );
-            System.out.println("Titles received: " + Arrays.toString(titles));
-        }
         // URL filtering
         if (url != null && !url.isEmpty()) {
             criteria.and("url").regex(url, "i"); // 'i' for case-insensitive matching
@@ -1067,6 +1053,20 @@ public class ProblemController {
             if (!matchingVariations.isEmpty()) {
                 criteria.and("institution").in(matchingVariations);
             }
+        }
+        if (titles != null && titles.length > 0) {
+            // Create a list to hold the title criteria
+            var titleCriterias = new ArrayList<Criteria>();
+            // Iterate over the titles and add each one as a criterion
+            for (String title : titles) {
+                titleCriterias.add(Criteria.where("title").is(title));
+            }
+            // Combine all title criteria using AND operation
+            criteria = new Criteria().andOperator(
+                    criteria,
+                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
+            );
+            System.out.println("Titles received: " + Arrays.toString(titles));
         }
 
         var regexCriteria = new ArrayList<Criteria>();
