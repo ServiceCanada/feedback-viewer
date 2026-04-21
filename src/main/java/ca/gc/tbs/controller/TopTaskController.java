@@ -594,7 +594,7 @@ public class TopTaskController {
           commentCriteria.add(Criteria.where("taskWhyNotComment").regex(escapedComment, "i"));
           commentCriteria.add(Criteria.where("taskOther").regex(escapedComment, "i"));
 
-          criteria.andOperator(new Criteria().andOperator(criteria, new Criteria().orOperator(commentCriteria.toArray(new Criteria[0]))));
+          criteria = new Criteria().andOperator(criteria, new Criteria().orOperator(commentCriteria.toArray(new Criteria[0])));
       }
 
 
@@ -901,13 +901,15 @@ public class TopTaskController {
                       taskCriteria,
                       new Criteria().orOperator(nonEmptyCriteria.toArray(new Criteria[0]))));
         }
-        criteria.andOperator(
+        criteria = new Criteria().andOperator(criteria,
             new Criteria().orOperator(commentCriteriaWithTasks.toArray(new Criteria[0])));
       } else {
-        criteria.andOperator(new Criteria().orOperator(nonEmptyCriteria.toArray(new Criteria[0])));
+        criteria = new Criteria().andOperator(criteria,
+            new Criteria().orOperator(nonEmptyCriteria.toArray(new Criteria[0])));
       }
     } else if (!combinedOrCriteria.isEmpty()) {
-      criteria.andOperator(new Criteria().orOperator(combinedOrCriteria.toArray(new Criteria[0])));
+      criteria = new Criteria().andOperator(criteria,
+          new Criteria().orOperator(combinedOrCriteria.toArray(new Criteria[0])));
     }
 
       if (comments != null && !comments.isEmpty()) {
@@ -916,9 +918,10 @@ public class TopTaskController {
           commentCriteria.add(Criteria.where("taskImproveComment").regex(escapedComment, "i"));
           commentCriteria.add(Criteria.where("taskWhyNotComment").regex(escapedComment, "i"));
           commentCriteria.add(Criteria.where("themeOther").regex(escapedComment, "i"));
-          commentCriteria.add(Criteria. where("taskOther").regex(escapedComment, "i"));
+          commentCriteria.add(Criteria.where("taskOther").regex(escapedComment, "i"));
 
-          criteria.andOperator(new Criteria().andOperator(criteria, new Criteria().orOperator(commentCriteria.toArray(new Criteria[0]))));
+          criteria = new Criteria().andOperator(criteria,
+              new Criteria().orOperator(commentCriteria.toArray(new Criteria[0])));
       }
 
     return criteria;
