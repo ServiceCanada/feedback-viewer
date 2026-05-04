@@ -28,7 +28,8 @@ public class UserController {
       this.service.enable(request.getParameter("id"));
       return "Updated";
     } catch (Exception e) {
-      return "Error:" + e.getMessage();
+      LOG.error("Error updating user", e);
+      return "Error: an internal error occurred";
     }
   }
 
@@ -38,7 +39,8 @@ public class UserController {
       this.service.deleteUserById(request.getParameter("id"));
       return "deleted";
     } catch (Exception e) {
-      return "Error:" + e.getMessage();
+      LOG.error("Error deleting user", e);
+      return "Error: an internal error occurred";
     }
   }
 
@@ -50,7 +52,8 @@ public class UserController {
       atts.addFlashAttribute("successMessage", "User has been enabled and admin");
       return new RedirectView("/success");
     } catch (Exception e) {
-      atts.addFlashAttribute("errorMessage", "Failed to enable admin." + e.getMessage());
+      LOG.error("Failed to enable admin", e);
+      atts.addFlashAttribute("errorMessage", "Failed to enable admin. Please try again.");
       return new RedirectView("/error");
     }
   }

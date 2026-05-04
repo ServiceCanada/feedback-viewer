@@ -1,6 +1,7 @@
 package ca.gc.tbs.filter;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -55,7 +56,7 @@ public class LanguageFilter implements Filter {
       return "";
     }
 
-    queryString = queryString.replaceAll("(^|&)lang=" + lang + "($|&)", "&");
+    queryString = queryString.replaceAll("(^|&)lang=" + Pattern.quote(lang) + "($|&)", "&");
     queryString = queryString.replaceAll("&&+", "&");
     queryString = queryString.replaceAll("^&|&$", "");
 
