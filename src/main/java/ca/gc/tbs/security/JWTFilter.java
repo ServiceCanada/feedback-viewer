@@ -14,9 +14,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
+
+  private static final Logger logger = LoggerFactory.getLogger(JWTFilter.class);
 
   @Autowired private JWTUtil jwtUtil;
 
@@ -36,8 +40,9 @@ public class JWTFilter extends OncePerRequestFilter {
       try {
         userName = jwtUtil.extractUsername(token);
       } catch (RuntimeException ex) {
+        logger.warn("Failed to extract username from JWT token", ex);
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        response.getWriter().write(ex.getMessage());
+        response.getWriter().write("Invalid authentication token.");
         return;
       }
     }

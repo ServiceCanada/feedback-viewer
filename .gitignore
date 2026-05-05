@@ -9,6 +9,36 @@ buildNumber.properties
 .mvn/timing.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
+
+# Spring Boot files
+**/application.properties
+**/application-local.properties
+
+# Secrets - never commit unencrypted files
+secrets/gc_ip_whitelist.txt
+
+# Docker environment files
+docker/.env
+.env
+
+# Terraform files
+.terragrunt-cache/
+# System files
+.DS_Store
+
+# IDE files
+.settings/
+.project
+.classpath
+*.iml
+.idea/
+.vscode/
+.settings
+# Kubernetes secrets
+kubernetes/feedback-viewer-ingress.yml
+
+# Other
+google-java-format-*.jar
 # Spring Boot files
 **/application.properties
 **/application-local.properties

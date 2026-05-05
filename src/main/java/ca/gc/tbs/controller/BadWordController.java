@@ -205,7 +205,7 @@ public class BadWordController {
       return "Success";
     } catch (Exception e) {
       LOG.error("Error creating badword entry", e);
-      return "Error: " + e.getMessage();
+      return "Error: Unable to create badword entry";
     }
   }
 
@@ -299,7 +299,7 @@ public class BadWordController {
       return "Success";
     } catch (Exception e) {
       LOG.error("Error updating badword entry", e);
-      return "Error: " + e.getMessage();
+      return "Error updating entry";
     }
   }
 
@@ -323,7 +323,7 @@ public class BadWordController {
       return "Success";
     } catch (Exception e) {
       LOG.error("Error deleting badword entry", e);
-      return "Error: " + e.getMessage();
+      return "Error deleting badword entry";
     }
   }
 
@@ -447,7 +447,7 @@ public class BadWordController {
       
     } catch (Exception e) {
       LOG.error("Error importing CSV file", e);
-      return "Error: " + e.getMessage();
+      return "Error: Failed to import CSV file.";
     }
   }
 

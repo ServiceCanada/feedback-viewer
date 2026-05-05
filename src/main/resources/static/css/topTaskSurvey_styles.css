@@ -479,7 +479,6 @@ table.dataTable.rowborder tbody th {
   margin-top: 1ch;
 }
 
-
 .tss > h2 {
   grid-column: 1 / 1;
   margin-top: 0.4em;
@@ -501,7 +500,6 @@ table.dataTable.rowborder tbody th {
 #myTable tbody td {
   font-size: 14px; /* Set the font size for data rows */
 }
-
 
 .download-section {
   text-align: right;

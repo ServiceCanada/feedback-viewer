@@ -1,7 +1,6 @@
 package ca.gc.tbs.controller;
 
 import ca.gc.tbs.domain.User;
-import ca.gc.tbs.service.EmailService;
 import ca.gc.tbs.service.UserService;
 import java.text.SimpleDateFormat;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,8 +21,6 @@ public class LoginController {
   public static final SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
 
   @Autowired private UserService userService;
-
-  @Autowired private EmailService emailService;
 
   @RequestMapping(value = "/login", method = RequestMethod.GET)
   public ModelAndView login(HttpServletRequest request) throws Exception {
@@ -59,7 +56,6 @@ public class LoginController {
   @RequestMapping(value = "/signup", method = RequestMethod.POST)
   public RedirectView createNewUser(@Valid User user, RedirectAttributes atts) {
     userService.saveUser(user);
-    emailService.sendUserActivationRequestEmail(user.getEmail());
     atts.addFlashAttribute(
         "successMessage",
         "User has been registered successfully. You will be notified when the account has been"
