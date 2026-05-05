@@ -27,9 +27,17 @@ spec:
               memory: 4Gi
           livenessProbe:
             httpGet:
-              path: /health # The endpoint in your application that indicates it is healthy
+              path: /actuator/health
               port: 8080
-            initialDelaySeconds: 60 # Adjust based on your application startup time
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 90
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 3
