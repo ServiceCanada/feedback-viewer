@@ -1,7 +1,6 @@
 package ca.gc.tbs.controller;
 
 import ca.gc.tbs.domain.Problem;
-import ca.gc.tbs.domain.User;
 import ca.gc.tbs.repository.ProblemRepository;
 import ca.gc.tbs.security.JWTUtil;
 import ca.gc.tbs.service.ErrorKeywordService;
@@ -40,6 +39,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Controller
 public class ProblemController {
@@ -698,16 +698,6 @@ public class ProblemController {
         if (language != null && !language.isEmpty()) {
             criteria.and("language").is(language);
         }
-        if (titles != null && titles.length > 0) {
-            var titleCriterias = new ArrayList<Criteria>();
-            for (String title : titles) {
-                titleCriterias.add(Criteria.where("title").is(title));
-            }
-            criteria = new Criteria().andOperator(
-                    criteria,
-                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
-            );
-        }
         if (url != null && !url.isEmpty()) {
             criteria.and("url").regex(url, "i");
         }
@@ -723,23 +713,38 @@ public class ProblemController {
                 criteria.and("institution").in(matchingVariations);
             }
         }
-        if (comments != null && !comments.isEmpty()) {
-            String safeComments = escapeSpecialRegexCharacters(comments);
-            criteria.and("problemDetails").regex(safeComments, "i");
+        if (titles != null && titles.length > 0) {
+            var titleCriterias = new ArrayList<Criteria>();
+            for (String title : titles) {
+                titleCriterias.add(Criteria.where("title").is(title));
+            }
+            criteria = new Criteria().andOperator(
+                    criteria,
+                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
+            );
+        }
+        var regexCriteria = new ArrayList<Criteria>();
+
+        String trimmedComments = comments != null ? comments.trim() : null;
+        if (trimmedComments != null && !trimmedComments.isEmpty() && !"null".equalsIgnoreCase(trimmedComments)) {
+            String safeComments = escapeSpecialRegexCharacters(trimmedComments);
+            regexCriteria.add(Criteria.where("problemDetails").regex(safeComments, "i"));
         }
 
-        // Apply error keyword filter
         if (error_keyword) {
-            // Build regex pattern from all keywords
-            var keywordsToCheck = new HashSet<String>();
-            keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
+            var keywords = new HashSet<String>();
+            keywords.addAll(errorKeywordService.getEnglishKeywords());
+            keywords.addAll(errorKeywordService.getFrenchKeywords());
+            keywords.addAll(errorKeywordService.getBilingualKeywords());
 
-            if (!keywordsToCheck.isEmpty()) {
-                LOG.debug("Checking {} error keywords for Excel export", keywordsToCheck.size());
-                criteria.and("problemDetails").regex(String.join("|", keywordsToCheck), "i");
+            if (!keywords.isEmpty()) {
+                String combinedRegex = keywords.stream().map(Pattern::quote).collect(Collectors.joining("|"));
+                regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
             }
+        }
+
+        if (!regexCriteria.isEmpty()) {
+            criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
         }
 
         var query = new Query(criteria);
@@ -823,8 +828,9 @@ public class ProblemController {
     @GetMapping("/exportCSV")
     public void exportCSV(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=\"feedback_export.csv\"");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/csv; charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''feedback_export.csv");
 
         String[] titles = request.getParameterValues("titles[]");
         String language = request.getParameter("language");
@@ -858,16 +864,6 @@ public class ProblemController {
                     .and("language")
                     .regex(Pattern.compile(Pattern.quote(language), Pattern.CASE_INSENSITIVE));
         }
-        if (titles != null && titles.length > 0) {
-            var titleCriterias = new ArrayList<Criteria>();
-            for (String title : titles) {
-                titleCriterias.add(Criteria.where("title").is(title));
-            }
-            criteria = new Criteria().andOperator(
-                    criteria,
-                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
-            );
-        }
         if (url != null && !url.isEmpty()) {
             criteria.and("url").regex(url, "i");
         }
@@ -883,23 +879,37 @@ public class ProblemController {
                 criteria.and("institution").in(matchingVariations);
             }
         }
-        if (comments != null && !comments.isEmpty()) {
-            String safeComments = escapeSpecialRegexCharacters(comments);
-            criteria.and("problemDetails").regex(safeComments, "i");
+        if (titles != null && titles.length > 0) {
+            var titleCriterias = new ArrayList<Criteria>();
+            for (String title : titles) {
+                titleCriterias.add(Criteria.where("title").is(title));
+            }
+            criteria = new Criteria().andOperator(
+                    criteria,
+                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
+            );
+        }
+        var regexCriteria = new ArrayList<Criteria>();
+
+        if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
+            String safeComments = escapeSpecialRegexCharacters(comments.trim());
+            regexCriteria.add(Criteria.where("problemDetails").regex(safeComments, "i"));
         }
 
-        // Apply error keyword filter
         if (error_keyword) {
-            // Build regex pattern from all keywords
-            var keywordsToCheck = new HashSet<String>();
-            keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
+            var keywords = new HashSet<String>();
+            keywords.addAll(errorKeywordService.getEnglishKeywords());
+            keywords.addAll(errorKeywordService.getFrenchKeywords());
+            keywords.addAll(errorKeywordService.getBilingualKeywords());
 
-            if (!keywordsToCheck.isEmpty()) {
-                LOG.debug("Checking {} error keywords for CSV export", keywordsToCheck.size());
-                criteria.and("problemDetails").regex(String.join("|", keywordsToCheck), "i");
+            if (!keywords.isEmpty()) {
+                String combinedRegex = keywords.stream().map(Pattern::quote).collect(Collectors.joining("|"));
+                regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
             }
+        }
+
+        if (!regexCriteria.isEmpty()) {
+            criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
         }
 
         var query = new Query(criteria);
@@ -917,35 +927,40 @@ public class ProblemController {
                 .include("deviceType")
                 .include("browser");
 
+
         // Stream results directly to the response
-        var writer = response.getWriter();
-        try {
+        try (Writer writer = response.getWriter()) {
+            writer.write("\uFEFF");
+
             // Write CSV header
             writer.write("""
-                Problem Date,Time Stamp (UTC),Problem Details,Language,Title,URL,Institution,Section,Theme,Device Type,Browser
-                """);
+                    Problem Date,Time Stamp (UTC),Problem Details,Language,Title,URL,Institution,Section,Theme,Device Type,Browser
+                    """);
 
             // Stream and write data
             try (java.util.stream.Stream<Problem> stream = mongoTemplate.stream(query, Problem.class)) {
                 stream.forEach(problem -> {
-                    writer.write(
-                            String.format(
-                                    "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
-                                    escapeCSV(problem.getProblemDate()),
-                                    escapeCSV(problem.getTimeStamp()),
-                                    escapeCSV(problem.getProblemDetails()),
-                                    escapeCSV(problem.getLanguage()),
-                                    escapeCSV(problem.getTitle()),
-                                    escapeCSV(problem.getUrl()),
-                                    escapeCSV(problem.getInstitution()),
-                                    escapeCSV(problem.getSection()),
-                                    escapeCSV(problem.getTheme()),
-                                    escapeCSV(problem.getDeviceType()),
-                                    escapeCSV(problem.getBrowser())));
+                    try {
+                        writer.write(
+                                String.format(
+                                        "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+                                        escapeCSV(problem.getProblemDate()),
+                                        escapeCSV(problem.getTimeStamp()),
+                                        escapeCSV(problem.getProblemDetails()),
+                                        escapeCSV(problem.getLanguage()),
+                                        escapeCSV(problem.getTitle()),
+                                        escapeCSV(problem.getUrl()),
+                                        escapeCSV(problem.getInstitution()),
+                                        escapeCSV(problem.getSection()),
+                                        escapeCSV(problem.getTheme()),
+                                        escapeCSV(problem.getDeviceType()),
+                                        escapeCSV(problem.getBrowser())
+                                ));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
             }
-        } finally {
-            writer.close();
         }
     }
 
@@ -1021,20 +1036,6 @@ public class ProblemController {
             criteria.and("language").is(language);
         }
 
-        if (titles != null && titles.length > 0) {
-            // Create a list to hold the title criteria
-            var titleCriterias = new ArrayList<Criteria>();
-            // Iterate over the titles and add each one as a criterion
-            for (String title : titles) {
-                titleCriterias.add(Criteria.where("title").is(title));
-            }
-            // Combine all title criteria using AND operation
-            criteria = new Criteria().andOperator(
-                    criteria,
-                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
-            );
-            System.out.println("Titles received: " + Arrays.toString(titles));
-        }
         // URL filtering
         if (url != null && !url.isEmpty()) {
             criteria.and("url").regex(url, "i"); // 'i' for case-insensitive matching
@@ -1053,23 +1054,47 @@ public class ProblemController {
                 criteria.and("institution").in(matchingVariations);
             }
         }
-        // Comments filtering
-        if (comments != null && !comments.isEmpty()) {
-            String safeComments = escapeSpecialRegexCharacters(comments);
-            criteria.and("problemDetails").regex(safeComments, "i"); // 'i' for case-insensitive matching
+        if (titles != null && titles.length > 0) {
+            // Create a list to hold the title criteria
+            var titleCriterias = new ArrayList<Criteria>();
+            // Iterate over the titles and add each one as a criterion
+            for (String title : titles) {
+                titleCriterias.add(Criteria.where("title").is(title));
+            }
+            // Combine all title criteria using AND operation
+            criteria = new Criteria().andOperator(
+                    criteria,
+                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
+            );
+            System.out.println("Titles received: " + Arrays.toString(titles));
         }
-        DataTablesOutput<Problem> results;
 
+        var regexCriteria = new ArrayList<Criteria>();
+        // Comments filtering
+        if (comments != null && !comments.trim().isEmpty()
+                && !"null".equalsIgnoreCase(comments.trim())) {
+            String safeComments = escapeSpecialRegexCharacters(comments.trim());
+            regexCriteria.add(Criteria.where("problemDetails").regex(safeComments, "i"));
+        }
+        //error keywords filtering
         if (error_keyword) {
-            var keywordsToCheck = new HashSet<String>();
-            keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
+            var keywords = new HashSet<String>();
+            keywords.addAll(errorKeywordService.getEnglishKeywords());
+            keywords.addAll(errorKeywordService.getFrenchKeywords());
+            keywords.addAll(errorKeywordService.getBilingualKeywords());
 
-            if (!keywordsToCheck.isEmpty()) {
-                criteria.and("problemDetails").regex(String.join("|", keywordsToCheck), "i");
+            if (!keywords.isEmpty()) {
+                String combinedRegex = keywords.stream().map(Pattern::quote).collect(Collectors.joining("|"));
+                regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
             }
         }
+
+        if (!regexCriteria.isEmpty()) {
+            criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
+        }
+
+        DataTablesOutput<Problem> results;
+
 
         // Use the cached total count when no filters narrow the result set,
         // to avoid an expensive count query against CosmosDB.

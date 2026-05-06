@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: feedback-viewer
+  name: feedback-viewer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feedback-viewer
+  template:
+    metadata:
+      labels:
+        app: feedback-viewer
+    spec:
+      containers:
+        - name: feedback-viewer
+          image: tbsacr.azurecr.io/feedback-viewer:1.0.0
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "2"
+              memory: 12Gi
+            requests:
+              cpu: 1000m
+              memory: 4Gi
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3

@@ -14,10 +14,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.io.IOException;
+import java.io.Writer;
 
 import org.bson.Document;
 import org.springframework.data.domain.Sort;
@@ -30,6 +33,13 @@ import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
+
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +54,8 @@ import ca.gc.tbs.service.UserService;
 
 @Controller
 public class DashboardController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DashboardController.class);
 
     private final ProblemDateService problemDateService;
     private final DashboardService dashboardService;
@@ -137,15 +149,38 @@ public class DashboardController {
 
     @RequestMapping(value = "/pageFeedback/totalCommentsCount")
     @ResponseBody
-    public String totalCommentsCount() {
-        return String.valueOf(dashboardService.getDashboardStats().totalComments());
+    public String totalCommentsCount(HttpServletRequest request) {
+        String comments = request.getParameter("comments");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String theme = request.getParameter("theme");
+        String section = request.getParameter("section");
+        String language = request.getParameter("language");
+        String url = request.getParameter("url");
+        String department = request.getParameter("department");
+        boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
+
+        Totals t = getTotalPagesAndComments(comments, startDate, endDate, theme, section, language, url, department, error_keyword);
+        return String.valueOf(t.comments());
     }
 
     @RequestMapping(value = "/pageFeedback/totalPagesCount")
     @ResponseBody
-    public String totalPagesCount() {
-        return String.valueOf(dashboardService.getDashboardStats().totalPages());
-    }
+    public String totalPagesCount(HttpServletRequest request) {
+        String comments = request.getParameter("comments");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String theme = request.getParameter("theme");
+        String section = request.getParameter("section");
+        String language = request.getParameter("language");
+        String url = request.getParameter("url");
+        String department = request.getParameter("department");
+        boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
+
+        Totals t = getTotalPagesAndComments(comments, startDate, endDate, theme, section, language, url, department, error_keyword);
+        return String.valueOf(t.pages());
+        }
+
 
     @GetMapping(value = "/dashboard")
     public ModelAndView pageFeedback(HttpServletRequest request) {
@@ -185,24 +220,7 @@ public class DashboardController {
 
         if (useDatabase) {
             var criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
-            var regexCriteria = new ArrayList<Criteria>();
-            if (error_keyword) {
-                var keywordsToCheck = new HashSet<String>();
-                keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
-                keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
-                keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
-                if (!keywordsToCheck.isEmpty()) {
-                    String combinedRegex = keywordsToCheck.stream().map(Pattern::quote).collect(Collectors.joining("|"));
-                    regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
-                }
-            }
-            if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
-                regexCriteria.add(Criteria.where("problemDetails").regex(escapeSpecialRegexCharacters(comments.trim()), "i"));
-            }
-
-            var finalCriteria = !regexCriteria.isEmpty()
-                ? new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])))
-                : criteria;
+            var finalCriteria = applyRegexCriteria(criteria, comments, error_keyword);
 
             var groupByDate = Aggregation.group("problemDate").count().as("comments");
             var sortByDate = Aggregation.sort(Sort.Direction.ASC, "_id");
@@ -221,7 +239,7 @@ public class DashboardController {
         }
 
         var stats = dashboardService.getDashboardStats();
-        var problemsByDate = stats.problemsByDate();
+        var problemsByDate = applyFilters(new ArrayList<>(stats.problemsByDate()), department, startDate, endDate, language, url, section, theme);
 
         var dateToCommentCountMap = new HashMap<String, Integer>();
         for (Problem problem : problemsByDate) {
@@ -285,23 +303,7 @@ public class DashboardController {
             String comments, boolean error_keyword) {
 
         var criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
-        var regexCriteria = new ArrayList<Criteria>();
-        if (error_keyword) {
-            var keywords = new HashSet<String>();
-            keywords.addAll(errorKeywordService.getEnglishKeywords());
-            keywords.addAll(errorKeywordService.getFrenchKeywords());
-            keywords.addAll(errorKeywordService.getBilingualKeywords());
-            if (!keywords.isEmpty()) {
-                String combinedRegex = keywords.stream().map(Pattern::quote).collect(Collectors.joining("|"));
-                regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
-            }
-        }
-        if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
-            regexCriteria.add(Criteria.where("problemDetails").regex(escapeSpecialRegexCharacters(comments.trim()), "i"));
-        }
-        if (!regexCriteria.isEmpty()) {
-            criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
-        }
+        criteria = applyRegexCriteria(criteria, comments, error_keyword);
 
         var match = Aggregation.match(criteria);
         var groupByUrl = Aggregation.group("url")
@@ -417,6 +419,195 @@ public class DashboardController {
 
     private String escapeSpecialRegexCharacters(String input) {
         return input.replaceAll("([\\\\.^$|()\\[\\]{}*+?])", "\\\\$1");
+    }
+
+    private Criteria applyRegexCriteria(Criteria criteria, String comments, boolean error_keyword) {
+        var regexCriteria = new ArrayList<Criteria>();
+        if (error_keyword) {
+            var keywords = new HashSet<String>();
+            keywords.addAll(errorKeywordService.getEnglishKeywords());
+            keywords.addAll(errorKeywordService.getFrenchKeywords());
+            keywords.addAll(errorKeywordService.getBilingualKeywords());
+            if (!keywords.isEmpty()) {
+                String combinedRegex = keywords.stream().map(Pattern::quote).collect(Collectors.joining("|"));
+                regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
+            }
+        }
+        if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
+            regexCriteria.add(Criteria.where("problemDetails").regex(escapeSpecialRegexCharacters(comments.trim()), "i"));
+        }
+        if (!regexCriteria.isEmpty()) {
+            criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
+        }
+        return criteria;
+    }
+
+    //helper to record totals for pages and comments
+    private record Totals(int pages, int comments) {
+    }
+
+    //Calculate total pages and comments based on filters, optimizing for cases with regex filters by using MongoDB aggregation, and in-memory filtering/merging when no regex filters are applied
+    private Totals getTotalPagesAndComments(String comments, String startDate, String endDate, String theme, String section, String language, String urlParam, String department, boolean error_keyword) {
+        boolean hasRegexFilter = error_keyword || (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim()));
+
+        if (hasRegexFilter) {
+            var criteria = buildFilterCriteria(startDate, endDate, theme, section, language, urlParam, department);
+            criteria = applyRegexCriteria(criteria, comments, error_keyword);
+
+            var match = Aggregation.match(criteria);
+            var groupByUrl = Aggregation.group("url").count().as("urlEntries");
+
+            var totalsDoc = mongoTemplate.aggregate(
+                    Aggregation.newAggregation(match, groupByUrl, Aggregation.group().count().as("pages").sum("urlEntries").as("comments")),
+                    "problem", Document.class).getUniqueMappedResult();
+
+            int pages = totalsDoc != null ? totalsDoc.getInteger("pages", 0) : 0;
+            int commentsCount = totalsDoc != null ? totalsDoc.getInteger("comments", 0) : 0;
+            return new Totals(pages, commentsCount);
+        }
+        // If no regex filter, we can use in-memory filtering and merging
+        var stats = dashboardService.getDashboardStats();
+        var filtered = applyFilters(new ArrayList<>(stats.problemsByDate()), department, startDate, endDate, language, urlParam, section, theme);
+        var merged = mergeProblems(filtered);
+        int pages = merged.size();
+        int commentsCount = merged.stream().mapToInt(Problem::getUrlEntries).sum();
+        return new Totals(pages, commentsCount);
+    }
+
+    @GetMapping("/dashboard/exportExcel")
+    public void exportExcel(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        String pageLang = (String) request.getSession().getAttribute("lang");
+        String filename = buildExportFilename(pageLang, ".xlsx");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+
+        var results = getAggregatedExportData(request);
+
+        try (SXSSFWorkbook workbook = new SXSSFWorkbook(100);
+             ServletOutputStream outputStream = response.getOutputStream()) {
+
+            Sheet sheet = workbook.createSheet("Dashboard Data");
+
+            String[] columns = {"Department", "URL", "Total Comments", "Language", "Section", "Theme"};
+            var headerRow = sheet.createRow(0);
+            for (int i = 0; i < columns.length; i++) {
+                headerRow.createCell(i).setCellValue(columns[i]);
+            }
+
+            int rowNum = 1;
+            for (Problem p : results) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(resolveInstitutionName(p.getInstitution(), pageLang));
+                row.createCell(1).setCellValue(p.getUrl());
+                row.createCell(2).setCellValue(p.getUrlEntries());
+                row.createCell(3).setCellValue(p.getLanguage());
+                row.createCell(4).setCellValue(p.getSection());
+                row.createCell(5).setCellValue(p.getTheme());
+
+                if (rowNum % 100 == 0) {
+                    try {
+                        ((SXSSFSheet) sheet).flushRows(100);
+                    } catch (IOException e) {
+                        LOG.error("Error flushing rows", e);
+                    }
+                }
+            }
+
+            workbook.write(outputStream);
+        } catch (Exception e) {
+            LOG.error("Error exporting Excel", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/dashboard/exportCSV")
+    public void exportCSV(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        String pageLang = (String) request.getSession().getAttribute("lang");
+        String filename = buildExportFilename(pageLang, ".csv");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/csv; charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + filename);
+
+        var results = getAggregatedExportData(request);
+
+        try (Writer writer = response.getWriter()) {
+            writer.write("\uFEFF");
+            writer.write("Department,URL,Total Comments,Language,Section,Theme\n");
+
+            for (Problem p : results) {
+                writer.write(String.format("%s,%s,%d,%s,%s,%s\n",
+                        escapeCSV(resolveInstitutionName(p.getInstitution(), pageLang)),
+                        escapeCSV(p.getUrl()),
+                        p.getUrlEntries(),
+                        escapeCSV(p.getLanguage()),
+                        escapeCSV(p.getSection()),
+                        escapeCSV(p.getTheme())));
+            }
+        }
+    }
+
+    private List<Problem> getAggregatedExportData(HttpServletRequest request) {
+        var criteria = buildExportCriteria(request);
+        var match = Aggregation.match(criteria);
+        var groupByUrl = Aggregation.group("url")
+                .first("url").as("url")
+                .first("institution").as("institution")
+                .first("language").as("language")
+                .first("section").as("section")
+                .first("theme").as("theme")
+                .count().as("urlEntries");
+        var sortDesc = Aggregation.sort(Sort.Direction.DESC, "urlEntries");
+
+        return mongoTemplate.aggregate(
+                Aggregation.newAggregation(match, groupByUrl, sortDesc),
+                "problem", Problem.class).getMappedResults();
+    }
+
+    private String resolveInstitutionName(String institution, String lang) {
+        if (institution == null) return "";
+        for (List<String> variations : institutionMappings.values()) {
+            if (variations.contains(institution)) {
+                return variations.get("fr".equalsIgnoreCase(lang) ? 1 : 0);
+            }
+        }
+        return institution;
+    }
+
+    private Criteria buildExportCriteria(HttpServletRequest request) {
+        String language = request.getParameter("language");
+        String department = request.getParameter("department");
+        String comments = request.getParameter("comments");
+        String theme = request.getParameter("theme");
+        String section = request.getParameter("section");
+        String url = request.getParameter("url");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
+
+        var criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
+        return applyRegexCriteria(criteria, comments, error_keyword);
+    }
+
+    private String escapeCSV(String value) {
+        if (value == null) {
+            return "";
+        }
+        String sanitized = value.replace("\t", " ").replace("\r", "");
+        if (!sanitized.isEmpty()) {
+            char firstChar = sanitized.charAt(0);
+            if (firstChar == '=' || firstChar == '+' || firstChar == '-' || firstChar == '@') {
+                sanitized = "'" + sanitized;
+            }
+        }
+        return "\"" + sanitized.replace("\"", "\"\"") + "\"";
+    }
+
+    private String buildExportFilename(String lang, String extension) {
+        String prefix = "fr".equalsIgnoreCase(lang) ? "Outil_de_retroaction-" : "Page_feedback-";
+        String date = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        return prefix + date + extension;
     }
 
 }
