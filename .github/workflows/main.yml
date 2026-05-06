@@ -33,7 +33,7 @@ jobs:
           docker push tbsacr.azurecr.io/feedback-viewer:${{ github.sha }}
 
       # Set the target AKS cluster.
-      - uses: Azure/aks-set-context@v1
+      - uses: Azure/aks-set-context@v5
         with:
           creds: "${{ secrets.AZURE_CREDENTIALS }}"
           cluster-name: tbs-prod-aks
