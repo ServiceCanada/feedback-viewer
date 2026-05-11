@@ -6,15 +6,24 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    target-branch: "main"
+    allow:
+      - update-type: "security"
 
   # Maintain dependencies for Maven
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
       interval: "daily"
+    # Only open PRs for security vulnerabilities
+    allow:
+      - update-type: "security"
 
   # Maintain dependencies for Docker
   - package-ecosystem: "docker"
     directory: "/docker"
     schedule:
       interval: "daily"
+    # Only open PRs for security vulnerabilities
+    allow:
+      - update-type: "security"
