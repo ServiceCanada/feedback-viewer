@@ -28,7 +28,7 @@ public class ProblemDateService {
     DateRange range = switch (currentMonth) {
       case APRIL, MAY, JUNE ->
         // Q1 (April 1 - June 30) - Show Q4 (previous year) and Q1 (current year)
-        new DateRange(LocalDate.of(currentYear - 1, Month.OCTOBER, 1), LocalDate.of(currentYear, Month.JUNE, 30));
+        new DateRange(LocalDate.of(currentYear, Month.JANUARY, 1), LocalDate.of(currentYear, Month.JUNE, 30));
       case JULY, AUGUST, SEPTEMBER ->
         // Q2 (July 1 - September 30) - Show Q1 and Q2
         new DateRange(LocalDate.of(currentYear, Month.APRIL, 1), LocalDate.of(currentYear, Month.SEPTEMBER, 30));
@@ -37,7 +37,7 @@ public class ProblemDateService {
         new DateRange(LocalDate.of(currentYear, Month.JULY, 1), LocalDate.of(currentYear, Month.DECEMBER, 31));
       case JANUARY, FEBRUARY, MARCH ->
         // Q4 (January 1 - March 31) - Show Q3 (previous year) and Q4 (current year)
-        new DateRange(LocalDate.of(currentYear - 1, Month.JULY, 1), LocalDate.of(currentYear, Month.MARCH, 31));
+        new DateRange(LocalDate.of(currentYear - 1, Month.OCTOBER, 1), LocalDate.of(currentYear, Month.MARCH, 31));
     };
 
     LocalDate earliestDate = range.start();
