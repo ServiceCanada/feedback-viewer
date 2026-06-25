@@ -40,6 +40,14 @@ public class GcIpFilter implements Filter {
     @Value("${gc.ip.filter.whitelist.file:}")
     private String whitelistFilePath;
 
+    // Deployment-specific: controls how the real client IP is extracted.
+    // X_REAL_IP            — nginx/Kubernetes ingress (default for this repo)
+    // X_FORWARDED_FOR_LAST — AWS ALB/ECS: add GC_IP_FILTER_CLIENT_IP_SOURCE=X_FORWARDED_FOR_LAST
+    //                        to container_environment in terragrunt/aws/ecs/ecs.tf when porting
+    // REMOTE_ADDR          — no proxy (direct connection / local)
+    @Value("${gc.ip.filter.client-ip-source:X_REAL_IP}")
+    private String clientIpSource;
+
     private Set<String> fileWhitelistIps = new HashSet<>();
 
     @Override
@@ -105,37 +113,37 @@ public class GcIpFilter implements Filter {
     }
 
     /**
-     * Extract client IP address from request
-     * Handles X-Forwarded-For header for requests behind load balancer
+     * Extract the real client IP using the strategy configured by gc.ip.filter.client-ip-source.
+     *
+     * X-Forwarded-For is intentionally NOT used as a generic source: it is a client-controlled
+     * header and trusting it directly allows an attacker to spoof any IP.
      */
     private String getClientIpAddress(HttpServletRequest request) {
-        String[] headerCandidates = {
-            "X-Forwarded-For",
-            "X-Real-IP",
-            "Proxy-Client-IP",
-            "WL-Proxy-Client-IP",
-            "HTTP_X_FORWARDED_FOR",
-            "HTTP_X_FORWARDED",
-            "HTTP_X_CLUSTER_CLIENT_IP",
-            "HTTP_CLIENT_IP",
-            "HTTP_FORWARDED_FOR",
-            "HTTP_FORWARDED",
-            "HTTP_VIA",
-            "REMOTE_ADDR"
-        };
-
-        for (String header : headerCandidates) {
-            String ip = request.getHeader(header);
-            if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
-                // X-Forwarded-For can contain multiple IPs, take the first one
-                if (ip.contains(",")) {
-                    ip = ip.split(",")[0].trim();
-                }
-                return ip;
+        return switch (clientIpSource) {
+            case "X_REAL_IP" -> {
+                // X-Real-IP is set by nginx ingress to the verified TCP source IP.
+                // It is not forwarded from the client and cannot be spoofed.
+                String xRealIp = request.getHeader("X-Real-IP");
+                yield (xRealIp != null && !xRealIp.trim().isEmpty() && !"unknown".equalsIgnoreCase(xRealIp.trim()))
+                    ? xRealIp.trim()
+                    : request.getRemoteAddr();
             }
-        }
-
-        return request.getRemoteAddr();
+            case "X_FORWARDED_FOR_LAST" -> {
+                // AWS ALB always appends the real client IP as the rightmost entry.
+                // Taking the last value is safe because only the ALB can append to the right.
+                String xff = request.getHeader("X-Forwarded-For");
+                if (xff != null && !xff.isEmpty()) {
+                    String[] parts = xff.split(",");
+                    String last = parts[parts.length - 1].trim();
+                    if (!last.isEmpty() && !"unknown".equalsIgnoreCase(last)) {
+                        yield last;
+                    }
+                }
+                yield request.getRemoteAddr();
+            }
+            // REMOTE_ADDR or any unrecognised value — direct connection, no proxy.
+            default -> request.getRemoteAddr();
+        };
     }
 
     /**
@@ -215,8 +223,9 @@ public class GcIpFilter implements Filter {
         // Load IPs from file if configured
         loadWhitelistFromFile();
         
-        logger.info("GC IP Filter initialized - filter enabled: {}, property whitelist: {}, file whitelist: {} IPs", 
-                    filterEnabled, 
+        logger.info("GC IP Filter initialized - filter enabled: {}, client-ip-source: {}, property whitelist: {}, file whitelist: {} IPs",
+                    filterEnabled,
+                    clientIpSource,
                     whitelistIps != null && !whitelistIps.isEmpty() ? "configured" : "none",
                     fileWhitelistIps.size());
     }
