@@ -201,6 +201,13 @@
       var earliestDate = /*[[${earliestDate}]]*/ "";
       var latestDate = /*[[${latestDate}]]*/ "";
       var langSession = /*[[${session.lang}]]*/ "";
+      var _csrfToken = /*[[${_csrf.token}]]*/ null;
+      var _csrfHeader = /*[[${_csrf.headerName}]]*/ null;
+      $.ajaxSetup({
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader(_csrfHeader, _csrfToken);
+        }
+      });
       /*]]>*/
     </script>
     <script src="/js/loading-overlay.js"></script>

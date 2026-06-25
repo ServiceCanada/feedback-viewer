@@ -74,9 +74,11 @@ public class UserController {
         String institution = user.getInstitution();
         String dateCreated = user.getDateCreated();
         boolean enabled = user.isEnabled();
-        List<String> roles = user.getRoles().stream()
-            .map(ca.gc.tbs.domain.Role::getRole)
-            .toList();
+        List<String> roles = user.getRoles() != null
+            ? user.getRoles().stream()
+                .map(ca.gc.tbs.domain.Role::getRole)
+                .toList()
+            : List.of();
 
         String status = isEn
             ? (enabled ? "Enabled" : "Awaiting approval")
@@ -104,7 +106,9 @@ public class UserController {
                 </div>
               </td>
             </tr>""".formatted(
-            HtmlUtils.htmlEscape(email), HtmlUtils.htmlEscape(institution), HtmlUtils.htmlEscape(roles.toString()), dateCreated, status,
+            HtmlUtils.htmlEscape(email != null ? email : ""),
+            HtmlUtils.htmlEscape(institution != null ? institution : ""),
+            HtmlUtils.htmlEscape(roles.toString()), dateCreated, status,
             toggleIdPrefix, id, toggleClass, toggleLabel,
             id, deleteLabel));
       }
