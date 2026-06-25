@@ -54,18 +54,17 @@ public class AuthController {
     }
   }
 
-  @GetMapping("/createApiUser")
-  public ResponseEntity<String> createApiUser(
-      @RequestParam String username, @RequestParam String password) {
+  @PostMapping("/createApiUser")
+  public ResponseEntity<String> createApiUser(@RequestBody CreateUserRequest body) {
     // Check if user already exists
-    User existingUser = userService.findUserByEmail(username);
+    User existingUser = userService.findUserByEmail(body.username());
     if (existingUser != null) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User already exists.");
     }
 
     User user = new User();
-    user.setEmail(username);
-    user.setPassword(password);
+    user.setEmail(body.username());
+    user.setPassword(body.password());
     user.setEnabled(true);
 
     Role apiRole = userService.findRoleByName("API");
