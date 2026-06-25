@@ -21,11 +21,18 @@
 </th:block>
 <th:block layout:fragment="script">
 	<script th:inline="javascript">
+		var _csrfToken = /*[[${_csrf.token}]]*/ null;
+		var _csrfHeader = /*[[${_csrf.headerName}]]*/ null;
+		$.ajaxSetup({
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader(_csrfHeader, _csrfToken);
+			}
+		});
 		$(document).on("wb-ready.wb", function () {
 			$(".deleteBtn").on("click", function (e) {
 				var id = $(e.target).attr("id").replace("delete", "");
 				$.ajax({
-					type: "get",
+					type: "post",
 					data: {
 						"id": id
 					},
@@ -44,7 +51,7 @@
 			$("body").on("click", ".enableBtn", function (e) {
 				var id = $(e.target).attr("id").replace("enable", "");
 				$.ajax({
-					type: "get",
+					type: "post",
 					data: {
 						"id": id,
 						"enabled": true
@@ -68,7 +75,7 @@
 			$("body").on("click", ".disableBtn", function (e) {
 				var id = $(e.target).attr("id").replace("disable", "");
 				$.ajax({
-					type: "get",
+					type: "post",
 					data: {
 						"id": id,
 						"enabled": false

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.util.HtmlUtils;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,7 +26,7 @@ public class UserController {
 
   @Autowired private UserService service;
 
-  @GetMapping(value = "/u/update")
+  @PostMapping(value = "/u/update")
   public @ResponseBody String updateUser(HttpServletRequest request) {
     try {
       this.service.enable(request.getParameter("id"));
@@ -36,7 +37,7 @@ public class UserController {
     }
   }
 
-  @GetMapping(value = "/u/delete")
+  @PostMapping(value = "/u/delete")
   public @ResponseBody String deleteUser(HttpServletRequest request) {
     try {
       this.service.deleteUserById(request.getParameter("id"));
