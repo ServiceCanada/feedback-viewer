@@ -14,8 +14,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @Controller
+@PreAuthorize("hasAuthority('ADMIN')")
 public class UserController {
 
   private static final Logger LOG = LoggerFactory.getLogger(UserController.class);

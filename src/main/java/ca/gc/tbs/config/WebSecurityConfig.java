@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,7 @@ import ca.gc.tbs.security.JWTFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class WebSecurityConfig {
 
   private final CustomizeAuthenticationSuccessHandler customizeAuthenticationSuccessHandler;
@@ -40,7 +42,7 @@ public class WebSecurityConfig {
             .requestMatchers("/authenticate").permitAll()
             .requestMatchers("/actuator/health").permitAll()
             .requestMatchers("/api/user/**").hasRole("USER")
-            .requestMatchers("/", "/checkExists", "/error", "/enableAdmin", "/login", "/signup", "/success").permitAll()
+            .requestMatchers("/", "/checkExists", "/error", "/login", "/signup", "/success").permitAll()
             .requestMatchers("/u/**").hasAnyAuthority("ADMIN")
             .requestMatchers("/keywords/**").hasAnyAuthority("ADMIN")
             .requestMatchers("/python/**", "/reports/**", "/dashboard/**").hasAnyAuthority("USER", "ADMIN")
