@@ -11,8 +11,7 @@ public class Problem {
   @Indexed private String url;
   private int urlEntries;
   private String problemDetails;
-  @Indexed
-  private String language;
+  @Indexed private String language;
   @Indexed private String problemDate;
   @Indexed private String timeStamp;
   @Indexed private String title;

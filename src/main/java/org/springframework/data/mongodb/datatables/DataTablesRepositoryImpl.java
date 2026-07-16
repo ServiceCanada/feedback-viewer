@@ -3,7 +3,6 @@ package org.springframework.data.mongodb.datatables;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,17 +16,15 @@ import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
 import org.springframework.data.mongodb.repository.support.SimpleMongoRepository;
 
 /**
- * Implementation of DataTablesRepository that builds MongoDB queries
- * from DataTables request parameters.
+ * Implementation of DataTablesRepository that builds MongoDB queries from DataTables request
+ * parameters.
  *
- * Designed for Azure CosmosDB compatibility:
- * - Uses $regex instead of $text for search (CosmosDB doesn't support text indexes)
- * - Uses estimatedDocumentCount() for unfiltered totals (fast, metadata-based)
- * - Uses $match + $count aggregation for filtered counts (CosmosDB compatible)
- * - Uses skip/limit for pagination
+ * <p>Designed for Azure CosmosDB compatibility: - Uses $regex instead of $text for search (CosmosDB
+ * doesn't support text indexes) - Uses estimatedDocumentCount() for unfiltered totals (fast,
+ * metadata-based) - Uses $match + $count aggregation for filtered counts (CosmosDB compatible) -
+ * Uses skip/limit for pagination
  */
-public class DataTablesRepositoryImpl<T, ID>
-    extends SimpleMongoRepository<T, ID>
+public class DataTablesRepositoryImpl<T, ID> extends SimpleMongoRepository<T, ID>
     implements DataTablesRepository<T, ID> {
 
   private static final Logger LOG = LoggerFactory.getLogger(DataTablesRepositoryImpl.class);
@@ -53,7 +50,8 @@ public class DataTablesRepositoryImpl<T, ID>
   }
 
   @Override
-  public DataTablesOutput<T> findAll(DataTablesInput input, Criteria additionalCriteria, long cachedTotalCount) {
+  public DataTablesOutput<T> findAll(
+      DataTablesInput input, Criteria additionalCriteria, long cachedTotalCount) {
     long methodStart = System.currentTimeMillis();
     DataTablesOutput<T> output = new DataTablesOutput<>();
     output.setDraw(input.getDraw());
@@ -84,7 +82,10 @@ public class DataTablesRepositoryImpl<T, ID>
         LOG.debug("PERF: Using cached total count: {}", totalCount);
       } else {
         totalCount = countDocuments(finalCriteria, collectionName);
-        LOG.debug("PERF: Count took {}ms (result: {})", System.currentTimeMillis() - methodStart, totalCount);
+        LOG.debug(
+            "PERF: Count took {}ms (result: {})",
+            System.currentTimeMillis() - methodStart,
+            totalCount);
       }
       output.setRecordsTotal(totalCount);
       output.setRecordsFiltered(totalCount);
@@ -104,7 +105,10 @@ public class DataTablesRepositoryImpl<T, ID>
       long dataQueryStart = System.currentTimeMillis();
       List<T> data = mongoOperations.find(query, entityClass, collectionName);
       output.setData(data);
-      LOG.debug("PERF: Data query took {}ms (returned {} records)", System.currentTimeMillis() - dataQueryStart, data.size());
+      LOG.debug(
+          "PERF: Data query took {}ms (returned {} records)",
+          System.currentTimeMillis() - dataQueryStart,
+          data.size());
 
     } catch (Exception e) {
       LOG.error("Error executing DataTables query", e);
@@ -117,10 +121,10 @@ public class DataTablesRepositoryImpl<T, ID>
   }
 
   /**
-   * Count documents matching the given criteria.
-   * - Empty/null criteria: uses estimatedDocumentCount() - reads collection metadata, no scan.
-   * - With criteria: uses $match + $count aggregation pipeline - CosmosDB compatible.
-   *   (MongoTemplate.count() uses countDocuments() which runs $group+$sum and times out on CosmosDB)
+   * Count documents matching the given criteria. - Empty/null criteria: uses
+   * estimatedDocumentCount() - reads collection metadata, no scan. - With criteria: uses $match +
+   * $count aggregation pipeline - CosmosDB compatible. (MongoTemplate.count() uses countDocuments()
+   * which runs $group+$sum and times out on CosmosDB)
    */
   private long countDocuments(Criteria criteria, String collectionName) {
     boolean isEmpty = criteria == null || criteria.equals(new Criteria());
@@ -129,10 +133,8 @@ public class DataTablesRepositoryImpl<T, ID>
       return mongoOperations.getCollection(collectionName).estimatedDocumentCount();
     }
     // $match + $count aggregation is CosmosDB-compatible and avoids the $group+$sum timeout
-    Aggregation countAgg = Aggregation.newAggregation(
-        Aggregation.match(criteria),
-        Aggregation.count().as("n")
-    );
+    Aggregation countAgg =
+        Aggregation.newAggregation(Aggregation.match(criteria), Aggregation.count().as("n"));
     AggregationResults<Document> results =
         mongoOperations.aggregate(countAgg, collectionName, Document.class);
     Document countDoc = results.getUniqueMappedResult();
@@ -140,8 +142,8 @@ public class DataTablesRepositoryImpl<T, ID>
   }
 
   /**
-   * Builds search criteria from DataTables input.
-   * Uses $regex for CosmosDB compatibility (no $text support).
+   * Builds search criteria from DataTables input. Uses $regex for CosmosDB compatibility (no $text
+   * support).
    */
   private Criteria buildSearchCriteria(DataTablesInput input) {
     List<Criteria> criteriaList = new ArrayList<>();
@@ -163,8 +165,7 @@ public class DataTablesRepositoryImpl<T, ID>
       }
 
       if (!searchCriteria.isEmpty()) {
-        criteriaList.add(
-            new Criteria().orOperator(searchCriteria.toArray(new Criteria[0])));
+        criteriaList.add(new Criteria().orOperator(searchCriteria.toArray(new Criteria[0])));
       }
     }
 
@@ -192,9 +193,7 @@ public class DataTablesRepositoryImpl<T, ID>
     return new Criteria().andOperator(criteriaList.toArray(new Criteria[0]));
   }
 
-  /**
-   * Builds sort from DataTables order specification.
-   */
+  /** Builds sort from DataTables order specification. */
   private Sort buildSort(DataTablesInput input) {
     List<Sort.Order> orders = new ArrayList<>();
 
@@ -203,9 +202,7 @@ public class DataTablesRepositoryImpl<T, ID>
         DataTablesInput.Column column = input.getColumns().get(order.getColumn());
         if (column.isOrderable() && column.getData() != null && !column.getData().isEmpty()) {
           Sort.Direction direction =
-              "desc".equalsIgnoreCase(order.getDir())
-                  ? Sort.Direction.DESC
-                  : Sort.Direction.ASC;
+              "desc".equalsIgnoreCase(order.getDir()) ? Sort.Direction.DESC : Sort.Direction.ASC;
           orders.add(new Sort.Order(direction, column.getData()));
         }
       }

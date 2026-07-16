@@ -1,13 +1,6 @@
 package ca.gc.tbs.filter;
 
 import ca.gc.tbs.service.GcIpValidationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
-
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,221 +10,220 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 /**
- * Filter to restrict access to Government of Canada IP addresses only
- * This filter runs before authentication to ensure only GC networks can access the application
+ * Filter to restrict access to Government of Canada IP addresses only This filter runs before
+ * authentication to ensure only GC networks can access the application
  */
 @Component
 @Order(1) // Run before other filters
 public class GcIpFilter implements Filter {
 
-    private static final Logger logger = LoggerFactory.getLogger(GcIpFilter.class);
+  private static final Logger logger = LoggerFactory.getLogger(GcIpFilter.class);
 
-    @Autowired
-    private GcIpValidationService gcIpValidationService;
+  @Autowired private GcIpValidationService gcIpValidationService;
 
-    @Value("${gc.ip.filter.enabled:true}")
-    private boolean filterEnabled;
+  @Value("${gc.ip.filter.enabled:true}")
+  private boolean filterEnabled;
 
-    @Value("${gc.ip.filter.whitelist:}")
-    private String whitelistIps;
+  @Value("${gc.ip.filter.whitelist:}")
+  private String whitelistIps;
 
-    @Value("${gc.ip.filter.whitelist.file:}")
-    private String whitelistFilePath;
+  @Value("${gc.ip.filter.whitelist.file:}")
+  private String whitelistFilePath;
 
-    // Deployment-specific: controls how the real client IP is extracted.
-    // X_REAL_IP            — nginx/Kubernetes ingress (default for this repo)
-    // X_FORWARDED_FOR_LAST — AWS ALB/ECS: add GC_IP_FILTER_CLIENT_IP_SOURCE=X_FORWARDED_FOR_LAST
-    //                        to container_environment in terragrunt/aws/ecs/ecs.tf when porting
-    // REMOTE_ADDR          — no proxy (direct connection / local)
-    @Value("${gc.ip.filter.client-ip-source:X_REAL_IP}")
-    private String clientIpSource;
+  // Deployment-specific: controls how the real client IP is extracted.
+  // X_REAL_IP            — nginx/Kubernetes ingress (default for this repo)
+  // X_FORWARDED_FOR_LAST — AWS ALB/ECS: add GC_IP_FILTER_CLIENT_IP_SOURCE=X_FORWARDED_FOR_LAST
+  //                        to container_environment in terragrunt/aws/ecs/ecs.tf when porting
+  // REMOTE_ADDR          — no proxy (direct connection / local)
+  @Value("${gc.ip.filter.client-ip-source:X_REAL_IP}")
+  private String clientIpSource;
 
-    private Set<String> fileWhitelistIps = new HashSet<>();
+  private Set<String> fileWhitelistIps = new HashSet<>();
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+  @Override
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
 
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
+    HttpServletRequest httpRequest = (HttpServletRequest) request;
+    HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        // Skip filter if disabled (for local development)
-        if (!filterEnabled) {
-            logger.debug("GC IP filter is disabled");
-            chain.doFilter(request, response);
-            return;
+    // Skip filter if disabled (for local development)
+    if (!filterEnabled) {
+      logger.debug("GC IP filter is disabled");
+      chain.doFilter(request, response);
+      return;
+    }
+
+    // Skip filter for health check endpoints (ALB health checks)
+    String requestPath = httpRequest.getRequestURI();
+    if ("/health".equals(requestPath) || "/actuator/health".equals(requestPath)) {
+      logger.debug("Skipping GC IP filter for health check endpoint: {}", requestPath);
+      chain.doFilter(request, response);
+      return;
+    }
+
+    String clientIp = getClientIpAddress(httpRequest);
+    logger.debug("Request from IP: {}", clientIp);
+
+    // Check if IP is in whitelist
+    if (isWhitelisted(clientIp)) {
+      logger.debug("IP {} is authorized (whitelisted)", clientIp);
+      chain.doFilter(request, response);
+      return;
+    }
+
+    // Check if IP is owned by GC
+    if (gcIpValidationService.isGcIp(clientIp)) {
+      logger.debug("IP {} is authorized (GC-owned)", clientIp);
+      chain.doFilter(request, response);
+    } else {
+      logger.warn("Access denied for non-GC IP: {}", clientIp);
+      httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+      httpResponse.setContentType("text/html; charset=UTF-8");
+      httpResponse
+          .getWriter()
+          .write(
+              "<!DOCTYPE html><html lang=\"en\"><head>    <meta charset=\"UTF-8\">    <meta"
+                  + " name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   "
+                  + " <title>Access Denied</title>    <style>        body { font-family: Arial,"
+                  + " sans-serif; margin: 50px; }        h1 { color: #d9534f; }    </style></head>"
+                  + "<body>    <h1>Access Denied</h1>    <p>This application is only accessible"
+                  + " from Government of Canada networks.</p>    <p>If you believe you should have"
+                  + " access, please contact your system administrator.</p></body></html>");
+    }
+  }
+
+  /**
+   * Extract the real client IP using the strategy configured by gc.ip.filter.client-ip-source.
+   *
+   * <p>X-Forwarded-For is intentionally NOT used as a generic source: it is a client-controlled
+   * header and trusting it directly allows an attacker to spoof any IP.
+   */
+  private String getClientIpAddress(HttpServletRequest request) {
+    return switch (clientIpSource) {
+      case "X_REAL_IP" -> {
+        // X-Real-IP is set by nginx ingress to the verified TCP source IP.
+        // It is not forwarded from the client and cannot be spoofed.
+        String xRealIp = request.getHeader("X-Real-IP");
+        yield (xRealIp != null
+                && !xRealIp.trim().isEmpty()
+                && !"unknown".equalsIgnoreCase(xRealIp.trim()))
+            ? xRealIp.trim()
+            : request.getRemoteAddr();
+      }
+      case "X_FORWARDED_FOR_LAST" -> {
+        // AWS ALB always appends the real client IP as the rightmost entry.
+        // Taking the last value is safe because only the ALB can append to the right.
+        String xff = request.getHeader("X-Forwarded-For");
+        if (xff != null && !xff.isEmpty()) {
+          String[] parts = xff.split(",");
+          String last = parts[parts.length - 1].trim();
+          if (!last.isEmpty() && !"unknown".equalsIgnoreCase(last)) {
+            yield last;
+          }
+        }
+        yield request.getRemoteAddr();
+      }
+        // REMOTE_ADDR or any unrecognised value — direct connection, no proxy.
+      default -> request.getRemoteAddr();
+    };
+  }
+
+  /** Check if IP is in the whitelist (property or file-based) */
+  private boolean isWhitelisted(String ip) {
+    // Check property-based whitelist
+    if (whitelistIps != null && !whitelistIps.trim().isEmpty()) {
+      String[] whitelist = whitelistIps.split(",");
+      for (String whitelistedIp : whitelist) {
+        if (whitelistedIp.trim().equals(ip)) {
+          return true;
+        }
+      }
+    }
+
+    // Check file-based whitelist
+    if (!fileWhitelistIps.isEmpty() && fileWhitelistIps.contains(ip)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Load whitelist IPs from file Supports comments (lines starting with #) Supports both
+   * comma-separated and newline-separated formats
+   */
+  private void loadWhitelistFromFile() {
+    if (whitelistFilePath == null || whitelistFilePath.trim().isEmpty()) {
+      return;
+    }
+
+    File file = new File(whitelistFilePath);
+    if (!file.exists()) {
+      logger.warn("Whitelist file not found: {}", whitelistFilePath);
+      return;
+    }
+
+    fileWhitelistIps.clear();
+    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+      String line;
+      int lineNumber = 0;
+      while ((line = reader.readLine()) != null) {
+        lineNumber++;
+        line = line.trim();
+
+        // Skip empty lines and comments
+        if (line.isEmpty() || line.startsWith("#")) {
+          continue;
         }
 
-        // Skip filter for health check endpoints (ALB health checks)
-        String requestPath = httpRequest.getRequestURI();
-        if ("/health".equals(requestPath) || "/actuator/health".equals(requestPath)) {
-            logger.debug("Skipping GC IP filter for health check endpoint: {}", requestPath);
-            chain.doFilter(request, response);
-            return;
-        }
-
-        String clientIp = getClientIpAddress(httpRequest);
-        logger.debug("Request from IP: {}", clientIp);
-
-        // Check if IP is in whitelist
-        if (isWhitelisted(clientIp)) {
-            logger.debug("IP {} is authorized (whitelisted)", clientIp);
-            chain.doFilter(request, response);
-            return;
-        }
-
-        // Check if IP is owned by GC
-        if (gcIpValidationService.isGcIp(clientIp)) {
-            logger.debug("IP {} is authorized (GC-owned)", clientIp);
-            chain.doFilter(request, response);
+        // Handle comma-separated IPs
+        if (line.contains(",")) {
+          String[] ips = line.split(",");
+          for (String ip : ips) {
+            String trimmedIp = ip.trim();
+            if (!trimmedIp.isEmpty()) {
+              fileWhitelistIps.add(trimmedIp);
+            }
+          }
         } else {
-            logger.warn("Access denied for non-GC IP: {}", clientIp);
-            httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            httpResponse.setContentType("text/html; charset=UTF-8");
-            httpResponse.getWriter().write(
-                "<!DOCTYPE html>" +
-                "<html lang=\"en\">" +
-                "<head>" +
-                "    <meta charset=\"UTF-8\">" +
-                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
-                "    <title>Access Denied</title>" +
-                "    <style>" +
-                "        body { font-family: Arial, sans-serif; margin: 50px; }" +
-                "        h1 { color: #d9534f; }" +
-                "    </style>" +
-                "</head>" +
-                "<body>" +
-                "    <h1>Access Denied</h1>" +
-                "    <p>This application is only accessible from Government of Canada networks.</p>" +
-                "    <p>If you believe you should have access, please contact your system administrator.</p>" +
-                "</body>" +
-                "</html>"
-            );
+          // Single IP per line
+          fileWhitelistIps.add(line);
         }
+      }
+      logger.info(
+          "Loaded {} IP addresses from whitelist file: {}",
+          fileWhitelistIps.size(),
+          whitelistFilePath);
+    } catch (IOException e) {
+      logger.error("Error reading whitelist file {}: {}", whitelistFilePath, e.getMessage());
     }
+  }
 
-    /**
-     * Extract the real client IP using the strategy configured by gc.ip.filter.client-ip-source.
-     *
-     * X-Forwarded-For is intentionally NOT used as a generic source: it is a client-controlled
-     * header and trusting it directly allows an attacker to spoof any IP.
-     */
-    private String getClientIpAddress(HttpServletRequest request) {
-        return switch (clientIpSource) {
-            case "X_REAL_IP" -> {
-                // X-Real-IP is set by nginx ingress to the verified TCP source IP.
-                // It is not forwarded from the client and cannot be spoofed.
-                String xRealIp = request.getHeader("X-Real-IP");
-                yield (xRealIp != null && !xRealIp.trim().isEmpty() && !"unknown".equalsIgnoreCase(xRealIp.trim()))
-                    ? xRealIp.trim()
-                    : request.getRemoteAddr();
-            }
-            case "X_FORWARDED_FOR_LAST" -> {
-                // AWS ALB always appends the real client IP as the rightmost entry.
-                // Taking the last value is safe because only the ALB can append to the right.
-                String xff = request.getHeader("X-Forwarded-For");
-                if (xff != null && !xff.isEmpty()) {
-                    String[] parts = xff.split(",");
-                    String last = parts[parts.length - 1].trim();
-                    if (!last.isEmpty() && !"unknown".equalsIgnoreCase(last)) {
-                        yield last;
-                    }
-                }
-                yield request.getRemoteAddr();
-            }
-            // REMOTE_ADDR or any unrecognised value — direct connection, no proxy.
-            default -> request.getRemoteAddr();
-        };
-    }
+  @Override
+  public void init(FilterConfig filterConfig) throws ServletException {
+    // Load IPs from file if configured
+    loadWhitelistFromFile();
 
-    /**
-     * Check if IP is in the whitelist (property or file-based)
-     */
-    private boolean isWhitelisted(String ip) {
-        // Check property-based whitelist
-        if (whitelistIps != null && !whitelistIps.trim().isEmpty()) {
-            String[] whitelist = whitelistIps.split(",");
-            for (String whitelistedIp : whitelist) {
-                if (whitelistedIp.trim().equals(ip)) {
-                    return true;
-                }
-            }
-        }
+    logger.info(
+        "GC IP Filter initialized - filter enabled: {}, client-ip-source: {}, property whitelist:"
+            + " {}, file whitelist: {} IPs",
+        filterEnabled,
+        clientIpSource,
+        whitelistIps != null && !whitelistIps.isEmpty() ? "configured" : "none",
+        fileWhitelistIps.size());
+  }
 
-        // Check file-based whitelist
-        if (!fileWhitelistIps.isEmpty() && fileWhitelistIps.contains(ip)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Load whitelist IPs from file
-     * Supports comments (lines starting with #)
-     * Supports both comma-separated and newline-separated formats
-     */
-    private void loadWhitelistFromFile() {
-        if (whitelistFilePath == null || whitelistFilePath.trim().isEmpty()) {
-            return;
-        }
-
-        File file = new File(whitelistFilePath);
-        if (!file.exists()) {
-            logger.warn("Whitelist file not found: {}", whitelistFilePath);
-            return;
-        }
-
-        fileWhitelistIps.clear();
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            int lineNumber = 0;
-            while ((line = reader.readLine()) != null) {
-                lineNumber++;
-                line = line.trim();
-                
-                // Skip empty lines and comments
-                if (line.isEmpty() || line.startsWith("#")) {
-                    continue;
-                }
-
-                // Handle comma-separated IPs
-                if (line.contains(",")) {
-                    String[] ips = line.split(",");
-                    for (String ip : ips) {
-                        String trimmedIp = ip.trim();
-                        if (!trimmedIp.isEmpty()) {
-                            fileWhitelistIps.add(trimmedIp);
-                        }
-                    }
-                } else {
-                    // Single IP per line
-                    fileWhitelistIps.add(line);
-                }
-            }
-            logger.info("Loaded {} IP addresses from whitelist file: {}", 
-                        fileWhitelistIps.size(), whitelistFilePath);
-        } catch (IOException e) {
-            logger.error("Error reading whitelist file {}: {}", whitelistFilePath, e.getMessage());
-        }
-    }
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // Load IPs from file if configured
-        loadWhitelistFromFile();
-        
-        logger.info("GC IP Filter initialized - filter enabled: {}, client-ip-source: {}, property whitelist: {}, file whitelist: {} IPs",
-                    filterEnabled,
-                    clientIpSource,
-                    whitelistIps != null && !whitelistIps.isEmpty() ? "configured" : "none",
-                    fileWhitelistIps.size());
-    }
-
-    @Override
-    public void destroy() {
-        logger.info("GC IP Filter destroyed");
-    }
+  @Override
+  public void destroy() {
+    logger.info("GC IP Filter destroyed");
+  }
 }
