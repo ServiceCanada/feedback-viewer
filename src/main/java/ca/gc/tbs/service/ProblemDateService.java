@@ -25,20 +25,29 @@ public class ProblemDateService {
     // Determine the current fiscal quarter and calculate the date range
     record DateRange(LocalDate start, LocalDate end) {}
 
-    DateRange range = switch (currentMonth) {
-      case APRIL, MAY, JUNE ->
-        // Q1 (April 1 - June 30) - Show Q4 (previous year) and Q1 (current year)
-        new DateRange(LocalDate.of(currentYear, Month.JANUARY, 1), LocalDate.of(currentYear, Month.JUNE, 30));
-      case JULY, AUGUST, SEPTEMBER ->
-        // Q2 (July 1 - September 30) - Show Q1 and Q2
-        new DateRange(LocalDate.of(currentYear, Month.APRIL, 1), LocalDate.of(currentYear, Month.SEPTEMBER, 30));
-      case OCTOBER, NOVEMBER, DECEMBER ->
-        // Q3 (October 1 - December 31) - Show Q2 and Q3
-        new DateRange(LocalDate.of(currentYear, Month.JULY, 1), LocalDate.of(currentYear, Month.DECEMBER, 31));
-      case JANUARY, FEBRUARY, MARCH ->
-        // Q4 (January 1 - March 31) - Show Q3 (previous year) and Q4 (current year)
-        new DateRange(LocalDate.of(currentYear - 1, Month.OCTOBER, 1), LocalDate.of(currentYear, Month.MARCH, 31));
-    };
+    DateRange range =
+        switch (currentMonth) {
+          case APRIL, MAY, JUNE ->
+          // Q1 (April 1 - June 30) - Show Q4 (previous year) and Q1 (current year)
+          new DateRange(
+              LocalDate.of(currentYear, Month.JANUARY, 1),
+              LocalDate.of(currentYear, Month.JUNE, 30));
+          case JULY, AUGUST, SEPTEMBER ->
+          // Q2 (July 1 - September 30) - Show Q1 and Q2
+          new DateRange(
+              LocalDate.of(currentYear, Month.APRIL, 1),
+              LocalDate.of(currentYear, Month.SEPTEMBER, 30));
+          case OCTOBER, NOVEMBER, DECEMBER ->
+          // Q3 (October 1 - December 31) - Show Q2 and Q3
+          new DateRange(
+              LocalDate.of(currentYear, Month.JULY, 1),
+              LocalDate.of(currentYear, Month.DECEMBER, 31));
+          case JANUARY, FEBRUARY, MARCH ->
+          // Q4 (January 1 - March 31) - Show Q3 (previous year) and Q4 (current year)
+          new DateRange(
+              LocalDate.of(currentYear - 1, Month.OCTOBER, 1),
+              LocalDate.of(currentYear, Month.MARCH, 31));
+        };
 
     LocalDate earliestDate = range.start();
     LocalDate latestDate = range.end();
@@ -51,7 +60,8 @@ public class ProblemDateService {
     return resultMap;
   }
 
-  // The clearCacheDaily and refreshProblemDates methods are no longer needed as dates are calculated
+  // The clearCacheDaily and refreshProblemDates methods are no longer needed as dates are
+  // calculated
   // @Scheduled(cron = "0 0 0 * * *") // Runs every day at midnight UTC
   // @CacheEvict(value = "problemDates", allEntries = true)
   // public void clearCacheDaily() {
@@ -60,6 +70,7 @@ public class ProblemDateService {
 
   // @CacheEvict(value = "problemDates", allEntries = true)
   // public void refreshProblemDates() {
-  //   logger.info("Manually refreshing problemDates cache at {}", ZonedDateTime.now(ZoneOffset.UTC));
+  //   logger.info("Manually refreshing problemDates cache at {}",
+  // ZonedDateTime.now(ZoneOffset.UTC));
   // }
 }

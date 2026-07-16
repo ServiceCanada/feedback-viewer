@@ -1,10 +1,10 @@
 package ca.gc.tbs.filter;
 
-import java.io.IOException;
-import java.util.regex.Pattern;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.regex.Pattern;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
