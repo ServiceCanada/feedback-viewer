@@ -14,6 +14,8 @@ spec:
       labels:
         app: feedback-viewer
     spec:
+      imagePullSecrets:
+        - name: feedback-cj-acr-pull
       containers:
         - name: feedback-viewer
           image: tbsacr.azurecr.io/feedback-viewer:1.0.0

@@ -3,11 +3,17 @@ on:
   push:
     branches:
       - main
+# id-token lets the run request a short-lived OIDC token to present to
+# Azure, in place of a stored service principal secret.
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
       - name: Decrypt large secret
         run: ./scripts/decrypt.sh
         env:
@@ -22,20 +28,22 @@ jobs:
       - name: Build with Maven
         run: mvn install --file pom.xml
 
-      - uses: Azure/docker-login@v2
+      # Federated credential: Azure trusts GitHub's signed token for this
+      # repository and branch. The IDs below are identifiers, not passwords;
+      # they are stored as secrets so GitHub masks them in the public logs.
+      - uses: azure/login@v2
         with:
-          login-server: tbsacr.azurecr.io
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Authenticates docker to the registry using the session above.
+      - name: Log in to the container registry
+        run: az acr login --name tbsacr
 
       - run: |
           docker build -f ./docker/Dockerfile . -t tbsacr.azurecr.io/feedback-viewer:${{ github.sha }}
           docker push tbsacr.azurecr.io/feedback-viewer:${{ github.sha }}
-
-      # Authenticate to Azure before setting AKS context (required for aks-set-context@v5+)
-      - uses: azure/login@v2
-        with:
-          creds: "${{ secrets.AZURE_CREDENTIALS }}"
 
       # Set the target AKS cluster.
       - uses: Azure/aks-set-context@v5
