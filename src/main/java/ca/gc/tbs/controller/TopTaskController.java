@@ -1,7 +1,6 @@
 package ca.gc.tbs.controller;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -12,18 +11,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.streaming.SXSSFSheet;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -628,232 +624,97 @@ public class TopTaskController {
     return results;
   }
 
+  private static final String[] EXPORT_COLUMNS = {
+    "Date Time",
+    "Time Stamp (UTC)",
+    "Survey Referrer",
+    "Language",
+    "Device",
+    "Screener",
+    "Department",
+    "Theme",
+    "Theme Other",
+    "Grouping",
+    "Task",
+    "Task Other",
+    "Task Satisfaction",
+    "Task Ease",
+    "Task Completion",
+    "Task Improve",
+    "Task Improve Comment",
+    "Task Why Not",
+    "Task Why Not Comment",
+    "Task Sampling",
+    "Sampling Invitation",
+    "Sampling GC",
+    "Sampling Canada",
+    "Sampling Theme",
+    "Sampling Institution",
+    "Sampling Grouping",
+    "Sampling Task"
+  };
+
+  private static final StreamingExport<TopTaskSurvey> EXPORT =
+      new StreamingExport<>(
+          "Top task survey",
+          EXPORT_COLUMNS,
+          TopTaskController::exportValues,
+          UnaryOperator.identity(),
+          StreamingExport.WhenEmpty.NO_CONTENT);
+
   @GetMapping("/exportTopTaskExcel")
   public void exportTopTaskExcel(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    LOG.info("Starting Excel export...");
-
-    try {
-      DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-      String currentDate = LocalDate.now().format(dateFormatter);
-
-      // Build criteria from request parameters
-      Criteria criteria = buildExportCriteria(request);
-      Query query = buildExportQuery(criteria);
-
-      // Check if we have any data before proceeding
-      long count = mongoTemplate.count(query, TopTaskSurvey.class);
-      LOG.info("Found {} records to export", count);
-
-      if (count == 0) {
-        LOG.warn("No data found for export with the given criteria");
-        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        response.getWriter().write("No data found for export");
-        return;
-      }
-
-      // Set response headers after confirming we have data
-      response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-      String filename = "top_task_survey_export_" + currentDate + ".xlsx";
-      response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
-      response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-      response.setHeader("Pragma", "no-cache");
-      response.setHeader("Expires", "0");
-
-      SXSSFWorkbook workbook = new SXSSFWorkbook(100);
-      Sheet sheet = workbook.createSheet("Top Task Survey Data");
-
-      // Create header row
-      String[] columns = {
-        "Date Time",
-        "Time Stamp (UTC)",
-        "Survey Referrer",
-        "Language",
-        "Device",
-        "Screener",
-        "Department",
-        "Theme",
-        "Theme Other",
-        "Grouping",
-        "Task",
-        "Task Other",
-        "Task Satisfaction",
-        "Task Ease",
-        "Task Completion",
-        "Task Improve",
-        "Task Improve Comment",
-        "Task Why Not",
-        "Task Why Not Comment",
-        "Task Sampling",
-        "Sampling Invitation",
-        "Sampling GC",
-        "Sampling Canada",
-        "Sampling Theme",
-        "Sampling Institution",
-        "Sampling Grouping",
-        "Sampling Task"
-      };
-      Row headerRow = sheet.createRow(0);
-      for (int i = 0; i < columns.length; i++) {
-        headerRow.createCell(i).setCellValue(columns[i]);
-      }
-
-      final int[] rowNum = {1};
-      try (ServletOutputStream outputStream = response.getOutputStream();
-           java.util.stream.Stream<TopTaskSurvey> stream = mongoTemplate.stream(query, TopTaskSurvey.class)) {
-        stream.forEach(
-                survey -> {
-                  try {
-                    Row row = sheet.createRow(rowNum[0]++);
-                    row.createCell(0).setCellValue(survey.getDateTime());
-                    row.createCell(1).setCellValue(survey.getTimeStamp());
-                    row.createCell(2).setCellValue(survey.getSurveyReferrer());
-                    row.createCell(3).setCellValue(survey.getLanguage());
-                    row.createCell(4).setCellValue(survey.getDevice());
-                    row.createCell(5).setCellValue(survey.getScreener());
-                    row.createCell(6).setCellValue(survey.getDept());
-                    row.createCell(7).setCellValue(survey.getTheme());
-                    row.createCell(8).setCellValue(survey.getThemeOther());
-                    row.createCell(9).setCellValue(survey.getGrouping());
-                    row.createCell(10).setCellValue(survey.getTask());
-                    row.createCell(11).setCellValue(survey.getTaskOther());
-                    row.createCell(12).setCellValue(survey.getTaskSatisfaction());
-                    row.createCell(13).setCellValue(survey.getTaskEase());
-                    row.createCell(14).setCellValue(survey.getTaskCompletion());
-                    row.createCell(15).setCellValue(survey.getTaskImprove());
-                    row.createCell(16).setCellValue(survey.getTaskImproveComment());
-                    row.createCell(17).setCellValue(survey.getTaskWhyNot());
-                    row.createCell(18).setCellValue(survey.getTaskWhyNotComment());
-                    row.createCell(19).setCellValue(survey.getTaskSampling());
-                    row.createCell(20).setCellValue(survey.getSamplingInvitation());
-                    row.createCell(21).setCellValue(survey.getSamplingGC());
-                    row.createCell(22).setCellValue(survey.getSamplingCanada());
-                    row.createCell(23).setCellValue(survey.getSamplingTheme());
-                    row.createCell(24).setCellValue(survey.getSamplingInstitution());
-                    row.createCell(25).setCellValue(survey.getSamplingGrouping());
-                    row.createCell(26).setCellValue(survey.getSamplingTask());
-
-                    if (rowNum[0] % 100 == 0) {
-                      ((SXSSFSheet) sheet).flushRows(100);
-                      LOG.debug("Flushed {} rows", rowNum[0]);
-                    }
-                  } catch (Exception e) {
-                    LOG.error("Error writing row {}: {}", rowNum[0], e.getMessage());
-                  }
-                });
-
-        LOG.info("Writing {} rows to Excel file", rowNum[0] - 1);
-        workbook.write(outputStream);
-        outputStream.flush();
-        LOG.info("Excel export completed successfully");
-      } catch (Exception e) {
-        LOG.error("Error writing to output stream", e);
-        throw e;
-      } finally {
-        workbook.dispose();
-        workbook.close();
-      }
-    } catch (Exception e) {
-      LOG.error("Error exporting Excel", e);
-      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-      response.getWriter().write("Error exporting data: " + e.getMessage());
-    }
+    EXPORT.writeExcel(
+        () -> streamExportRows(request), contentDisposition("xlsx"), "Top Task Survey Data", response);
   }
 
   @GetMapping("/exportTopTaskCSV")
   public void exportTopTaskCSV(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    LOG.info("Starting CSV export...");
+    EXPORT.writeCsv(() -> streamExportRows(request), contentDisposition("csv"), request, response);
+  }
 
-    try {
-      DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-      String currentDate = LocalDate.now().format(dateFormatter);
+  private Stream<TopTaskSurvey> streamExportRows(HttpServletRequest request) {
+    return mongoTemplate.stream(
+        StreamingExport.exportQuery(buildExportCriteria(request)), TopTaskSurvey.class);
+  }
 
-      // Build criteria from request parameters
-      Criteria criteria = buildExportCriteria(request);
-      Query query = buildExportQuery(criteria);
+  private static String contentDisposition(String extension) {
+    String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    return "attachment; filename=\"top_task_survey_export_" + currentDate + "." + extension + "\"";
+  }
 
-      // Check if we have any data before proceeding
-      long count = mongoTemplate.count(query, TopTaskSurvey.class);
-      LOG.info("Found {} records to export", count);
-
-      if (count == 0) {
-        LOG.warn("No data found for export with the given criteria");
-        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        response.getWriter().write("No data found for export");
-        return;
-      }
-
-      // Set response headers after confirming we have data
-      response.setContentType("text/csv");
-      String filename = "top_task_survey_export_" + currentDate + ".csv";
-      response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
-      response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-      response.setHeader("Pragma", "no-cache");
-      response.setHeader("Expires", "0");
-
-      try (Writer writer = response.getWriter()) {
-        // Write CSV header
-        writer.write(
-            "Date Time,Time Stamp (UTC),Survey"
-                + " Referrer,Language,Device,Screener,Department,Theme,Theme"
-                + " Other,Grouping,Task,Task Other,Task Satisfaction,Task Ease,Task Completion,Task"
-                + " Improve,Task Improve Comment,Task Why Not,Task Why Not Comment,Task"
-                + " Sampling,Sampling Invitation,Sampling GC,Sampling Canada,Sampling"
-                + " Theme,Sampling Institution,Sampling Grouping,Sampling Task\n");
-
-        // Stream and write data
-        try (java.util.stream.Stream<TopTaskSurvey> stream = mongoTemplate.stream(query, TopTaskSurvey.class)) {
-          stream.forEach(
-                survey -> {
-                  try {
-                    writer.write(
-                        String.format(
-                            "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
-                            escapeCSV(survey.getDateTime()),
-                            escapeCSV(survey.getTimeStamp()),
-                            escapeCSV(survey.getSurveyReferrer()),
-                            escapeCSV(survey.getLanguage()),
-                            escapeCSV(survey.getDevice()),
-                            escapeCSV(survey.getScreener()),
-                            escapeCSV(survey.getDept()),
-                            escapeCSV(survey.getTheme()),
-                            escapeCSV(survey.getThemeOther()),
-                            escapeCSV(survey.getGrouping()),
-                            escapeCSV(survey.getTask()),
-                            escapeCSV(survey.getTaskOther()),
-                            escapeCSV(survey.getTaskSatisfaction()),
-                            escapeCSV(survey.getTaskEase()),
-                            escapeCSV(survey.getTaskCompletion()),
-                            escapeCSV(survey.getTaskImprove()),
-                            escapeCSV(survey.getTaskImproveComment()),
-                            escapeCSV(survey.getTaskWhyNot()),
-                            escapeCSV(survey.getTaskWhyNotComment()),
-                            escapeCSV(survey.getTaskSampling()),
-                            escapeCSV(survey.getSamplingInvitation()),
-                            escapeCSV(survey.getSamplingGC()),
-                            escapeCSV(survey.getSamplingCanada()),
-                            escapeCSV(survey.getSamplingTheme()),
-                            escapeCSV(survey.getSamplingInstitution()),
-                            escapeCSV(survey.getSamplingGrouping()),
-                            escapeCSV(survey.getSamplingTask())));
-                  } catch (IOException e) {
-                    LOG.error("Error writing CSV row: {}", e.getMessage());
-                  }
-                });
-        }
-
-        writer.flush();
-        LOG.info("CSV export completed successfully");
-      } catch (Exception e) {
-        LOG.error("Error writing to CSV output", e);
-        throw e;
-      }
-    } catch (Exception e) {
-      LOG.error("Error exporting CSV", e);
-      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-      response.getWriter().write("Error exporting data: " + e.getMessage());
-    }
+  private static String[] exportValues(TopTaskSurvey survey) {
+    return new String[] {
+      survey.getDateTime(),
+      survey.getTimeStamp(),
+      survey.getSurveyReferrer(),
+      survey.getLanguage(),
+      survey.getDevice(),
+      survey.getScreener(),
+      survey.getDept(),
+      survey.getTheme(),
+      survey.getThemeOther(),
+      survey.getGrouping(),
+      survey.getTask(),
+      survey.getTaskOther(),
+      survey.getTaskSatisfaction(),
+      survey.getTaskEase(),
+      survey.getTaskCompletion(),
+      survey.getTaskImprove(),
+      survey.getTaskImproveComment(),
+      survey.getTaskWhyNot(),
+      survey.getTaskWhyNotComment(),
+      survey.getTaskSampling(),
+      survey.getSamplingInvitation(),
+      survey.getSamplingGC(),
+      survey.getSamplingCanada(),
+      survey.getSamplingTheme(),
+      survey.getSamplingInstitution(),
+      survey.getSamplingGrouping(),
+      survey.getSamplingTask()
+    };
   }
 
   // Helper methods for the export endpoints
@@ -933,47 +794,6 @@ public class TopTaskController {
       }
 
     return criteria;
-  }
-
-  private Query buildExportQuery(Criteria criteria) {
-    Query query = new Query(criteria);
-    query
-        .fields()
-        .include("dateTime")
-        .include("timeStamp")
-        .include("surveyReferrer")
-        .include("language")
-        .include("device")
-        .include("screener")
-        .include("dept")
-        .include("theme")
-        .include("themeOther")
-        .include("grouping")
-        .include("task")
-        .include("taskOther")
-        .include("taskSatisfaction")
-        .include("taskEase")
-        .include("taskCompletion")
-        .include("taskImprove")
-        .include("taskImproveComment")
-        .include("taskWhyNot")
-        .include("taskWhyNotComment")
-        .include("taskSampling")
-        .include("samplingInvitation")
-        .include("samplingGC")
-        .include("samplingCanada")
-        .include("samplingTheme")
-        .include("samplingInstitution")
-        .include("samplingGrouping")
-        .include("samplingTask");
-    return query;
-  }
-
-  private String escapeCSV(String value) {
-    if (value == null) {
-      return "";
-    }
-    return "\"" + value.replace("\"", "\"\"") + "\"";
   }
 
   private List<Criteria> createNonEmptyCriteria() {

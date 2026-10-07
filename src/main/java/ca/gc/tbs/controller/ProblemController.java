@@ -7,10 +7,6 @@ import ca.gc.tbs.service.ErrorKeywordService;
 import ca.gc.tbs.service.ProblemCacheService;
 import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.streaming.SXSSFSheet;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,16 +24,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.io.IOException;
-import java.io.Writer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -671,12 +666,50 @@ public class ProblemController {
         return criteria;
     }
 
+    private static final String[] EXPORT_COLUMNS = {
+            "Problem Date",
+            "Time Stamp (UTC)",
+            "Problem Details",
+            "Language",
+            "Title",
+            "URL",
+            "Institution",
+            "Section",
+            "Theme",
+            "Device Type",
+            "Browser"
+    };
+
+    private static final StreamingExport<Problem> EXPORT = new StreamingExport<>(
+            "Page feedback",
+            EXPORT_COLUMNS,
+            ProblemController::exportValues,
+            UnaryOperator.identity(),
+            StreamingExport.WhenEmpty.HEADER_ONLY);
+
     @GetMapping("/exportExcel")
     public void exportExcel(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader("Content-Disposition", "attachment; filename=\"feedback_export.xlsx\"");
+        EXPORT.writeExcel(
+                () -> mongoTemplate.stream(buildExcelExportQuery(request), Problem.class),
+                "attachment; filename=\"feedback_export.xlsx\"",
+                "Feedback Data",
+                response);
+    }
 
+    @GetMapping("/exportCSV")
+    public void exportCSV(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        EXPORT.writeCsv(
+                () -> mongoTemplate.stream(buildCsvExportQuery(request), Problem.class),
+                "attachment; filename*=UTF-8''feedback_export.csv",
+                request,
+                response);
+    }
+
+    // The two exports have always filtered language differently (exact match for Excel,
+    // case-insensitive for CSV), so each keeps its own criteria.
+    private Query buildExcelExportQuery(HttpServletRequest request) {
         String[] titles = request.getParameterValues("titles[]");
         String language = request.getParameter("language");
         String department = request.getParameter("department");
@@ -755,91 +788,10 @@ public class ProblemController {
             criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
         }
 
-        var query = new Query(criteria);
-        query
-                .fields()
-                .include("problemDate")
-                .include("timeStamp")
-                .include("problemDetails")
-                .include("language")
-                .include("title")
-                .include("url")
-                .include("institution")
-                .include("section")
-                .include("theme")
-                .include("deviceType")
-                .include("browser");
-
-        // Use SXSSFWorkbook for better performance with large data
-        try (SXSSFWorkbook workbook =
-                     new SXSSFWorkbook(100); // The argument (100) flushes rows after 100 are written
-             ServletOutputStream outputStream = response.getOutputStream()) {
-
-            Sheet sheet = workbook.createSheet("Feedback Data");
-
-            // Create header row
-            String[] columns = {
-                    "Problem Date",
-                    "Time Stamp (UTC)",
-                    "Problem Details",
-                    "Language",
-                    "Title",
-                    "URL",
-                    "Institution",
-                    "Section",
-                    "Theme",
-                    "Device Type",
-                    "Browser"
-            };
-            var headerRow = sheet.createRow(0);
-            for (int i = 0; i < columns.length; i++) {
-                headerRow.createCell(i).setCellValue(columns[i]);
-            }
-
-            // Stream and write data in batches
-            final int[] rowNum = {1};
-            try (java.util.stream.Stream<Problem> stream = mongoTemplate.stream(query, Problem.class)) {
-                stream.forEach(
-                        problem -> {
-                            Row row = sheet.createRow(rowNum[0]++);
-                            row.createCell(0).setCellValue(problem.getProblemDate());
-                            row.createCell(1).setCellValue(problem.getTimeStamp());
-                            row.createCell(2).setCellValue(problem.getProblemDetails());
-                            row.createCell(3).setCellValue(problem.getLanguage());
-                            row.createCell(4).setCellValue(problem.getTitle());
-                            row.createCell(5).setCellValue(problem.getUrl());
-                            row.createCell(6).setCellValue(problem.getInstitution());
-                            row.createCell(7).setCellValue(problem.getSection());
-                            row.createCell(8).setCellValue(problem.getTheme());
-                            row.createCell(9).setCellValue(problem.getDeviceType());
-                            row.createCell(10).setCellValue(problem.getBrowser());
-
-                            if (rowNum[0] % 100 == 0) {
-                                try {
-                                    ((SXSSFSheet) sheet).flushRows(100);
-                                } catch (IOException e) {
-                                    LOG.error("Error flushing rows", e);
-                                }
-                            }
-                        });
-            }
-
-            // Write the workbook to the output stream
-            workbook.write(outputStream);
-        } catch (Exception e) {
-            LOG.error("Error exporting Excel", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Error exporting data: " + e.getMessage());
-        }
+        return StreamingExport.exportQuery(criteria);
     }
 
-    @GetMapping("/exportCSV")
-    public void exportCSV(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/csv; charset=UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''feedback_export.csv");
-
+    private Query buildCsvExportQuery(HttpServletRequest request) {
         String[] titles = request.getParameterValues("titles[]");
         String language = request.getParameter("language");
         String department = request.getParameter("department");
@@ -920,63 +872,23 @@ public class ProblemController {
             criteria = new Criteria().andOperator(criteria, new Criteria().andOperator(regexCriteria.toArray(new Criteria[0])));
         }
 
-        var query = new Query(criteria);
-        query
-                .fields()
-                .include("problemDate")
-                .include("timeStamp")
-                .include("problemDetails")
-                .include("language")
-                .include("title")
-                .include("url")
-                .include("institution")
-                .include("section")
-                .include("theme")
-                .include("deviceType")
-                .include("browser");
-
-
-        // Stream results directly to the response
-        try (Writer writer = response.getWriter()) {
-            writer.write("\uFEFF");
-
-            // Write CSV header
-            writer.write("""
-                    Problem Date,Time Stamp (UTC),Problem Details,Language,Title,URL,Institution,Section,Theme,Device Type,Browser
-                    """);
-
-            // Stream and write data
-            try (java.util.stream.Stream<Problem> stream = mongoTemplate.stream(query, Problem.class)) {
-                stream.forEach(problem -> {
-                    try {
-                        writer.write(
-                                String.format(
-                                        "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
-                                        escapeCSV(problem.getProblemDate()),
-                                        escapeCSV(problem.getTimeStamp()),
-                                        escapeCSV(problem.getProblemDetails()),
-                                        escapeCSV(problem.getLanguage()),
-                                        escapeCSV(problem.getTitle()),
-                                        escapeCSV(problem.getUrl()),
-                                        escapeCSV(problem.getInstitution()),
-                                        escapeCSV(problem.getSection()),
-                                        escapeCSV(problem.getTheme()),
-                                        escapeCSV(problem.getDeviceType()),
-                                        escapeCSV(problem.getBrowser())
-                                ));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-            }
-        }
+        return StreamingExport.exportQuery(criteria);
     }
 
-    private String escapeCSV(String value) {
-        if (value == null) {
-            return "";
-        }
-        return "\"" + value.replace("\"", "\"\"") + "\"";
+    private static String[] exportValues(Problem problem) {
+        return new String[] {
+                problem.getProblemDate(),
+                problem.getTimeStamp(),
+                problem.getProblemDetails(),
+                problem.getLanguage(),
+                problem.getTitle(),
+                problem.getUrl(),
+                problem.getInstitution(),
+                problem.getSection(),
+                problem.getTheme(),
+                problem.getDeviceType(),
+                problem.getBrowser()
+        };
     }
 
     @GetMapping(value = "/pageFeedback")
