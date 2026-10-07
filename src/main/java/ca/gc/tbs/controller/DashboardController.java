@@ -15,12 +15,10 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.io.IOException;
-import java.io.Writer;
 
 import org.bson.Document;
 import org.springframework.data.domain.Sort;
@@ -34,10 +32,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.streaming.SXSSFSheet;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -475,51 +469,19 @@ public class DashboardController {
         return new Totals(pages, commentsCount);
     }
 
+    private static final String[] EXPORT_COLUMNS =
+            {"Department", "URL", "Total Comments", "Language", "Section", "Theme"};
+
     @GetMapping("/dashboard/exportExcel")
     public void exportExcel(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         String pageLang = (String) request.getSession().getAttribute("lang");
         String filename = buildExportFilename(pageLang, ".xlsx");
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
-
-        var results = getAggregatedExportData(request);
-
-        try (SXSSFWorkbook workbook = new SXSSFWorkbook(100);
-             ServletOutputStream outputStream = response.getOutputStream()) {
-
-            Sheet sheet = workbook.createSheet("Dashboard Data");
-
-            String[] columns = {"Department", "URL", "Total Comments", "Language", "Section", "Theme"};
-            var headerRow = sheet.createRow(0);
-            for (int i = 0; i < columns.length; i++) {
-                headerRow.createCell(i).setCellValue(columns[i]);
-            }
-
-            int rowNum = 1;
-            for (Problem p : results) {
-                Row row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(resolveInstitutionName(p.getInstitution(), pageLang));
-                row.createCell(1).setCellValue(p.getUrl());
-                row.createCell(2).setCellValue(p.getUrlEntries());
-                row.createCell(3).setCellValue(p.getLanguage());
-                row.createCell(4).setCellValue(p.getSection());
-                row.createCell(5).setCellValue(p.getTheme());
-
-                if (rowNum % 100 == 0) {
-                    try {
-                        ((SXSSFSheet) sheet).flushRows(100);
-                    } catch (IOException e) {
-                        LOG.error("Error flushing rows", e);
-                    }
-                }
-            }
-
-            workbook.write(outputStream);
-        } catch (Exception e) {
-            LOG.error("Error exporting Excel", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
+        exportFor(pageLang).writeExcel(
+                () -> getAggregatedExportData(request).stream(),
+                "attachment; filename=\"" + filename + "\"",
+                "Dashboard Data",
+                response);
     }
 
     @GetMapping("/dashboard/exportCSV")
@@ -527,26 +489,28 @@ public class DashboardController {
             throws IOException {
         String pageLang = (String) request.getSession().getAttribute("lang");
         String filename = buildExportFilename(pageLang, ".csv");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/csv; charset=UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + filename);
+        exportFor(pageLang).writeCsv(
+                () -> getAggregatedExportData(request).stream(),
+                "attachment; filename*=UTF-8''" + filename,
+                request,
+                response);
+    }
 
-        var results = getAggregatedExportData(request);
-
-        try (Writer writer = response.getWriter()) {
-            writer.write("\uFEFF");
-            writer.write("Department,URL,Total Comments,Language,Section,Theme\n");
-
-            for (Problem p : results) {
-                writer.write(String.format("%s,%s,%d,%s,%s,%s\n",
-                        escapeCSV(resolveInstitutionName(p.getInstitution(), pageLang)),
-                        escapeCSV(p.getUrl()),
+    // One row per URL; the comment count stays a number so it is a numeric cell in Excel
+    private StreamingExport<Problem> exportFor(String pageLang) {
+        return new StreamingExport<>(
+                "Dashboard",
+                EXPORT_COLUMNS,
+                p -> new Object[] {
+                        resolveInstitutionName(p.getInstitution(), pageLang),
+                        p.getUrl(),
                         p.getUrlEntries(),
-                        escapeCSV(p.getLanguage()),
-                        escapeCSV(p.getSection()),
-                        escapeCSV(p.getTheme())));
-            }
-        }
+                        p.getLanguage(),
+                        p.getSection(),
+                        p.getTheme()
+                },
+                DashboardController::sanitizeCsvValue,
+                StreamingExport.WhenEmpty.HEADER_ONLY);
     }
 
     private List<Problem> getAggregatedExportData(HttpServletRequest request) {
@@ -591,10 +555,8 @@ public class DashboardController {
         return applyRegexCriteria(criteria, comments, error_keyword);
     }
 
-    private String escapeCSV(String value) {
-        if (value == null) {
-            return "";
-        }
+    // Keeps spreadsheet apps from running a value as a formula; StreamingExport quotes it afterwards
+    private static String sanitizeCsvValue(String value) {
         String sanitized = value.replace("\t", " ").replace("\r", "");
         if (!sanitized.isEmpty()) {
             char firstChar = sanitized.charAt(0);
@@ -602,7 +564,7 @@ public class DashboardController {
                 sanitized = "'" + sanitized;
             }
         }
-        return "\"" + sanitized.replace("\"", "\"\"") + "\"";
+        return sanitized;
     }
 
     private String buildExportFilename(String lang, String extension) {

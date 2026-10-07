@@ -694,24 +694,18 @@ $(document).ready(function () {
           return null;
         }
         if (!response.ok) {
-          return response.text().then(text => {
-            throw new Error(text);
-          });
+          throw new Error(`Export failed with HTTP ${response.status} ${response.statusText}`);
         }
-        
+
         const disposition = response.headers.get('Content-Disposition');
         const filename = extractFilenameFromHeader(disposition, defaultFilename);
-        return { blob: response.blob(), filename };
-      })
-      .then(result => {
-        if (result && result.blob) {
-          result.blob.then(blob => {
-            createDownloadLink(blob, result.filename);
-            setTimeout(() => {
-              loadingSpinner.hide();
-            }, CONFIG.SPINNER_HIDE_DELAY);
-          });
-        }
+        // Returned so a failure while the body downloads (e.g. an aborted export) reaches the catch below
+        return response.blob().then(blob => {
+          createDownloadLink(blob, filename);
+          setTimeout(() => {
+            loadingSpinner.hide();
+          }, CONFIG.SPINNER_HIDE_DELAY);
+        });
       })
       .catch(error => {
         handleError(error, errorMessageKey, 'File download');
