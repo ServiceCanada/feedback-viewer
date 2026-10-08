@@ -2,6 +2,7 @@ package ca.gc.tbs.controller;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -49,6 +50,8 @@ import ca.gc.tbs.repository.TopTaskRepository;
 import ca.gc.tbs.security.JWTUtil;
 import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 @Controller
 public class TopTaskController {
@@ -69,6 +72,13 @@ public class TopTaskController {
 
   private final JWTUtil jwtUtil;
 
+  private final SurveyFieldValues surveyFieldValues;
+
+  // Distinct task counts by filter. Paging and sorting don't change them, and computing one reads
+  // every matching row (about 1.6 s for all dates).
+  private final Cache<String, Integer> distinctTaskCounts =
+      Caffeine.newBuilder().expireAfterWrite(Duration.ofMinutes(5)).maximumSize(1000).build();
+
   public TopTaskController(
       TopTaskRepository topTaskRepository,
       UserService userService,
@@ -80,6 +90,7 @@ public class TopTaskController {
     this.problemDateService = problemDateService;
     this.mongoTemplate = mongoTemplate;
     this.jwtUtil = jwtUtil;
+    this.surveyFieldValues = new SurveyFieldValues(mongoTemplate);
   }
   private static final Map<String, List<String>> institutionMappings = new HashMap<>();
 
@@ -131,6 +142,8 @@ public class TopTaskController {
             "ASFC",
             "CANADA BORDER SERVICES AGENCY",
             "AGENCE DES SERVICES FRONTALIERS DU CANADA",
+            "CBSA / ASF",
+            "CBSA / ${survey-task2-institution-fr}",
             "CBSA / ASFC"));
     institutionMappings.put(
         "CCG",
@@ -203,6 +216,7 @@ public class TopTaskController {
             "SCC",
             "CORRECTIONAL SERVICE CANADA",
             "SERVICE CORRECTIONNEL CANADA",
+            "CSC / ${survey-task2-institution-fr}",
             "CSC / SCC"));
     institutionMappings.put(
         "CSE",
@@ -231,7 +245,12 @@ public class TopTaskController {
     institutionMappings.put(
         "DFO",
         Arrays.asList(
-            "DFO", "MPO", "FISHERIES AND OCEANS CANADA", "PÊCHES ET OCÉANS CANADA", "DFO / MPO"));
+            "DFO",
+            "MPO",
+            "FISHERIES AND OCEANS CANADA",
+            "PÊCHES ET OCÉANS CANADA",
+            "DFO / ${survey-task2-institution-fr}",
+            "DFO / MPO"));
     institutionMappings.put(
         "DND", Arrays.asList("DND", "MDN", "NATIONAL DEFENCE", "DÉFENSE NATIONALE", "DND / MDN"));
     institutionMappings.put(
@@ -242,6 +261,14 @@ public class TopTaskController {
             "ENVIRONMENT AND CLIMATE CHANGE CANADA",
             "ENVIRONNEMENT ET CHANGEMENT CLIMATIQUE CANADA",
             "ECCC / ECCC"));
+    institutionMappings.put(
+        "ELECTIONS",
+        Arrays.asList(
+            "ELECTIONS",
+            "ÉLECTIONS",
+            "ELECTIONS CANADA",
+            "ÉLECTIONS CANADA",
+            "ELECTIONS / ÉLECTIONS"));
     institutionMappings.put(
         "ESDC",
         Arrays.asList(
@@ -259,6 +286,14 @@ public class TopTaskController {
             "AGENCE DE LA CONSOMMATION EN MATIÈRE FINANCIÈRE DU CANADA",
             "FCAC / ACFC"));
     institutionMappings.put(
+        "FEDDEV",
+        Arrays.asList(
+            "FEDDEV",
+            "FEDDEV ONTARIO",
+            "FEDERAL ECONOMIC DEVELOPMENT AGENCY FOR SOUTHERN ONTARIO",
+            "AGENCE FÉDÉRALE DE DÉVELOPPEMENT ÉCONOMIQUE POUR LE SUD DE L’ONTARIO",
+            "FEDDEV / FEDDEV"));
+    institutionMappings.put(
         "FIN",
         Arrays.asList(
             "FIN",
@@ -270,9 +305,22 @@ public class TopTaskController {
             "MINISTÈRE DES FINANCES",
             "FIN / FIN"));
     institutionMappings.put(
+        "FINTRAC",
+        Arrays.asList(
+            "FINTRAC",
+            "CANAFE",
+            "FINANCIAL TRANSACTIONS AND REPORTS ANALYSIS CENTRE OF CANADA",
+            "CENTRE D’ANALYSE DES OPÉRATIONS ET DÉCLARATIONS FINANCIÈRES DU CANADA",
+            "FINTRAC / CANAFE"));
+    institutionMappings.put(
         "GAC",
         Arrays.asList(
-            "GAC", "AMC", "GLOBAL AFFAIRS CANADA", "AFFAIRES MONDIALES CANADA", "GAC / AMC"));
+            "GAC",
+            "AMC",
+            "GLOBAL AFFAIRS CANADA",
+            "AFFAIRES MONDIALES CANADA",
+            "GAC / ${survey-task2-institution-fr}",
+            "GAC / AMC"));
     institutionMappings.put(
         "HC", Arrays.asList("HC", "SC", "HEALTH CANADA", "SANTÉ CANADA", "HC / SC"));
     institutionMappings.put(
@@ -302,6 +350,8 @@ public class TopTaskController {
             "IRCC",
             "IMMIGRATION, REFUGEES AND CITIZENSHIP CANADA",
             "IMMIGRATION, RÉFUGIÉS ET CITOYENNETÉ CANADA",
+            "IRCC (IRCC) / IRCC (IRCC)",
+            "IRCC / ${survey-task2-institution-fr}",
             "IRCC / IRCC"));
     institutionMappings.put(
         "ISC",
@@ -330,6 +380,7 @@ public class TopTaskController {
             "BAC",
             "LIBRARY AND ARCHIVES CANADA",
             "BIBLIOTHÈQUE ET ARCHIVES CANADA",
+            "LAC / ${survey-task2-institution-fr}",
             "LAC / BAC"));
     institutionMappings.put(
         "NFB",
@@ -377,6 +428,13 @@ public class TopTaskController {
             "BUREAU DU SURINTENDANT DES FAILLITES CANADA",
             "OSB / BSF"));
     institutionMappings.put(
+        "PACIFICAN",
+        Arrays.asList(
+            "PACIFICAN",
+            "PACIFIC ECONOMIC DEVELOPMENT CANADA",
+            "DÉVELOPPEMENT ÉCONOMIQUE CANADA POUR LE PACIFIQUE",
+            "PACIFICAN / PACIFICAN"));
+    institutionMappings.put(
         "PBC",
         Arrays.asList(
             "PBC",
@@ -400,7 +458,15 @@ public class TopTaskController {
             "ASPC",
             "PUBLIC HEALTH AGENCY OF CANADA",
             "AGENCE DE LA SANTÉ PUBLIQUE DU CANADA",
+            "PHAC / ${survey-task2-institution-fr}",
             "PHAC / ASPC"));
+    institutionMappings.put(
+        "PRAIRIESCAN",
+        Arrays.asList(
+            "PRAIRIESCAN",
+            "PRAIRIES ECONOMIC DEVELOPMENT CANADA",
+            "DÉVELOPPEMENT ÉCONOMIQUE CANADA POUR LES PRAIRIES",
+            "PRAIRIESCAN / PRAIRIESCAN"));
     institutionMappings.put(
         "PS",
         Arrays.asList("PS", "SP", "PUBLIC SAFETY CANADA", "SÉCURITÉ PUBLIQUE CANADA", "PS / SP"));
@@ -421,6 +487,8 @@ public class TopTaskController {
             "SERVICES PUBLICS ET APPROVISIONNEMENT CANADA",
             "GOUVERNEMENT DU CANADA, SERVICES PUBLICS ET APPROVISIONNEMENT CANADA",
             "GOVERNMENT OF CANADA, PUBLIC SERVICES AND PROCUREMENT CANADA",
+            "PSPC / PSPC",
+            "PSPC / ${survey-task2-institution-fr}",
             "PSPC / SPAC"));
     institutionMappings.put(
         "PSPC-OL",
@@ -467,6 +535,7 @@ public class TopTaskController {
             "STATISTICS CANADA",
             "STATISTIQUE CANADA",
             "StatCan / StatCan",
+            "StatCan / ${survey-task2-institution-fr}",
             "STATCAN / STATCAN"));
     institutionMappings.put(
         "TBS",
@@ -544,7 +613,7 @@ public class TopTaskController {
       criteria.and("language").is(language);
     }
     if (themeFilterVal != null && !themeFilterVal.isEmpty()) {
-      criteria.and("theme").regex(Pattern.quote(themeFilterVal), "i");
+      applyThemeFilter(criteria, themeFilterVal);
     }
     if (groupFilterVal != null && !groupFilterVal.isEmpty()) {
       criteria.and("grouping").is(groupFilterVal);
@@ -606,8 +675,11 @@ public class TopTaskController {
       }
 
 
-    List<Map> distinctTaskCounts = topTaskRepository.findDistinctTaskCountsWithFilters(criteria);
-    totalDistinctTasks = distinctTaskCounts.size();
+    final Criteria filters = criteria;
+    totalDistinctTasks =
+        distinctTaskCounts.get(
+            filters.getCriteriaObject().toJson(),
+            key -> topTaskRepository.findDistinctTaskCountsWithFilters(filters).size());
 
     // Use estimatedDocumentCount (metadata-based, instant) when no filters are applied,
     // to avoid an expensive count query against CosmosDB.
@@ -1148,24 +1220,43 @@ public class TopTaskController {
 
   private Criteria applyDepartmentFilter(Criteria criteria, String department) {
     List<String> variations = new ArrayList<>();
-      for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
-          List<String> mappingValues = entry.getValue();
-          if (mappingValues.stream().anyMatch(v -> v.equalsIgnoreCase(department))) {
-              variations.addAll(mappingValues);
-              break;
-          }
+    for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
+      List<String> mappingValues = entry.getValue();
+      if (mappingValues.stream().anyMatch(v -> v.equalsIgnoreCase(department))) {
+        variations.addAll(mappingValues);
+        break;
       }
-      if (variations.isEmpty()) {
-    criteria.and("dept").regex("^" + Pattern.quote(department) + "$", "i");
-      } else {
-          List<Criteria> deptCriteria = new ArrayList<>();
-          for (String variation :  variations) {
-              deptCriteria.add(Criteria.where("dept").regex("^" + Pattern.quote(variation) + "$", "i"));
-          }
-          criteria.orOperator(deptCriteria.toArray(new Criteria[0]));
-      }
+    }
+    List<String> names = variations.isEmpty() ? List.of(department) : variations;
 
+    // Match the stored spellings exactly: Cosmos DB reads every row for a case-insensitive regex
+    List<String> storedSpellings = surveyFieldValues.equalToAnyIgnoringCase("dept", names);
+    if (!storedSpellings.isEmpty()) {
+      criteria.and("dept").in(storedSpellings);
       return criteria;
+    }
+
+    // No stored spelling matches (yet), so the regex still finds rows newer than the list
+    if (variations.isEmpty()) {
+      criteria.and("dept").regex("^" + Pattern.quote(department) + "$", "i");
+    } else {
+      List<Criteria> deptCriteria = new ArrayList<>();
+      for (String variation : variations) {
+        deptCriteria.add(Criteria.where("dept").regex("^" + Pattern.quote(variation) + "$", "i"));
+      }
+      criteria.orOperator(deptCriteria.toArray(new Criteria[0]));
+    }
+    return criteria;
+  }
+
+  // Match the stored themes exactly when possible, for the same reason as departments
+  private void applyThemeFilter(Criteria criteria, String theme) {
+    List<String> storedThemes = surveyFieldValues.containingIgnoringCase("theme", theme);
+    if (storedThemes.isEmpty()) {
+      criteria.and("theme").regex(Pattern.quote(theme), "i");
+    } else {
+      criteria.and("theme").in(storedThemes);
+    }
   }
 
   @GetMapping(value = "/topTaskSurvey")
@@ -1210,7 +1301,7 @@ public class TopTaskController {
     // Apply theme filter
     if (theme != null && !theme.isEmpty()) {
       String cleanedTheme = theme.trim().replaceAll("\\s+", " ");
-      criteria.and("theme").regex(Pattern.quote(cleanedTheme), "i");
+      applyThemeFilter(criteria, cleanedTheme);
     }
 
     // Apply group filter
