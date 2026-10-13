@@ -65,3 +65,6 @@ google-java-format-*.jar
 .idea/compiler.xml
 .idea/encodings.xml
 .idea/jarRepositories.xml
+
+# Local task notes (contain infrastructure details; repo is public)
+tasks/
