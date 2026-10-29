@@ -65,27 +65,27 @@ public class GcIpFilter implements Filter {
     // Skip filter for health check endpoints (ALB health checks)
     String requestPath = httpRequest.getRequestURI();
     if ("/health".equals(requestPath) || "/actuator/health".equals(requestPath)) {
-      logger.debug("Skipping GC IP filter for health check endpoint: {}", requestPath);
+      logger.debug("Skipping GC IP filter for health check endpoint");
       chain.doFilter(request, response);
       return;
     }
 
     String clientIp = getClientIpAddress(httpRequest);
-    logger.debug("Request from IP: {}", clientIp);
+    logger.debug("Request received by GC IP filter");
 
     // Check if IP is in whitelist
     if (isWhitelisted(clientIp)) {
-      logger.debug("IP {} is authorized (whitelisted)", clientIp);
+      logger.debug("Request IP is authorized (whitelisted)");
       chain.doFilter(request, response);
       return;
     }
 
     // Check if IP is owned by GC
     if (gcIpValidationService.isGcIp(clientIp)) {
-      logger.debug("IP {} is authorized (GC-owned)", clientIp);
+      logger.debug("Request IP is authorized (GC-owned)");
       chain.doFilter(request, response);
     } else {
-      logger.warn("Access denied for non-GC IP: {}", clientIp);
+      logger.warn("Access denied for non-GC IP");
       httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
       httpResponse.setContentType("text/html; charset=UTF-8");
       httpResponse

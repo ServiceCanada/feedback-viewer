@@ -1,5 +1,7 @@
 package ca.gc.tbs.controller;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
 import ca.gc.tbs.domain.Role;
 import ca.gc.tbs.security.JWTUtil;
 import ca.gc.tbs.service.UserService;
@@ -54,6 +56,7 @@ class AuthControllerTest {
     mockMvc
         .perform(
             MockMvcRequestBuilders.post("/createApiUser")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"username\":\"test@example.com\",\"password\":\"secret\"}"))
         .andExpect(
@@ -68,8 +71,7 @@ class AuthControllerTest {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-      http.csrf(csrf -> csrf.disable())
-          .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+      http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
           .exceptionHandling(
               ex ->
                   ex.authenticationEntryPoint(

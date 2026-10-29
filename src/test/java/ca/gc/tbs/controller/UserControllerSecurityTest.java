@@ -66,8 +66,7 @@ class UserControllerSecurityTest {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-      http.csrf(csrf -> csrf.disable())
-          .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+      http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
           .exceptionHandling(
               ex ->
                   ex.authenticationEntryPoint(

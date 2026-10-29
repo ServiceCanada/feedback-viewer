@@ -46,13 +46,13 @@ public class GcIpValidationService {
     }
 
     try {
-      logger.debug("Checking if IP {} is owned by GC", ipAddress);
+      logger.debug("Checking if request IP is owned by GC");
 
       String url = RDAP_API_URL + ipAddress;
       String response = restTemplate.getForObject(url, String.class);
 
       if (response == null) {
-        logger.warn("Received null response from RDAP API for IP {}", ipAddress);
+        logger.warn("Received null response from RDAP API");
         return false;
       }
 
@@ -61,15 +61,15 @@ public class GcIpValidationService {
 
       if (entities != null && entities.isArray()) {
         boolean isGc = recursiveEntitySearch(entities);
-        logger.info("IP {} is {} owned by GC", ipAddress, isGc ? "" : "NOT");
+        logger.info("IP ownership check completed: owned by GC={}", isGc);
         return isGc;
       }
 
-      logger.warn("No entities found in RDAP response for IP {}", ipAddress);
+      logger.warn("No entities found in RDAP response");
       return false;
 
     } catch (Exception e) {
-      logger.error("Error checking IP {} ownership: {}", ipAddress, e.getMessage());
+      logger.error("Error checking IP ownership ({})", e.getClass().getSimpleName());
       // Fail closed - if we can't verify, block access
       return false;
     }

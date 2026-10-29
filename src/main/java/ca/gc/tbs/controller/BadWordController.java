@@ -216,12 +216,7 @@ public class BadWordController {
       // Reload the in-memory cache
       badWordsService.reload();
 
-      LOG.info(
-          "Created new badword entry: word={}, language={}, type={}, active={}",
-          normalizedWord,
-          language,
-          type,
-          active);
+      LOG.info("Created new badword entry");
 
       return "Success";
     } catch (Exception e) {
