@@ -61,6 +61,30 @@ db.problem.insertOne({ url: "https://www.canada.ca/en/test.html", title: "Test p
 
 The app counts rows when it starts, so run `docker-compose restart app` after adding data.
 
+### Formatting
+
+Java code follows [Google Java Format](https://github.com/google/google-java-format). Run
+`make fmt` before committing; it formats every Java file using Docker, so you don't need Java
+installed. Pull requests fail the "Check formatting" check if anything is left unformatted;
+`make fmt-check` runs the same check locally. If you have Maven installed, `mvn spotless:apply`
+does the same as `make fmt`.
+
+To format on save in VS Code, install the
+[Google Java Format for VS Code](https://marketplace.visualstudio.com/items?itemName=JoseVSeb.google-java-format-for-vs-code)
+extension and add this to `.vscode/settings.json`. Keep the version in step with `googleJavaFormat`
+in `pom.xml`, or your editor and the check will disagree.
+
+```jsonc
+{
+  "java.format.settings.google.version": "1.36.1",
+  "[java]": {
+    "editor.defaultFormatter": "JoseVSeb.google-java-format-for-vs-code",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": { "source.organizeImports": "never" }
+  }
+}
+```
+
 ### Everyday commands
 
 | Command | What it does |
