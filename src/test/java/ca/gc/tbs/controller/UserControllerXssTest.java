@@ -1,5 +1,7 @@
 package ca.gc.tbs.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import ca.gc.tbs.domain.Role;
 import ca.gc.tbs.domain.User;
 import ca.gc.tbs.service.UserService;
@@ -7,8 +9,6 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class UserControllerXssTest {
 

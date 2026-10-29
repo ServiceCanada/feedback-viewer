@@ -205,6 +205,20 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <!-- Java formatting: `make fmt` (mvn spotless:apply); CI runs spotless:check on PRs -->
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>3.10.4</version>
+                <configuration>
+                    <java>
+                        <!-- 1.37.0 fails under Spotless 3.10.4; bump both together -->
+                        <googleJavaFormat>
+                            <version>1.36.1</version>
+                        </googleJavaFormat>
+                    </java>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

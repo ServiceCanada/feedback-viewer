@@ -62,9 +62,7 @@ public class JWTUtil {
   public String generateToken(UserDetails userDetails) {
     Map<String, Object> claims = new HashMap<>();
     List<String> authorities =
-        userDetails.getAuthorities().stream()
-            .map(GrantedAuthority::getAuthority)
-            .toList();
+        userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     claims.put("authorities", authorities);
     return createToken(claims, userDetails.getUsername());
   }

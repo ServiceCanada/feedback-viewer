@@ -2,9 +2,9 @@ package ca.gc.tbs.controller;
 
 import ca.gc.tbs.domain.User;
 import ca.gc.tbs.service.UserService;
-import java.text.SimpleDateFormat;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.text.SimpleDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

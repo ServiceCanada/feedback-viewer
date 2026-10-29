@@ -41,7 +41,8 @@ final class PrefetchingIterator<T> implements Iterator<T>, AutoCloseable {
     } catch (RuntimeException | Error e) {
       last = new Failure(e);
     }
-    // The source is already closed here, so a consumer that sees the end or a failure can rely on it
+    // The source is already closed here, so a consumer that sees the end or a failure can rely on
+    // it
     offer(last);
   }
 
