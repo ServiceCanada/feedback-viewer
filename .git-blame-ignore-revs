@@ -1,0 +1,5 @@
+# Formatting-only commits, skipped by git blame and GitHub's blame view.
+# Locally: git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: format Java code with Google Java Format
+f1202f282424f5c781075a5ae3f81af252aedacd
