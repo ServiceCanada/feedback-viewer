@@ -1,5 +1,8 @@
 package ca.gc.tbs.service;
 
+import ca.gc.tbs.domain.BadWordEntry;
+import ca.gc.tbs.repository.BadWordEntryRepository;
+import jakarta.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -7,21 +10,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import jakarta.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ca.gc.tbs.domain.BadWordEntry;
-import ca.gc.tbs.repository.BadWordEntryRepository;
-
 /**
- * Service for managing bad words, profanity filtering, threat detection, and allowed words.
- * Loads word lists from MongoDB into in-memory caches for fast lookup.
- * Thread-safe using ConcurrentHashMap with lazy initialization fallback.
+ * Service for managing bad words, profanity filtering, threat detection, and allowed words. Loads
+ * word lists from MongoDB into in-memory caches for fast lookup. Thread-safe using
+ * ConcurrentHashMap with lazy initialization fallback.
  */
 @Service
 public class BadWords {
@@ -52,9 +49,8 @@ public class BadWords {
   }
 
   /**
-   * Ensures keywords are loaded from database.
-   * Uses lazy initialization - loads on first access if @PostConstruct didn't run.
-   * Thread-safe using double-checked locking.
+   * Ensures keywords are loaded from database. Uses lazy initialization - loads on first access
+   * if @PostConstruct didn't run. Thread-safe using double-checked locking.
    */
   private void ensureLoaded() {
     if (!isLoaded) {
@@ -71,8 +67,8 @@ public class BadWords {
   }
 
   /**
-   * Loads word configurations from MongoDB on service initialization.
-   * Called automatically by Spring after dependency injection.
+   * Loads word configurations from MongoDB on service initialization. Called automatically by
+   * Spring after dependency injection.
    */
   @PostConstruct
   public void loadConfigs() {
@@ -85,40 +81,50 @@ public class BadWords {
       }
 
       // Load profanity words
-      List<BadWordEntry> profanityEntries = badWordEntryRepository.findByTypeAndActive("profanity", true);
-      profanityEntries.forEach(entry -> {
-        String word = entry.getWord().trim().toLowerCase();
-        profanityWords.add(word);
-        allFilterWords.add(word);
-      });
+      List<BadWordEntry> profanityEntries =
+          badWordEntryRepository.findByTypeAndActive("profanity", true);
+      profanityEntries.forEach(
+          entry -> {
+            String word = entry.getWord().trim().toLowerCase();
+            profanityWords.add(word);
+            allFilterWords.add(word);
+          });
 
       // Load threat words
       List<BadWordEntry> threatEntries = badWordEntryRepository.findByTypeAndActive("threat", true);
-      threatEntries.forEach(entry -> {
-        String word = entry.getWord().trim().toLowerCase();
-        threatWords.add(word);
-        allFilterWords.add(word);
-      });
+      threatEntries.forEach(
+          entry -> {
+            String word = entry.getWord().trim().toLowerCase();
+            threatWords.add(word);
+            allFilterWords.add(word);
+          });
 
       // Load allowed words
-      List<BadWordEntry> allowedEntries = badWordEntryRepository.findByTypeAndActive("allowed", true);
-      allowedEntries.forEach(entry -> {
-        String word = entry.getWord().trim().toLowerCase();
-        allowedWords.add(word);
-      });
+      List<BadWordEntry> allowedEntries =
+          badWordEntryRepository.findByTypeAndActive("allowed", true);
+      allowedEntries.forEach(
+          entry -> {
+            String word = entry.getWord().trim().toLowerCase();
+            allowedWords.add(word);
+          });
 
       // Load error keywords
       List<BadWordEntry> errorEntries = badWordEntryRepository.findByTypeAndActive("error", true);
-      errorEntries.forEach(entry -> {
-        String word = entry.getWord().trim().toLowerCase();
-        errorKeywords.add(word);
-      });
+      errorEntries.forEach(
+          entry -> {
+            String word = entry.getWord().trim().toLowerCase();
+            errorKeywords.add(word);
+          });
 
       // Compile the filter pattern after all words are loaded
       compileFilterPattern();
 
-      logger.info("Loaded {} profanity, {} threat, {} allowed, {} error keywords",
-          profanityWords.size(), threatWords.size(), allowedWords.size(), errorKeywords.size());
+      logger.info(
+          "Loaded {} profanity, {} threat, {} allowed, {} error keywords",
+          profanityWords.size(),
+          threatWords.size(),
+          allowedWords.size(),
+          errorKeywords.size());
 
       isLoaded = true;
 
@@ -173,7 +179,8 @@ public class BadWords {
       filterPattern = null;
       return;
     }
-    String patternString = allFilterWords.stream()
+    String patternString =
+        allFilterWords.stream()
             .filter(word -> word != null && !word.trim().isEmpty())
             .map(Pattern::quote)
             .map(word -> "\\b" + word + "\\b")
@@ -182,8 +189,8 @@ public class BadWords {
   }
 
   /**
-   * Censors profanity and threats in the given text by replacing them with asterisks.
-   * Words in the allowed words list are never censored.
+   * Censors profanity and threats in the given text by replacing them with asterisks. Words in the
+   * allowed words list are never censored.
    *
    * @param text The text to censor
    * @return The censored text
@@ -214,16 +221,14 @@ public class BadWords {
     return result.toString();
   }
 
-  /**
-   * Creates a mask of asterisks for a given word.
-   */
+  /** Creates a mask of asterisks for a given word. */
   private String createMask(String word) {
     return word.replaceAll(".", "*");
   }
 
   /**
-   * Reloads word configurations from MongoDB.
-   * Useful for refreshing the cache without restarting the application.
+   * Reloads word configurations from MongoDB. Useful for refreshing the cache without restarting
+   * the application.
    */
   public void reload() {
     logger.info("Reloading word configurations from MongoDB...");

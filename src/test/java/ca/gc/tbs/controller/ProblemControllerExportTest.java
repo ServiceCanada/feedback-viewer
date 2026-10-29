@@ -41,8 +41,17 @@ class ProblemControllerExportTest {
 
   private static final List<String> HEADERS =
       List.of(
-          "Problem Date", "Time Stamp (UTC)", "Problem Details", "Language", "Title", "URL",
-          "Institution", "Section", "Theme", "Device Type", "Browser");
+          "Problem Date",
+          "Time Stamp (UTC)",
+          "Problem Details",
+          "Language",
+          "Title",
+          "URL",
+          "Institution",
+          "Section",
+          "Theme",
+          "Device Type",
+          "Browser");
 
   private static final String HEADER_LINE = "\uFEFF" + String.join(",", HEADERS) + "\n";
 

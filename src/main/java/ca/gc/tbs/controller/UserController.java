@@ -2,21 +2,21 @@ package ca.gc.tbs.controller;
 
 import ca.gc.tbs.domain.User;
 import ca.gc.tbs.service.UserService;
-import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.util.HtmlUtils;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.util.HtmlUtils;
 
 @Controller
 @PreAuthorize("hasAuthority('ADMIN')")
@@ -74,25 +74,25 @@ public class UserController {
         String institution = user.getInstitution();
         String dateCreated = user.getDateCreated();
         boolean enabled = user.isEnabled();
-        List<String> roles = user.getRoles() != null
-            ? user.getRoles().stream()
-                .map(ca.gc.tbs.domain.Role::getRole)
-                .toList()
-            : List.of();
+        List<String> roles =
+            user.getRoles() != null
+                ? user.getRoles().stream().map(ca.gc.tbs.domain.Role::getRole).toList()
+                : List.of();
 
-        String status = isEn
-            ? (enabled ? "Enabled" : "Awaiting approval")
-            : (enabled ? "Activé" : "En attente d'approbation");
+        String status =
+            isEn
+                ? (enabled ? "Enabled" : "Awaiting approval")
+                : (enabled ? "Activé" : "En attente d'approbation");
 
-        String toggleLabel = isEn
-            ? (enabled ? "Disable" : "Enable")
-            : (enabled ? "Désactiver" : "Activer");
+        String toggleLabel =
+            isEn ? (enabled ? "Disable" : "Enable") : (enabled ? "Désactiver" : "Activer");
 
         String toggleClass = enabled ? "disableBtn" : "enableBtn";
         String toggleIdPrefix = enabled ? "disable" : "enable";
         String deleteLabel = isEn ? "Delete" : "Supprimer";
 
-        builder.append("""
+        builder.append(
+            """
             <tr>
               <td>%s</td>
               <td>%s</td>
@@ -105,12 +105,19 @@ public class UserController {
                   <button id='delete%s' class='btn btn-xs deleteBtn'>%s</button>
                 </div>
               </td>
-            </tr>""".formatted(
-            HtmlUtils.htmlEscape(email != null ? email : ""),
-            HtmlUtils.htmlEscape(institution != null ? institution : ""),
-            HtmlUtils.htmlEscape(roles.toString()), dateCreated, status,
-            toggleIdPrefix, id, toggleClass, toggleLabel,
-            id, deleteLabel));
+            </tr>"""
+                .formatted(
+                    HtmlUtils.htmlEscape(email != null ? email : ""),
+                    HtmlUtils.htmlEscape(institution != null ? institution : ""),
+                    HtmlUtils.htmlEscape(roles.toString()),
+                    dateCreated,
+                    status,
+                    toggleIdPrefix,
+                    id,
+                    toggleClass,
+                    toggleLabel,
+                    id,
+                    deleteLabel));
       }
       return builder.toString();
     } catch (Exception e) {

@@ -56,9 +56,10 @@ class AuthControllerTest {
             MockMvcRequestBuilders.post("/createApiUser")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"username\":\"test@example.com\",\"password\":\"secret\"}"))
-        .andExpect(result ->
-            org.assertj.core.api.Assertions.assertThat(result.getResponse().getStatus())
-                .isNotEqualTo(405));
+        .andExpect(
+            result ->
+                org.assertj.core.api.Assertions.assertThat(result.getResponse().getStatus())
+                    .isNotEqualTo(405));
   }
 
   @Configuration
@@ -67,11 +68,12 @@ class AuthControllerTest {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-      http
-          .csrf(csrf -> csrf.disable())
+      http.csrf(csrf -> csrf.disable())
           .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-          .exceptionHandling(ex -> ex.authenticationEntryPoint(
-              (request, response, authException) -> response.sendError(401)));
+          .exceptionHandling(
+              ex ->
+                  ex.authenticationEntryPoint(
+                      (request, response, authException) -> response.sendError(401)));
       return http.build();
     }
   }

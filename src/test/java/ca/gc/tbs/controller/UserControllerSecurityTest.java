@@ -1,5 +1,8 @@
 package ca.gc.tbs.controller;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+
 import ca.gc.tbs.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +18,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 
-@SpringBootTest(classes = {UserController.class, UserControllerSecurityTest.TestSecurityConfig.class})
+@SpringBootTest(
+    classes = {UserController.class, UserControllerSecurityTest.TestSecurityConfig.class})
 @AutoConfigureMockMvc
 class UserControllerSecurityTest {
 
@@ -64,11 +66,12 @@ class UserControllerSecurityTest {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-      http
-          .csrf(csrf -> csrf.disable())
+      http.csrf(csrf -> csrf.disable())
           .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-          .exceptionHandling(ex -> ex.authenticationEntryPoint(
-              (request, response, authException) -> response.sendRedirect("/login")));
+          .exceptionHandling(
+              ex ->
+                  ex.authenticationEntryPoint(
+                      (request, response, authException) -> response.sendRedirect("/login")));
 
       return http.build();
     }

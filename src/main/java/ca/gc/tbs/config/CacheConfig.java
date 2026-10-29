@@ -16,16 +16,11 @@ public class CacheConfig {
 
   @Bean
   public CacheManager cacheManager() {
-    CaffeineCacheManager manager = new CaffeineCacheManager(
-      "problemDates",
-      "distinctUrls",
-      "processedProblems",
-      "dashboardStats",
-      "gcIpCache"
-    );
-    manager.setCaffeine(Caffeine.newBuilder()
-      .expireAfterWrite(24, TimeUnit.HOURS)
-      .maximumSize(1000));
+    CaffeineCacheManager manager =
+        new CaffeineCacheManager(
+            "problemDates", "distinctUrls", "processedProblems", "dashboardStats", "gcIpCache");
+    manager.setCaffeine(
+        Caffeine.newBuilder().expireAfterWrite(24, TimeUnit.HOURS).maximumSize(1000));
     return manager;
   }
 }

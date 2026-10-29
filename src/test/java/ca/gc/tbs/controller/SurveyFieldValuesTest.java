@@ -49,7 +49,8 @@ class SurveyFieldValuesTest {
     assertThat(values.containingIgnoringCase("dept", "edsc")).containsExactly("ESDC / EDSC");
     // Regex metacharacters in the text are literal, as Pattern.quote made them
     assertThat(values.containingIgnoringCase("dept", ".*")).isEmpty();
-    assertThat(values.containingIgnoringCase("dept", " / ")).isEqualTo(regexMatches(List.of(" / "), false));
+    assertThat(values.containingIgnoringCase("dept", " / "))
+        .isEqualTo(regexMatches(List.of(" / "), false));
   }
 
   @Test
@@ -69,7 +70,8 @@ class SurveyFieldValuesTest {
 
   @Test
   void aLoadFailureGivesAnEmptyListSoTheCallerFallsBackToTheRegex() {
-    when(mongoTemplate.aggregate(any(Aggregation.class), eq(TopTaskSurvey.class), eq(Document.class)))
+    when(mongoTemplate.aggregate(
+            any(Aggregation.class), eq(TopTaskSurvey.class), eq(Document.class)))
         .thenThrow(new IllegalStateException("Request timed out"));
 
     assertThat(values.equalToAnyIgnoringCase("dept", List.of("IRCC"))).isEmpty();
@@ -80,7 +82,8 @@ class SurveyFieldValuesTest {
     for (String value : stored) {
       rows.add(new Document("_id", value));
     }
-    when(mongoTemplate.aggregate(any(Aggregation.class), eq(TopTaskSurvey.class), eq(Document.class)))
+    when(mongoTemplate.aggregate(
+            any(Aggregation.class), eq(TopTaskSurvey.class), eq(Document.class)))
         .thenReturn(new AggregationResults<>(rows, new Document()));
   }
 
