@@ -1,0 +1,14 @@
+# Python packages used only for name-model evaluation experiments.
+# These pins work on Apple Command Line Tools Python 3.9.
+#
+# Install with:
+#   python3 -m pip install --upgrade pip
+#   python3 -m pip install -r scripts/requirements-eval.txt
+# Then download the spaCy model once with:
+#   python3 -m spacy download xx_ent_wiki_sm
+
+gliner>=0.2.13
+transformers>=4.44.0
+torch>=2.2.0
+# spaCy 3.8 needs thinc versions that are not available for Python 3.9 wheels.
+spacy>=3.7.0,<3.8.0

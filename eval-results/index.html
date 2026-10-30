@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Name redaction model comparison</title>
+  <style>
+    body { font-family: Georgia, serif; margin: 2rem; color: #1b1b1b; background: #f7f4ef; }
+    h1 { margin-bottom: 0.25rem; }
+    p { max-width: 50rem; }
+    table { border-collapse: collapse; width: 100%; background: white; }
+    th, td { border: 1px solid #ccc; padding: 0.55rem 0.7rem; text-align: left; }
+    th { background: #ebe4d8; }
+    .note { background: #fff8e7; border-left: 4px solid #c48a00; padding: 0.8rem 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Name redaction model comparison</h1>
+  <p>Open this file to compare every model you tested. Each row is the latest result for that model.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>English F1</th><th>French F1</th><th>Combined F1</th>
+        <th>Detailed report</th>
+      </tr>
+    </thead>
+    <tbody>
+<tr><td>opennlp</td><td>0.233367</td><td>0.187845</td><td>0.217105</td><td><a href="opennlp/2026-10-29_133107/report.html">Open report</a></td></tr>
+<tr><td>gliner</td><td>0.850336</td><td>0.829162</td><td>0.842723</td><td><a href="gliner/2026-10-29_140229/report.html">Open report</a></td></tr>
+<tr><td>xlm-roberta-ner</td><td>0.083282</td><td>0.099211</td><td>0.088889</td><td><a href="xlm-roberta-ner/2026-10-29_140433/report.html">Open report</a></td></tr>
+<tr><td>spacy-xx</td><td>0.560059</td><td>0.639697</td><td>0.589385</td><td><a href="spacy-xx/2026-10-29_140449/report.html">Open report</a></td></tr>    </tbody>
+  </table>
+</body>
+</html>

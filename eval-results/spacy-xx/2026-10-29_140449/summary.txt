@@ -1,0 +1,32 @@
+NAME REDACTION EVALUATION SUMMARY
+=================================
+Model nickname: spacy-xx
+Run timestamp: 2026-10-29_140449
+Guess source: External predictions file: spacy-xx.jsonl
+
+What was scored
+- All 1260 labeled comments (dev/test split IGNORED)
+- Main F1 uses 1244 comments (excludes 16 policy_decision rows)
+- Matching rule: exact character start/end must match
+- Model prediction failures recorded (not dropped): 0
+
+ENGLISH
+  comments=798  gold_names=795  predicted_names=562
+  true_positives=380  false_positives=182  false_negatives=415
+  precision=0.6762  recall=0.4780  F1=0.5601
+  hard_negative_comments=31  hard_negative_correct=21  hard_negative_accuracy=0.6774
+
+FRENCH
+  comments=446  gold_names=444  predicted_names=347
+  true_positives=253  false_positives=94  false_negatives=191
+  precision=0.7291  recall=0.5698  F1=0.6397
+  hard_negative_comments=17  hard_negative_correct=11  hard_negative_accuracy=0.6471
+
+COMBINED
+  comments=1244  gold_names=1239  predicted_names=909
+  true_positives=633  false_positives=276  false_negatives=606
+  precision=0.6964  recall=0.5109  F1=0.5894
+  hard_negative_comments=48  hard_negative_correct=32  hard_negative_accuracy=0.6667
+
+POLICY_DECISION (not in main F1)
+  comments=16  predicted_spans=16  gold_spans=16

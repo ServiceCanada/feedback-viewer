@@ -1,0 +1,5 @@
+model_id,timestamp,english_comments,english_precision,english_recall,english_f1,french_comments,french_precision,french_recall,french_f1,combined_comments,combined_precision,combined_recall,combined_f1,report_html
+opennlp,2026-10-29_133107,798,0.626374,0.143396,0.233367,446,0.515152,0.114865,0.187845,1244,0.587189,0.133172,0.217105,/Users/daoud.aslan/Documents/GitHub/feedback-viewer/eval-results/opennlp/2026-10-29_133107/report.html
+gliner,2026-10-29_140229,798,0.826603,0.875472,0.850336,446,0.802105,0.858108,0.829162,1244,0.817768,0.869249,0.842723,/Users/daoud.aslan/Documents/GitHub/feedback-viewer/eval-results/gliner/2026-10-29_140229/report.html
+xlm-roberta-ner,2026-10-29_140433,798,0.081146,0.085535,0.083282,446,0.099323,0.099099,0.099211,1244,0.087432,0.090395,0.088889,/Users/daoud.aslan/Documents/GitHub/feedback-viewer/eval-results/xlm-roberta-ner/2026-10-29_140433/report.html
+spacy-xx,2026-10-29_140449,798,0.676157,0.477987,0.560059,446,0.729107,0.569820,0.639697,1244,0.696370,0.510896,0.589385,/Users/daoud.aslan/Documents/GitHub/feedback-viewer/eval-results/spacy-xx/2026-10-29_140449/report.html

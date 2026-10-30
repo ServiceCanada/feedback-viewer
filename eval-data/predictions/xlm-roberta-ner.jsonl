@@ -1,0 +1,1260 @@
+{"id": "SYN-00001", "spans": [{"start": 29, "end": 35, "text": " Cindy"}], "error": null}
+{"id": "SYN-00002", "spans": [{"start": 29, "end": 40, "text": " J. Van Dyk"}], "error": null}
+{"id": "SYN-00003", "spans": [{"start": 0, "end": 6, "text": "García"}], "error": null}
+{"id": "SYN-00004", "spans": [], "error": null}
+{"id": "SYN-00005", "spans": [{"start": 41, "end": 47, "text": "Wangmo"}], "error": null}
+{"id": "SYN-00006", "spans": [{"start": 7, "end": 15, "text": " ji-yeon"}], "error": null}
+{"id": "SYN-00007", "spans": [{"start": 34, "end": 52, "text": " Nkechi Mbeki-Diop"}], "error": null}
+{"id": "SYN-00008", "spans": [{"start": 9, "end": 16, "text": " Wangmo"}], "error": null}
+{"id": "SYN-00009", "spans": [{"start": 15, "end": 36, "text": " Siobhan MacGillivray"}], "error": null}
+{"id": "SYN-00010", "spans": [{"start": 35, "end": 43, "text": " K. Shah"}], "error": null}
+{"id": "SYN-00011", "spans": [{"start": 8, "end": 15, "text": " Wright"}, {"start": 16, "end": 22, "text": " Jacob"}], "error": null}
+{"id": "SYN-00012", "spans": [{"start": 12, "end": 20, "text": " Mamadou"}, {"start": 25, "end": 39, "text": " Mariam Rahimi"}], "error": null}
+{"id": "SYN-00013", "spans": [], "error": null}
+{"id": "SYN-00014", "spans": [{"start": 26, "end": 38, "text": " Y. Yamamoto"}], "error": null}
+{"id": "SYN-00015", "spans": [{"start": 52, "end": 59, "text": " Wangmo"}], "error": null}
+{"id": "SYN-00016", "spans": [{"start": 5, "end": 9, "text": " Gra"}], "error": null}
+{"id": "SYN-00017", "spans": [], "error": null}
+{"id": "SYN-00018", "spans": [{"start": 52, "end": 66, "text": " A. Desjarlais"}], "error": null}
+{"id": "SYN-00019", "spans": [{"start": 7, "end": 20, "text": " MacGillivray"}, {"start": 21, "end": 24, "text": " Se"}], "error": null}
+{"id": "SYN-00020", "spans": [{"start": 0, "end": 15, "text": "JOSÉE STE-MARIE"}], "error": null}
+{"id": "SYN-00021", "spans": [], "error": null}
+{"id": "SYN-00022", "spans": [{"start": 26, "end": 34, "text": " Tsz Kin"}], "error": null}
+{"id": "SYN-00023", "spans": [{"start": 37, "end": 40, "text": " Xu"}], "error": null}
+{"id": "SYN-00024", "spans": [{"start": 26, "end": 45, "text": " FADUMA MOHAMED ALI"}], "error": null}
+{"id": "SYN-00025", "spans": [{"start": 41, "end": 52, "text": "M. Thompson"}], "error": null}
+{"id": "SYN-00026", "spans": [{"start": 9, "end": 18, "text": " Aoi Sato"}], "error": null}
+{"id": "SYN-00027", "spans": [], "error": null}
+{"id": "SYN-00028", "spans": [{"start": 46, "end": 62, "text": " Jose Mari Reyes"}], "error": null}
+{"id": "SYN-00029", "spans": [{"start": 26, "end": 45, "text": " Guadalupe Martínez"}], "error": null}
+{"id": "SYN-00030", "spans": [], "error": null}
+{"id": "SYN-00031", "spans": [{"start": 41, "end": 49, "text": " Meeches"}], "error": null}
+{"id": "SYN-00032", "spans": [], "error": null}
+{"id": "SYN-00033", "spans": [], "error": null}
+{"id": "SYN-00034", "spans": [{"start": 52, "end": 72, "text": " GIULIA PAPADOPOULOS"}], "error": null}
+{"id": "SYN-00035", "spans": [{"start": 15, "end": 30, "text": " A. Del Rosario"}], "error": null}
+{"id": "SYN-00036", "spans": [{"start": 14, "end": 16, "text": " A"}, {"start": 16, "end": 20, "text": "yaan"}], "error": null}
+{"id": "SYN-00037", "spans": [{"start": 52, "end": 69, "text": " Thérèse Bouchard"}], "error": null}
+{"id": "SYN-00038", "spans": [], "error": null}
+{"id": "SYN-00039", "spans": [{"start": 7, "end": 19, "text": " P. Qumuatuq"}], "error": null}
+{"id": "SYN-00040", "spans": [{"start": 35, "end": 51, "text": " KATERI SINCLAIR"}], "error": null}
+{"id": "SYN-00041", "spans": [{"start": 12, "end": 33, "text": " Farhad Hashemi-Nejad"}], "error": null}
+{"id": "SYN-00042", "spans": [{"start": 52, "end": 59, "text": " Wangmo"}], "error": null}
+{"id": "SYN-00043", "spans": [{"start": 0, "end": 16, "text": "ibrahim al masri"}], "error": null}
+{"id": "SYN-00044", "spans": [{"start": 34, "end": 42, "text": " Ramírez"}], "error": null}
+{"id": "SYN-00045", "spans": [{"start": 26, "end": 40, "text": " Gabriel Morin"}], "error": null}
+{"id": "SYN-00046", "spans": [{"start": 34, "end": 38, "text": " Sch"}, {"start": 38, "end": 43, "text": "röder"}], "error": null}
+{"id": "SYN-00047", "spans": [{"start": 0, "end": 13, "text": "Gurpreet Shah"}], "error": null}
+{"id": "SYN-00048", "spans": [{"start": 48, "end": 51, "text": " Qa"}, {"start": 51, "end": 55, "text": "jaaq"}], "error": null}
+{"id": "SYN-00049", "spans": [{"start": 41, "end": 50, "text": " macisaac"}], "error": null}
+{"id": "SYN-00050", "spans": [{"start": 7, "end": 18, "text": " J. Ramírez"}], "error": null}
+{"id": "SYN-00051", "spans": [], "error": null}
+{"id": "SYN-00052", "spans": [{"start": 0, "end": 11, "text": "T. Baptiste"}], "error": null}
+{"id": "SYN-00053", "spans": [{"start": 41, "end": 52, "text": "J. Martínez"}], "error": null}
+{"id": "SYN-00054", "spans": [{"start": 0, "end": 7, "text": "Suharti"}], "error": null}
+{"id": "SYN-00055", "spans": [{"start": 35, "end": 44, "text": " Ó Briain"}, {"start": 45, "end": 52, "text": " Ciaran"}], "error": null}
+{"id": "SYN-00056", "spans": [], "error": null}
+{"id": "SYN-00057", "spans": [{"start": 41, "end": 57, "text": "Qajaaq Pitseolak"}], "error": null}
+{"id": "SYN-00058", "spans": [{"start": 39, "end": 46, "text": " Hamdan"}], "error": null}
+{"id": "SYN-00059", "spans": [{"start": 7, "end": 25, "text": " Eleni Dell'Aquila"}], "error": null}
+{"id": "SYN-00060", "spans": [{"start": 10, "end": 15, "text": " Kofi"}], "error": null}
+{"id": "SYN-00061", "spans": [{"start": 33, "end": 35, "text": "Il"}, {"start": 35, "end": 45, "text": "se Van Dyk"}], "error": null}
+{"id": "SYN-00062", "spans": [{"start": 10, "end": 25, "text": " Joseph Nakogee"}], "error": null}
+{"id": "SYN-00063", "spans": [{"start": 10, "end": 23, "text": " Harjit Patel"}], "error": null}
+{"id": "SYN-00064", "spans": [], "error": null}
+{"id": "SYN-00065", "spans": [{"start": 33, "end": 45, "text": "Hodan Bekele"}], "error": null}
+{"id": "SYN-00066", "spans": [], "error": null}
+{"id": "SYN-00067", "spans": [], "error": null}
+{"id": "SYN-00068", "spans": [], "error": null}
+{"id": "SYN-00069", "spans": [{"start": 33, "end": 34, "text": "A"}, {"start": 34, "end": 36, "text": "yu"}], "error": null}
+{"id": "SYN-00070", "spans": [], "error": null}
+{"id": "SYN-00071", "spans": [{"start": 45, "end": 66, "text": " Francesca Karamanlis"}], "error": null}
+{"id": "SYN-00072", "spans": [], "error": null}
+{"id": "SYN-00073", "spans": [{"start": 24, "end": 50, "text": " Maria Cristina Pangilinan"}], "error": null}
+{"id": "SYN-00074", "spans": [{"start": 10, "end": 11, "text": " "}, {"start": 11, "end": 29, "text": "CHUKWUEMEKA KAMARA"}], "error": null}
+{"id": "SYN-00075", "spans": [], "error": null}
+{"id": "SYN-00076", "spans": [], "error": null}
+{"id": "SYN-00077", "spans": [], "error": null}
+{"id": "SYN-00078", "spans": [{"start": 12, "end": 19, "text": " Adaeze"}], "error": null}
+{"id": "SYN-00079", "spans": [], "error": null}
+{"id": "SYN-00080", "spans": [{"start": 7, "end": 36, "text": " JUAN CARLOS GARCÍA HERNÁNDEZ"}], "error": null}
+{"id": "SYN-00081", "spans": [{"start": 7, "end": 25, "text": " Andrii Bondarenko"}], "error": null}
+{"id": "SYN-00082", "spans": [{"start": 36, "end": 39, "text": " JO"}, {"start": 39, "end": 56, "text": "SÉE TREMBLAY-CÔTÉ"}], "error": null}
+{"id": "SYN-00083", "spans": [], "error": null}
+{"id": "SYN-00084", "spans": [{"start": 36, "end": 45, "text": " Baptiste"}], "error": null}
+{"id": "SYN-00085", "spans": [{"start": 26, "end": 29, "text": " CU"}, {"start": 29, "end": 42, "text": "THBERT LÉPINE"}], "error": null}
+{"id": "SYN-00086", "spans": [{"start": 10, "end": 18, "text": " J. Yoon"}], "error": null}
+{"id": "SYN-00087", "spans": [], "error": null}
+{"id": "SYN-00088", "spans": [], "error": null}
+{"id": "SYN-00089", "spans": [], "error": null}
+{"id": "SYN-00090", "spans": [{"start": 38, "end": 52, "text": " Minh Anh Phạm"}], "error": null}
+{"id": "SYN-00091", "spans": [{"start": 15, "end": 17, "text": "NK"}], "error": null}
+{"id": "SYN-00092", "spans": [{"start": 26, "end": 29, "text": " Jo"}, {"start": 29, "end": 45, "text": "ost van der Berg"}], "error": null}
+{"id": "SYN-00093", "spans": [{"start": 41, "end": 55, "text": "Delbert Okimaw"}], "error": null}
+{"id": "SYN-00094", "spans": [{"start": 34, "end": 43, "text": " Ferreira"}], "error": null}
+{"id": "SYN-00095", "spans": [{"start": 0, "end": 12, "text": "Hye-jin Jung"}], "error": null}
+{"id": "SYN-00096", "spans": [{"start": 7, "end": 13, "text": " Villa"}, {"start": 13, "end": 18, "text": "nueva"}], "error": null}
+{"id": "SYN-00097", "spans": [{"start": 12, "end": 31, "text": " Garfield Ramissoon"}], "error": null}
+{"id": "SYN-00098", "spans": [], "error": null}
+{"id": "SYN-00099", "spans": [{"start": 7, "end": 12, "text": " Wong"}, {"start": 13, "end": 21, "text": " Hoi Yan"}], "error": null}
+{"id": "SYN-00100", "spans": [{"start": 17, "end": 22, "text": " Yoon"}], "error": null}
+{"id": "SYN-00101", "spans": [{"start": 33, "end": 38, "text": " Arre"}], "error": null}
+{"id": "SYN-00102", "spans": [{"start": 41, "end": 63, "text": "Itzel García Hernández"}], "error": null}
+{"id": "SYN-00103", "spans": [{"start": 33, "end": 34, "text": "T"}, {"start": 34, "end": 38, "text": "igis"}, {"start": 38, "end": 46, "text": "t Hassna"}], "error": null}
+{"id": "SYN-00104", "spans": [{"start": 26, "end": 34, "text": " Suharti"}], "error": null}
+{"id": "SYN-00105", "spans": [{"start": 26, "end": 47, "text": " Fernanda Sousa Pinto"}], "error": null}
+{"id": "SYN-00106", "spans": [{"start": 9, "end": 10, "text": " "}, {"start": 10, "end": 27, "text": "hendrik von bülow"}], "error": null}
+{"id": "SYN-00107", "spans": [{"start": 33, "end": 53, "text": "Andrii Ivanov-Petrov"}], "error": null}
+{"id": "SYN-00108", "spans": [{"start": 30, "end": 35, "text": " JUST"}, {"start": 35, "end": 43, "text": "IN BROWN"}], "error": null}
+{"id": "SYN-00109", "spans": [], "error": null}
+{"id": "SYN-00110", "spans": [{"start": 11, "end": 31, "text": " Wouter van der Berg"}], "error": null}
+{"id": "SYN-00111", "spans": [{"start": 41, "end": 54, "text": "Norbert Morin"}], "error": null}
+{"id": "SYN-00112", "spans": [], "error": null}
+{"id": "SYN-00113", "spans": [], "error": null}
+{"id": "SYN-00114", "spans": [], "error": null}
+{"id": "SYN-00115", "spans": [{"start": 29, "end": 39, "text": " R. Santos"}], "error": null}
+{"id": "SYN-00116", "spans": [], "error": null}
+{"id": "SYN-00117", "spans": [{"start": 29, "end": 35, "text": " Kwame"}], "error": null}
+{"id": "SYN-00118", "spans": [{"start": 11, "end": 17, "text": " Rohan"}], "error": null}
+{"id": "SYN-00119", "spans": [{"start": 41, "end": 59, "text": "Arjun Sinh Dhillon"}], "error": null}
+{"id": "SYN-00120", "spans": [{"start": 38, "end": 53, "text": " Kenji Watanabe"}], "error": null}
+{"id": "SYN-00121", "spans": [{"start": 15, "end": 34, "text": " Francesca D'Angelo"}], "error": null}
+{"id": "SYN-00122", "spans": [{"start": 10, "end": 17, "text": " Wouter"}], "error": null}
+{"id": "SYN-00123", "spans": [{"start": 7, "end": 26, "text": " Gurpreet Rao-Mehta"}], "error": null}
+{"id": "SYN-00124", "spans": [], "error": null}
+{"id": "SYN-00125", "spans": [{"start": 0, "end": 16, "text": "Gonçalo Ferreira"}], "error": null}
+{"id": "SYN-00126", "spans": [{"start": 14, "end": 18, "text": " Gre"}, {"start": 18, "end": 20, "text": "te"}], "error": null}
+{"id": "SYN-00127", "spans": [{"start": 26, "end": 38, "text": " Eun-ji Kang"}], "error": null}
+{"id": "SYN-00128", "spans": [], "error": null}
+{"id": "SYN-00129", "spans": [{"start": 33, "end": 35, "text": "Ro"}, {"start": 35, "end": 46, "text": "han Francis"}], "error": null}
+{"id": "SYN-00130", "spans": [{"start": 36, "end": 38, "text": " A"}, {"start": 38, "end": 45, "text": "mbroise"}], "error": null}
+{"id": "SYN-00131", "spans": [{"start": 34, "end": 56, "text": " Andrés González-Pérez"}], "error": null}
+{"id": "SYN-00132", "spans": [], "error": null}
+{"id": "SYN-00133", "spans": [], "error": null}
+{"id": "SYN-00134", "spans": [], "error": null}
+{"id": "SYN-00135", "spans": [{"start": 10, "end": 30, "text": " Ibrahim Abou-Khalil"}], "error": null}
+{"id": "SYN-00136", "spans": [{"start": 10, "end": 30, "text": " Oluwaseun Coulibaly"}], "error": null}
+{"id": "SYN-00137", "spans": [{"start": 29, "end": 35, "text": " Morin"}, {"start": 36, "end": 44, "text": " Gabriel"}], "error": null}
+{"id": "SYN-00138", "spans": [{"start": 30, "end": 33, "text": " Il"}, {"start": 33, "end": 35, "text": "se"}], "error": null}
+{"id": "SYN-00139", "spans": [], "error": null}
+{"id": "SYN-00140", "spans": [], "error": null}
+{"id": "SYN-00141", "spans": [], "error": null}
+{"id": "SYN-00142", "spans": [{"start": 11, "end": 20, "text": " Bảo Ngọc"}], "error": null}
+{"id": "SYN-00143", "spans": [{"start": 18, "end": 23, "text": " Wang"}], "error": null}
+{"id": "SYN-00144", "spans": [{"start": 29, "end": 51, "text": " Philomene Laframboise"}], "error": null}
+{"id": "SYN-00145", "spans": [], "error": null}
+{"id": "SYN-00146", "spans": [], "error": null}
+{"id": "SYN-00147", "spans": [{"start": 17, "end": 29, "text": " Selam Farah"}], "error": null}
+{"id": "SYN-00148", "spans": [{"start": 10, "end": 11, "text": " "}, {"start": 11, "end": 26, "text": "THIAGO FERREIRA"}], "error": null}
+{"id": "SYN-00149", "spans": [{"start": 11, "end": 29, "text": " Andrii Bondarenko"}], "error": null}
+{"id": "SYN-00150", "spans": [{"start": 52, "end": 56, "text": " MIN"}, {"start": 56, "end": 66, "text": "H ANH ĐẶNG"}], "error": null}
+{"id": "SYN-00151", "spans": [], "error": null}
+{"id": "SYN-00152", "spans": [], "error": null}
+{"id": "SYN-00153", "spans": [{"start": 7, "end": 25, "text": " Aileen Villanueva"}], "error": null}
+{"id": "SYN-00154", "spans": [{"start": 41, "end": 56, "text": "Cuthbert Dumont"}], "error": null}
+{"id": "SYN-00155", "spans": [{"start": 7, "end": 30, "text": " Lee-Ann Hall-Mackenzie"}], "error": null}
+{"id": "SYN-00156", "spans": [{"start": 10, "end": 32, "text": " Juan Carlos Castañeda"}], "error": null}
+{"id": "SYN-00157", "spans": [], "error": null}
+{"id": "SYN-00158", "spans": [{"start": 15, "end": 30, "text": " Gurpreet Rahan"}], "error": null}
+{"id": "SYN-00159", "spans": [], "error": null}
+{"id": "SYN-00160", "spans": [{"start": 7, "end": 20, "text": " Dr Rao-Mehta"}], "error": null}
+{"id": "SYN-00161", "spans": [], "error": null}
+{"id": "SYN-00162", "spans": [], "error": null}
+{"id": "SYN-00163", "spans": [{"start": 7, "end": 23, "text": " Haruto Watanabe"}], "error": null}
+{"id": "SYN-00164", "spans": [{"start": 7, "end": 19, "text": " Liban Farah"}], "error": null}
+{"id": "SYN-00165", "spans": [], "error": null}
+{"id": "SYN-00166", "spans": [{"start": 29, "end": 45, "text": " Jesús Castañeda"}], "error": null}
+{"id": "SYN-00167", "spans": [{"start": 0, "end": 18, "text": "Chukwuemeka Ndiaye"}], "error": null}
+{"id": "SYN-00168", "spans": [{"start": 26, "end": 39, "text": " Nakamura Aoi"}], "error": null}
+{"id": "SYN-00169", "spans": [], "error": null}
+{"id": "SYN-00170", "spans": [{"start": 10, "end": 25, "text": " Hiba Nasrallah"}, {"start": 29, "end": 50, "text": " Marie-Jsoée Gauthier"}], "error": null}
+{"id": "SYN-00171", "spans": [{"start": 40, "end": 57, "text": " Kahnawake-Jacobs"}], "error": null}
+{"id": "SYN-00172", "spans": [], "error": null}
+{"id": "SYN-00173", "spans": [], "error": null}
+{"id": "SYN-00174", "spans": [{"start": 46, "end": 50, "text": " Roh"}, {"start": 50, "end": 61, "text": "an Baptiste"}], "error": null}
+{"id": "SYN-00175", "spans": [{"start": 24, "end": 40, "text": " Kerry-Ann Grant"}], "error": null}
+{"id": "SYN-00176", "spans": [], "error": null}
+{"id": "SYN-00177", "spans": [{"start": 7, "end": 21, "text": " Quốc Huy Đặng"}], "error": null}
+{"id": "SYN-00178", "spans": [{"start": 0, "end": 12, "text": "Mx. McCarthy"}], "error": null}
+{"id": "SYN-00179", "spans": [{"start": 7, "end": 20, "text": " Niamh McNeil"}], "error": null}
+{"id": "SYN-00180", "spans": [], "error": null}
+{"id": "SYN-00181", "spans": [{"start": 10, "end": 12, "text": " M"}, {"start": 12, "end": 26, "text": "x. Mohamed Ali"}], "error": null}
+{"id": "SYN-00182", "spans": [], "error": null}
+{"id": "SYN-00183", "spans": [{"start": 26, "end": 38, "text": " Quốc Huy Vũ"}], "error": null}
+{"id": "SYN-00184", "spans": [{"start": 8, "end": 12, "text": " FAR"}, {"start": 12, "end": 22, "text": "HAD KARIMI"}], "error": null}
+{"id": "SYN-00185", "spans": [{"start": 41, "end": 55, "text": " Liban Tesfaye"}], "error": null}
+{"id": "SYN-00186", "spans": [], "error": null}
+{"id": "SYN-00187", "spans": [{"start": 0, "end": 11, "text": "S. Campbell"}], "error": null}
+{"id": "SYN-00188", "spans": [], "error": null}
+{"id": "SYN-00189", "spans": [{"start": 7, "end": 11, "text": " Kyl"}, {"start": 11, "end": 24, "text": "e Fitzzgerald"}], "error": null}
+{"id": "SYN-00190", "spans": [], "error": null}
+{"id": "SYN-00191", "spans": [{"start": 35, "end": 36, "text": " "}, {"start": 36, "end": 46, "text": "ᓯ. Nutarak"}], "error": null}
+{"id": "SYN-00192", "spans": [{"start": 7, "end": 22, "text": " Rania Abu-Bakr"}], "error": null}
+{"id": "SYN-00193", "spans": [{"start": 35, "end": 50, "text": " Nirmala Desaai"}], "error": null}
+{"id": "SYN-00194", "spans": [{"start": 35, "end": 41, "text": " Ngozi"}], "error": null}
+{"id": "SYN-00195", "spans": [], "error": null}
+{"id": "SYN-00196", "spans": [], "error": null}
+{"id": "SYN-00197", "spans": [], "error": null}
+{"id": "SYN-00198", "spans": [], "error": null}
+{"id": "SYN-00199", "spans": [{"start": 14, "end": 36, "text": " Anne-Sophie Pelletier"}], "error": null}
+{"id": "SYN-00200", "spans": [{"start": 41, "end": 63, "text": "Alejandro Ibáñez Ortiz"}], "error": null}
+{"id": "SYN-00201", "spans": [{"start": 35, "end": 46, "text": " Aoi Suzuki"}], "error": null}
+{"id": "SYN-00202", "spans": [{"start": 33, "end": 34, "text": "K"}, {"start": 34, "end": 40, "text": "ilabuk"}, {"start": 41, "end": 44, "text": " Ak"}, {"start": 44, "end": 48, "text": "inis"}, {"start": 48, "end": 50, "text": "ie"}], "error": null}
+{"id": "SYN-00203", "spans": [{"start": 14, "end": 25, "text": " Zhihao Liu"}], "error": null}
+{"id": "SYN-00204", "spans": [], "error": null}
+{"id": "SYN-00205", "spans": [{"start": 35, "end": 37, "text": " A"}, {"start": 37, "end": 53, "text": "HMAD SHAH KARIMI"}], "error": null}
+{"id": "SYN-00206", "spans": [], "error": null}
+{"id": "SYN-00207", "spans": [], "error": null}
+{"id": "SYN-00208", "spans": [{"start": 10, "end": 29, "text": " senthilkumar singh"}], "error": null}
+{"id": "SYN-00209", "spans": [{"start": 45, "end": 61, "text": " Zdeněk Petrović"}], "error": null}
+{"id": "SYN-00210", "spans": [{"start": 0, "end": 15, "text": "haruto nakamura"}], "error": null}
+{"id": "SYN-00211", "spans": [{"start": 9, "end": 36, "text": " Tehoniekonhrathe Bear Robe"}], "error": null}
+{"id": "SYN-00212", "spans": [{"start": 10, "end": 21, "text": " Mx. Aquino"}], "error": null}
+{"id": "SYN-00213", "spans": [{"start": 26, "end": 42, "text": " Pieter de Vries"}], "error": null}
+{"id": "SYN-00214", "spans": [{"start": 0, "end": 17, "text": "Tamika Ramkissoon"}], "error": null}
+{"id": "SYN-00215", "spans": [{"start": 12, "end": 13, "text": " "}, {"start": 13, "end": 24, "text": "ᓯᐊᓯ Qavavau"}], "error": null}
+{"id": "SYN-00216", "spans": [{"start": 10, "end": 26, "text": " Winston Francis"}, {"start": 30, "end": 47, "text": " niamh o'sullivan"}], "error": null}
+{"id": "SYN-00217", "spans": [{"start": 26, "end": 43, "text": " Waseskun Okimmaw"}], "error": null}
+{"id": "SYN-00218", "spans": [{"start": 38, "end": 59, "text": " Lakshmi Venkataraman"}], "error": null}
+{"id": "SYN-00219", "spans": [{"start": 52, "end": 65, "text": " Watanabe Yui"}], "error": null}
+{"id": "SYN-00220", "spans": [{"start": 36, "end": 43, "text": " Wangmo"}], "error": null}
+{"id": "SYN-00221", "spans": [{"start": 10, "end": 25, "text": " Marlon Francis"}], "error": null}
+{"id": "SYN-00222", "spans": [{"start": 14, "end": 29, "text": " Maarten Jassen"}], "error": null}
+{"id": "SYN-00223", "spans": [{"start": 12, "end": 23, "text": " J. Van Dyk"}], "error": null}
+{"id": "SYN-00224", "spans": [{"start": 15, "end": 22, "text": " Tigist"}], "error": null}
+{"id": "SYN-00225", "spans": [{"start": 12, "end": 29, "text": " Parisa Mohammadi"}], "error": null}
+{"id": "SYN-00226", "spans": [{"start": 52, "end": 57, "text": " take"}, {"start": 57, "end": 70, "text": "shi takahashi"}], "error": null}
+{"id": "SYN-00227", "spans": [], "error": null}
+{"id": "SYN-00228", "spans": [{"start": 0, "end": 10, "text": "Mx. Nguyễn"}], "error": null}
+{"id": "SYN-00229", "spans": [{"start": 15, "end": 32, "text": " Antonio Di Marco"}], "error": null}
+{"id": "SYN-00230", "spans": [{"start": 30, "end": 35, "text": " Mary"}, {"start": 35, "end": 36, "text": "-"}, {"start": 36, "end": 38, "text": "Ka"}, {"start": 38, "end": 40, "text": "te"}], "error": null}
+{"id": "SYN-00231", "spans": [{"start": 0, "end": 9, "text": "P. McNeil"}], "error": null}
+{"id": "SYN-00232", "spans": [{"start": 30, "end": 35, "text": " Kavi"}, {"start": 35, "end": 38, "text": "tha"}], "error": null}
+{"id": "SYN-00233", "spans": [{"start": 11, "end": 24, "text": " O. Kovalenko"}, {"start": 32, "end": 36, "text": "enko"}], "error": null}
+{"id": "SYN-00234", "spans": [{"start": 10, "end": 17, "text": " Fraser"}, {"start": 18, "end": 22, "text": " Kyl"}, {"start": 22, "end": 23, "text": "e"}, {"start": 27, "end": 49, "text": " Paraskevi Dell'Aquila"}], "error": null}
+{"id": "SYN-00235", "spans": [{"start": 35, "end": 50, "text": " O'Reilly-Byrne"}, {"start": 51, "end": 58, "text": " Seamus"}], "error": null}
+{"id": "SYN-00236", "spans": [{"start": 29, "end": 44, "text": " Hiba Nasrallah"}], "error": null}
+{"id": "SYN-00237", "spans": [{"start": 10, "end": 32, "text": " Abdul Rahman Al-Sayed"}, {"start": 36, "end": 49, "text": " Fatima Saleh"}], "error": null}
+{"id": "SYN-00238", "spans": [], "error": null}
+{"id": "SYN-00239", "spans": [{"start": 11, "end": 23, "text": " Annie ᐊᑭᐊᒐᒃ"}], "error": null}
+{"id": "SYN-00240", "spans": [{"start": 30, "end": 47, "text": " Kavitha Raghavan"}], "error": null}
+{"id": "SYN-00241", "spans": [{"start": 14, "end": 33, "text": " USMAN VENKATARAMAN"}], "error": null}
+{"id": "SYN-00242", "spans": [], "error": null}
+{"id": "SYN-00243", "spans": [{"start": 3, "end": 13, "text": " Mohammadi"}], "error": null}
+{"id": "SYN-00244", "spans": [{"start": 17, "end": 31, "text": " CIARAN MCNEIL"}], "error": null}
+{"id": "SYN-00245", "spans": [{"start": 12, "end": 30, "text": " Mustafa El Haddad"}], "error": null}
+{"id": "SYN-00246", "spans": [{"start": 7, "end": 15, "text": " Mendoza"}, {"start": 16, "end": 26, "text": " Jose Mari"}], "error": null}
+{"id": "SYN-00247", "spans": [{"start": 34, "end": 48, "text": " Ali-Rez Popal"}], "error": null}
+{"id": "SYN-00248", "spans": [{"start": 26, "end": 41, "text": " Zahra Hosseini"}], "error": null}
+{"id": "SYN-00249", "spans": [{"start": 29, "end": 32, "text": " hy"}, {"start": 33, "end": 37, "text": "-jin"}], "error": null}
+{"id": "SYN-00250", "spans": [{"start": 11, "end": 26, "text": " Văn Minh Huỳnh"}, {"start": 29, "end": 31, "text": "hu"}, {"start": 32, "end": 34, "text": "nh"}], "error": null}
+{"id": "SYN-00251", "spans": [{"start": 12, "end": 30, "text": " Dawit Gebremedhin"}], "error": null}
+{"id": "SYN-00252", "spans": [{"start": 8, "end": 24, "text": " Winston Francis"}], "error": null}
+{"id": "SYN-00253", "spans": [{"start": 17, "end": 36, "text": " Kateryna Kovalenko"}, {"start": 44, "end": 48, "text": "enko"}], "error": null}
+{"id": "SYN-00254", "spans": [{"start": 52, "end": 65, "text": " Quốc Huy Bùi"}], "error": null}
+{"id": "SYN-00255", "spans": [{"start": 30, "end": 43, "text": " Delos Santos"}], "error": null}
+{"id": "SYN-00256", "spans": [{"start": 26, "end": 32, "text": " Muñoz"}, {"start": 33, "end": 41, "text": " Joaquín"}], "error": null}
+{"id": "SYN-00257", "spans": [{"start": 14, "end": 21, "text": " Akinis"}], "error": null}
+{"id": "SYN-00258", "spans": [{"start": 24, "end": 33, "text": " M. Reyes"}], "error": null}
+{"id": "SYN-00259", "spans": [{"start": 0, "end": 26, "text": "Ambroise Ouellette-Fiddler"}], "error": null}
+{"id": "SYN-00260", "spans": [], "error": null}
+{"id": "SYN-00261", "spans": [{"start": 29, "end": 34, "text": " Bear"}, {"start": 40, "end": 47, "text": " Ohnita"}], "error": null}
+{"id": "SYN-00262", "spans": [{"start": 0, "end": 7, "text": "Hendrik"}, {"start": 7, "end": 11, "text": " Sch"}, {"start": 11, "end": 16, "text": "röder"}], "error": null}
+{"id": "SYN-00263", "spans": [{"start": 11, "end": 22, "text": " Ahmad Shah"}], "error": null}
+{"id": "SYN-00264", "spans": [{"start": 14, "end": 15, "text": "."}, {"start": 15, "end": 23, "text": " Van Dyk"}, {"start": 29, "end": 32, "text": "dyk"}], "error": null}
+{"id": "SYN-00265", "spans": [{"start": 0, "end": 22, "text": "padraig o'reilly-byrne"}], "error": null}
+{"id": "SYN-00266", "spans": [{"start": 35, "end": 47, "text": " Phương Đặng"}], "error": null}
+{"id": "SYN-00267", "spans": [{"start": 10, "end": 17, "text": " Dakota"}], "error": null}
+{"id": "SYN-00268", "spans": [], "error": null}
+{"id": "SYN-00269", "spans": [{"start": 26, "end": 47, "text": " Marie-Ève Lafrenière"}], "error": null}
+{"id": "SYN-00270", "spans": [{"start": 41, "end": 59, "text": "NINGIUKULU IPEELEE"}], "error": null}
+{"id": "SYN-00271", "spans": [{"start": 12, "end": 20, "text": " S. Chen"}], "error": null}
+{"id": "SYN-00272", "spans": [{"start": 30, "end": 33, "text": " Ia"}, {"start": 33, "end": 44, "text": "in O Briain"}], "error": null}
+{"id": "SYN-00273", "spans": [{"start": 0, "end": 15, "text": "Manpreet Sharma"}], "error": null}
+{"id": "SYN-00274", "spans": [{"start": 7, "end": 26, "text": " Pitseolak Qumuatuq"}], "error": null}
+{"id": "SYN-00275", "spans": [{"start": 26, "end": 39, "text": " Amara Mensah"}], "error": null}
+{"id": "SYN-00276", "spans": [], "error": null}
+{"id": "SYN-00277", "spans": [{"start": 52, "end": 55, "text": " Ke"}, {"start": 55, "end": 70, "text": "isha Ramkissoon"}], "error": null}
+{"id": "SYN-00278", "spans": [], "error": null}
+{"id": "SYN-00279", "spans": [{"start": 41, "end": 64, "text": "Miikisew Running Rabbit"}], "error": null}
+{"id": "SYN-00280", "spans": [{"start": 46, "end": 48, "text": " M"}, {"start": 48, "end": 63, "text": "ónica Rodríguez"}], "error": null}
+{"id": "SYN-00281", "spans": [{"start": 11, "end": 17, "text": " T. Vũ"}], "error": null}
+{"id": "SYN-00282", "spans": [{"start": 41, "end": 54, "text": "Tigist Bekele"}], "error": null}
+{"id": "SYN-00283", "spans": [{"start": 12, "end": 20, "text": " Vũ Tuấn"}, {"start": 25, "end": 39, "text": " M. Kakekayash"}], "error": null}
+{"id": "SYN-00284", "spans": [], "error": null}
+{"id": "SYN-00285", "spans": [{"start": 41, "end": 57, "text": " Chiamaka Diallo"}], "error": null}
+{"id": "SYN-00286", "spans": [{"start": 29, "end": 42, "text": " Watanabe Yui"}], "error": null}
+{"id": "SYN-00287", "spans": [{"start": 52, "end": 66, "text": " klaus van dyk"}], "error": null}
+{"id": "SYN-00288", "spans": [], "error": null}
+{"id": "SYN-00289", "spans": [], "error": null}
+{"id": "SYN-00290", "spans": [{"start": 8, "end": 16, "text": " Ramírez"}, {"start": 17, "end": 28, "text": " María José"}], "error": null}
+{"id": "SYN-00291", "spans": [], "error": null}
+{"id": "SYN-00292", "spans": [{"start": 41, "end": 46, "text": "Layla"}], "error": null}
+{"id": "SYN-00293", "spans": [], "error": null}
+{"id": "SYN-00294", "spans": [], "error": null}
+{"id": "SYN-00295", "spans": [], "error": null}
+{"id": "SYN-00296", "spans": [], "error": null}
+{"id": "SYN-00297", "spans": [{"start": 7, "end": 23, "text": " Keisha Williams"}], "error": null}
+{"id": "SYN-00298", "spans": [], "error": null}
+{"id": "SYN-00299", "spans": [], "error": null}
+{"id": "SYN-00300", "spans": [{"start": 35, "end": 54, "text": " Rowena Villannueva"}], "error": null}
+{"id": "SYN-00301", "spans": [], "error": null}
+{"id": "SYN-00302", "spans": [{"start": 12, "end": 23, "text": " Suzuki Aoi"}], "error": null}
+{"id": "SYN-00303", "spans": [], "error": null}
+{"id": "SYN-00304", "spans": [{"start": 0, "end": 17, "text": "Vasiliki Di Marco"}], "error": null}
+{"id": "SYN-00305", "spans": [{"start": 7, "end": 15, "text": " Tuấn ũV"}], "error": null}
+{"id": "SYN-00306", "spans": [], "error": null}
+{"id": "SYN-00307", "spans": [{"start": 10, "end": 33, "text": " brandon hall-mackenzie"}], "error": null}
+{"id": "SYN-00308", "spans": [{"start": 15, "end": 34, "text": " Francesca Esposito"}], "error": null}
+{"id": "SYN-00309", "spans": [{"start": 39, "end": 44, "text": " Shah"}], "error": null}
+{"id": "SYN-00310", "spans": [{"start": 34, "end": 49, "text": " Akiko Nakamura"}], "error": null}
+{"id": "SYN-00311", "spans": [], "error": null}
+{"id": "SYN-00312", "spans": [], "error": null}
+{"id": "SYN-00313", "spans": [{"start": 35, "end": 50, "text": " Kavitha Sharma"}], "error": null}
+{"id": "SYN-00314", "spans": [{"start": 29, "end": 33, "text": " Gre"}, {"start": 33, "end": 44, "text": "te de Vries"}], "error": null}
+{"id": "SYN-00315", "spans": [], "error": null}
+{"id": "SYN-00316", "spans": [{"start": 52, "end": 68, "text": " Shirin Hosseini"}], "error": null}
+{"id": "SYN-00317", "spans": [{"start": 29, "end": 37, "text": " Persaud"}, {"start": 38, "end": 44, "text": " Odane"}], "error": null}
+{"id": "SYN-00318", "spans": [{"start": 7, "end": 17, "text": " W. Swampy"}], "error": null}
+{"id": "SYN-00319", "spans": [{"start": 10, "end": 24, "text": " Ryan Robinson"}], "error": null}
+{"id": "SYN-00320", "spans": [{"start": 10, "end": 29, "text": " Farncesca D'Angelo"}, {"start": 33, "end": 44, "text": " TUẤN HOÀNG"}], "error": null}
+{"id": "SYN-00321", "spans": [{"start": 35, "end": 51, "text": " joseph moosomin"}], "error": null}
+{"id": "SYN-00322", "spans": [{"start": 14, "end": 18, "text": " Con"}, {"start": 18, "end": 29, "text": "nor Stewart"}], "error": null}
+{"id": "SYN-00323", "spans": [], "error": null}
+{"id": "SYN-00324", "spans": [{"start": 12, "end": 23, "text": " João Silva"}, {"start": 28, "end": 42, "text": " Mei Ling Chan"}], "error": null}
+{"id": "SYN-00325", "spans": [{"start": 10, "end": 23, "text": " rohan clarke"}], "error": null}
+{"id": "SYN-00326", "spans": [{"start": 10, "end": 11, "text": " "}, {"start": 11, "end": 23, "text": "TIGIST OSMAN"}], "error": null}
+{"id": "SYN-00327", "spans": [{"start": 12, "end": 30, "text": " C. Running Rabbit"}], "error": null}
+{"id": "SYN-00328", "spans": [{"start": 0, "end": 26, "text": "Mélanie Beauchesne-Ouellet"}], "error": null}
+{"id": "SYN-00329", "spans": [{"start": 7, "end": 21, "text": " Eoin Ó Briain"}], "error": null}
+{"id": "SYN-00330", "spans": [{"start": 10, "end": 27, "text": " joão sousa pinto"}], "error": null}
+{"id": "SYN-00331", "spans": [], "error": null}
+{"id": "SYN-00332", "spans": [], "error": null}
+{"id": "SYN-00333", "spans": [], "error": null}
+{"id": "SYN-00334", "spans": [], "error": null}
+{"id": "SYN-00335", "spans": [{"start": 14, "end": 27, "text": " Akiko Suzuki"}], "error": null}
+{"id": "SYN-00336", "spans": [{"start": 17, "end": 41, "text": " Tehoniekonhrathe Swampy"}, {"start": 56, "end": 59, "text": "the"}, {"start": 63, "end": 65, "text": "mp"}], "error": null}
+{"id": "SYN-00337", "spans": [{"start": 11, "end": 14, "text": " Og"}, {"start": 14, "end": 20, "text": "unleye"}], "error": null}
+{"id": "SYN-00338", "spans": [], "error": null}
+{"id": "SYN-00339", "spans": [{"start": 0, "end": 16, "text": "Mary-Kate Fraser"}], "error": null}
+{"id": "SYN-00340", "spans": [{"start": 35, "end": 50, "text": " Jürgen Janssen"}], "error": null}
+{"id": "SYN-00341", "spans": [{"start": 11, "end": 24, "text": " Joy Bautista"}], "error": null}
+{"id": "SYN-00342", "spans": [{"start": 10, "end": 27, "text": " Zaahra Mohammadi"}, {"start": 31, "end": 48, "text": " Jürgen von Bülow"}], "error": null}
+{"id": "SYN-00343", "spans": [{"start": 7, "end": 10, "text": " SE"}, {"start": 10, "end": 18, "text": "LAM JAMA"}], "error": null}
+{"id": "SYN-00344", "spans": [], "error": null}
+{"id": "SYN-00345", "spans": [{"start": 17, "end": 25, "text": " Mendoza"}], "error": null}
+{"id": "SYN-00346", "spans": [{"start": 35, "end": 49, "text": " Kenji Suzukki"}], "error": null}
+{"id": "SYN-00347", "spans": [], "error": null}
+{"id": "SYN-00348", "spans": [{"start": 12, "end": 25, "text": " Papadopoulos"}, {"start": 26, "end": 36, "text": " Dimitrios"}], "error": null}
+{"id": "SYN-00349", "spans": [{"start": 10, "end": 18, "text": " Suharti"}], "error": null}
+{"id": "SYN-00350", "spans": [], "error": null}
+{"id": "SYN-00351", "spans": [{"start": 0, "end": 28, "text": "juan carlos garcía hernández"}], "error": null}
+{"id": "SYN-00352", "spans": [{"start": 10, "end": 16, "text": " Saleh"}], "error": null}
+{"id": "SYN-00353", "spans": [], "error": null}
+{"id": "SYN-00354", "spans": [{"start": 12, "end": 18, "text": " Ngozi"}], "error": null}
+{"id": "SYN-00355", "spans": [{"start": 33, "end": 36, "text": "Do-"}, {"start": 36, "end": 44, "text": "hyun Han"}], "error": null}
+{"id": "SYN-00356", "spans": [{"start": 29, "end": 38, "text": " Đức Trần"}], "error": null}
+{"id": "SYN-00357", "spans": [], "error": null}
+{"id": "SYN-00358", "spans": [{"start": 14, "end": 25, "text": " D. De Luca"}], "error": null}
+{"id": "SYN-00359", "spans": [{"start": 30, "end": 40, "text": " A. Suzuki"}], "error": null}
+{"id": "SYN-00360", "spans": [], "error": null}
+{"id": "SYN-00361", "spans": [{"start": 7, "end": 9, "text": " W"}, {"start": 9, "end": 25, "text": "OJCIECH PETROVIĆ"}], "error": null}
+{"id": "SYN-00362", "spans": [{"start": 7, "end": 24, "text": " A. Ivanov-Petrov"}], "error": null}
+{"id": "SYN-00363", "spans": [{"start": 10, "end": 17, "text": " Suzuki"}, {"start": 18, "end": 23, "text": " Sota"}, {"start": 27, "end": 29, "text": " B"}, {"start": 29, "end": 40, "text": "ùi Minh Anh"}], "error": null}
+{"id": "SYN-00364", "spans": [{"start": 34, "end": 47, "text": " R. Sivakumar"}], "error": null}
+{"id": "SYN-00365", "spans": [{"start": 7, "end": 25, "text": " A. O'Reilly-Byrne"}], "error": null}
+{"id": "SYN-00366", "spans": [{"start": 7, "end": 22, "text": " Svetlana Noawk"}], "error": null}
+{"id": "SYN-00367", "spans": [{"start": 7, "end": 25, "text": " Rodelo Villanueva"}], "error": null}
+{"id": "SYN-00368", "spans": [{"start": 35, "end": 47, "text": " Park Su-bin"}], "error": null}
+{"id": "SYN-00369", "spans": [{"start": 9, "end": 18, "text": " D'Angelo"}, {"start": 19, "end": 28, "text": " Giuseppe"}], "error": null}
+{"id": "SYN-00370", "spans": [{"start": 33, "end": 51, "text": "Jun-Jun Villanueva"}], "error": null}
+{"id": "SYN-00371", "spans": [{"start": 35, "end": 41, "text": " Megan"}], "error": null}
+{"id": "SYN-00372", "spans": [{"start": 9, "end": 20, "text": " A. Ashevak"}], "error": null}
+{"id": "SYN-00373", "spans": [{"start": 11, "end": 26, "text": " Chun Kit Leung"}], "error": null}
+{"id": "SYN-00374", "spans": [{"start": 45, "end": 62, "text": " Gonçalo da Costa"}], "error": null}
+{"id": "SYN-00375", "spans": [{"start": 0, "end": 20, "text": "Jean-Baptiste Traore"}], "error": null}
+{"id": "SYN-00376", "spans": [{"start": 33, "end": 35, "text": "Hy"}, {"start": 35, "end": 45, "text": "e-jin Yoon"}], "error": null}
+{"id": "SYN-00377", "spans": [], "error": null}
+{"id": "SYN-00378", "spans": [{"start": 10, "end": 13, "text": " ma"}, {"start": 14, "end": 29, "text": "gorzata popescu"}], "error": null}
+{"id": "SYN-00379", "spans": [{"start": 35, "end": 47, "text": " priya singh"}], "error": null}
+{"id": "SYN-00380", "spans": [], "error": null}
+{"id": "SYN-00381", "spans": [], "error": null}
+{"id": "SYN-00382", "spans": [{"start": 10, "end": 21, "text": " Bo Ngọc Vũ"}], "error": null}
+{"id": "SYN-00383", "spans": [{"start": 33, "end": 37, "text": "Nade"}, {"start": 37, "end": 39, "text": "au"}, {"start": 40, "end": 46, "text": " Marie"}, {"start": 47, "end": 52, "text": "Josée"}], "error": null}
+{"id": "SYN-00384", "spans": [{"start": 10, "end": 30, "text": " ELENI CHRISTODOULOU"}], "error": null}
+{"id": "SYN-00385", "spans": [], "error": null}
+{"id": "SYN-00386", "spans": [{"start": 33, "end": 38, "text": " Chan"}], "error": null}
+{"id": "SYN-00387", "spans": [], "error": null}
+{"id": "SYN-00388", "spans": [], "error": null}
+{"id": "SYN-00389", "spans": [], "error": null}
+{"id": "SYN-00390", "spans": [], "error": null}
+{"id": "SYN-00391", "spans": [], "error": null}
+{"id": "SYN-00392", "spans": [{"start": 35, "end": 55, "text": " Pauloosie Tunnillie"}], "error": null}
+{"id": "SYN-00393", "spans": [{"start": 41, "end": 54, "text": "Hannah Clarke"}], "error": null}
+{"id": "SYN-00394", "spans": [], "error": null}
+{"id": "SYN-00395", "spans": [{"start": 29, "end": 40, "text": " M. Ramdial"}], "error": null}
+{"id": "SYN-00396", "spans": [{"start": 29, "end": 36, "text": " F. Eze"}], "error": null}
+{"id": "SYN-00397", "spans": [], "error": null}
+{"id": "SYN-00398", "spans": [{"start": 36, "end": 51, "text": " Van Minh Huynh"}], "error": null}
+{"id": "SYN-00399", "spans": [{"start": 11, "end": 14, "text": " Me"}, {"start": 14, "end": 15, "text": "e"}, {"start": 15, "end": 19, "text": "ches"}], "error": null}
+{"id": "SYN-00400", "spans": [{"start": 29, "end": 39, "text": " W. Okimaw"}], "error": null}
+{"id": "SYN-00401", "spans": [{"start": 48, "end": 49, "text": "."}, {"start": 49, "end": 55, "text": " Huỳnh"}], "error": null}
+{"id": "SYN-00402", "spans": [], "error": null}
+{"id": "SYN-00403", "spans": [{"start": 43, "end": 53, "text": " L'Heureux"}], "error": null}
+{"id": "SYN-00404", "spans": [{"start": 0, "end": 12, "text": "tamika baile"}], "error": null}
+{"id": "SYN-00405", "spans": [{"start": 35, "end": 48, "text": " Seo-yeon Kim"}], "error": null}
+{"id": "SYN-00406", "spans": [{"start": 0, "end": 2, "text": "Ia"}, {"start": 2, "end": 14, "text": "in MacDonald"}], "error": null}
+{"id": "SYN-00407", "spans": [{"start": 12, "end": 16, "text": " Gre"}, {"start": 16, "end": 26, "text": "te Van Dyk"}], "error": null}
+{"id": "SYN-00408", "spans": [{"start": 11, "end": 25, "text": " Jerome Santos"}], "error": null}
+{"id": "SYN-00409", "spans": [{"start": 52, "end": 68, "text": " winston francis"}], "error": null}
+{"id": "SYN-00410", "spans": [{"start": 11, "end": 14, "text": " Se"}, {"start": 14, "end": 23, "text": "lam Osman"}], "error": null}
+{"id": "SYN-00411", "spans": [{"start": 10, "end": 20, "text": " Castañeda"}, {"start": 21, "end": 33, "text": " Juan Carlos"}], "error": null}
+{"id": "SYN-00412", "spans": [{"start": 7, "end": 9, "text": " N"}, {"start": 9, "end": 18, "text": "kurunziza"}, {"start": 19, "end": 22, "text": " Ko"}, {"start": 22, "end": 24, "text": "fi"}], "error": null}
+{"id": "SYN-00413", "spans": [], "error": null}
+{"id": "SYN-00414", "spans": [{"start": 35, "end": 48, "text": " Deepika Gill"}], "error": null}
+{"id": "SYN-00415", "spans": [{"start": 19, "end": 30, "text": " Jean Untel"}], "error": null}
+{"id": "SYN-00416", "spans": [{"start": 15, "end": 32, "text": " Nour Ben Youssef"}], "error": null}
+{"id": "SYN-00417", "spans": [{"start": 7, "end": 24, "text": " Ryan Taylor-Reid"}], "error": null}
+{"id": "SYN-00418", "spans": [{"start": 10, "end": 24, "text": " Jun-uJn Reyes"}, {"start": 28, "end": 42, "text": " Lau, Mei Ling"}], "error": null}
+{"id": "SYN-00419", "spans": [{"start": 2, "end": 3, "text": "."}, {"start": 3, "end": 13, "text": " Rodrigues"}], "error": null}
+{"id": "SYN-00420", "spans": [{"start": 33, "end": 38, "text": "Maria"}, {"start": 38, "end": 48, "text": "m Ghorbani"}], "error": null}
+{"id": "SYN-00421", "spans": [{"start": 41, "end": 52, "text": "M. Al-Sayed"}], "error": null}
+{"id": "SYN-00422", "spans": [{"start": 33, "end": 36, "text": "Har"}, {"start": 36, "end": 39, "text": "uto"}], "error": null}
+{"id": "SYN-00423", "spans": [], "error": null}
+{"id": "SYN-00424", "spans": [{"start": 26, "end": 40, "text": " Tamika Clarke"}], "error": null}
+{"id": "SYN-00425", "spans": [{"start": 30, "end": 42, "text": " J. de Vries"}], "error": null}
+{"id": "SYN-00426", "spans": [], "error": null}
+{"id": "SYN-00427", "spans": [{"start": 11, "end": 17, "text": " Clark"}, {"start": 17, "end": 18, "text": "e"}], "error": null}
+{"id": "SYN-00428", "spans": [], "error": null}
+{"id": "SYN-00429", "spans": [{"start": 35, "end": 48, "text": " CHIAMAKA EZE"}], "error": null}
+{"id": "SYN-00430", "spans": [{"start": 7, "end": 17, "text": " Jose Mari"}], "error": null}
+{"id": "SYN-00431", "spans": [], "error": null}
+{"id": "SYN-00432", "spans": [{"start": 34, "end": 37, "text": "jit"}], "error": null}
+{"id": "SYN-00433", "spans": [{"start": 26, "end": 29, "text": " Ty"}, {"start": 29, "end": 39, "text": "ler Murray"}], "error": null}
+{"id": "SYN-00434", "spans": [{"start": 26, "end": 40, "text": " Joao da Costa"}], "error": null}
+{"id": "SYN-00435", "spans": [{"start": 10, "end": 20, "text": " M. Bailey"}], "error": null}
+{"id": "SYN-00436", "spans": [], "error": null}
+{"id": "SYN-00437", "spans": [{"start": 12, "end": 13, "text": " "}, {"start": 13, "end": 27, "text": "ᐱᑦᓯᐅᓚᒃ ipeelee"}], "error": null}
+{"id": "SYN-00438", "spans": [{"start": 9, "end": 19, "text": " Sota Sato"}], "error": null}
+{"id": "SYN-00439", "spans": [{"start": 15, "end": 31, "text": " Kateri Cardinal"}], "error": null}
+{"id": "SYN-00440", "spans": [], "error": null}
+{"id": "SYN-00441", "spans": [{"start": 15, "end": 21, "text": " Lhamo"}], "error": null}
+{"id": "SYN-00442", "spans": [{"start": 52, "end": 72, "text": " Saoirsse O'Sullivan"}], "error": null}
+{"id": "SYN-00443", "spans": [{"start": 7, "end": 20, "text": " Joaquín Peña"}], "error": null}
+{"id": "SYN-00444", "spans": [{"start": 34, "end": 52, "text": " MARGUERITE DUMONT"}], "error": null}
+{"id": "SYN-00445", "spans": [], "error": null}
+{"id": "SYN-00446", "spans": [{"start": 15, "end": 30, "text": " Rémi Ste-Marie"}], "error": null}
+{"id": "SYN-00447", "spans": [{"start": 15, "end": 27, "text": " Kevin Yeung"}], "error": null}
+{"id": "SYN-00448", "spans": [{"start": 10, "end": 17, "text": " Jing 李"}, {"start": 25, "end": 30, "text": " Gill"}], "error": null}
+{"id": "SYN-00449", "spans": [{"start": 35, "end": 52, "text": " Layla ibn Rashid"}], "error": null}
+{"id": "SYN-00450", "spans": [{"start": 0, "end": 15, "text": "Jennifer Taylor"}], "error": null}
+{"id": "SYN-00451", "spans": [{"start": 10, "end": 23, "text": " Eun-jii Jang"}, {"start": 27, "end": 44, "text": " Andres Del Valle"}], "error": null}
+{"id": "SYN-00452", "spans": [{"start": 35, "end": 45, "text": " Alejandro"}], "error": null}
+{"id": "SYN-00453", "spans": [{"start": 38, "end": 41, "text": " Ch"}, {"start": 41, "end": 54, "text": "loé L'Heureux"}], "error": null}
+{"id": "SYN-00454", "spans": [{"start": 30, "end": 36, "text": " Andri"}, {"start": 36, "end": 49, "text": "i Szczepanski"}], "error": null}
+{"id": "SYN-00455", "spans": [{"start": 11, "end": 23, "text": " jason huang"}], "error": null}
+{"id": "SYN-00456", "spans": [{"start": 52, "end": 70, "text": " Vasiliki D'Angelo"}], "error": null}
+{"id": "SYN-00457", "spans": [{"start": 14, "end": 33, "text": " KEISHA JEAN-PIERRE"}], "error": null}
+{"id": "SYN-00458", "spans": [], "error": null}
+{"id": "SYN-00459", "spans": [{"start": 46, "end": 61, "text": " Winston Clarke"}], "error": null}
+{"id": "SYN-00460", "spans": [], "error": null}
+{"id": "SYN-00461", "spans": [], "error": null}
+{"id": "SYN-00462", "spans": [{"start": 9, "end": 21, "text": " F. Ferreira"}], "error": null}
+{"id": "SYN-00463", "spans": [], "error": null}
+{"id": "SYN-00464", "spans": [{"start": 10, "end": 20, "text": " Conceição"}], "error": null}
+{"id": "SYN-00465", "spans": [{"start": 24, "end": 42, "text": " Jaypeete Akeeagok"}], "error": null}
+{"id": "SYN-00466", "spans": [{"start": 15, "end": 33, "text": " Aïssatou Ogunleye"}], "error": null}
+{"id": "SYN-00467", "spans": [], "error": null}
+{"id": "SYN-00468", "spans": [{"start": 10, "end": 25, "text": " Kenji Watanabe"}, {"start": 29, "end": 39, "text": " Dela Cruz"}, {"start": 40, "end": 47, "text": " Aileen"}], "error": null}
+{"id": "SYN-00469", "spans": [], "error": null}
+{"id": "SYN-00470", "spans": [{"start": 12, "end": 22, "text": " A. Arreak"}], "error": null}
+{"id": "SYN-00471", "spans": [{"start": 41, "end": 47, "text": "Diallo"}, {"start": 48, "end": 58, "text": " Oluwaseun"}], "error": null}
+{"id": "SYN-00472", "spans": [{"start": 41, "end": 60, "text": "Abdul Rahman Hamdan"}], "error": null}
+{"id": "SYN-00473", "spans": [{"start": 11, "end": 18, "text": " Mirela"}], "error": null}
+{"id": "SYN-00474", "spans": [{"start": 8, "end": 9, "text": " "}, {"start": 9, "end": 17, "text": "bong rey"}], "error": null}
+{"id": "SYN-00475", "spans": [{"start": 14, "end": 16, "text": " a"}, {"start": 16, "end": 20, "text": "mbro"}, {"start": 20, "end": 32, "text": "ise belcourt"}], "error": null}
+{"id": "SYN-00476", "spans": [], "error": null}
+{"id": "SYN-00477", "spans": [{"start": 15, "end": 26, "text": " Desjarlais"}, {"start": 27, "end": 35, "text": " Gabriel"}], "error": null}
+{"id": "SYN-00478", "spans": [{"start": 52, "end": 56, "text": " KON"}, {"start": 60, "end": 77, "text": "TINOS DELL'AQUILA"}], "error": null}
+{"id": "SYN-00479", "spans": [{"start": 26, "end": 39, "text": " HODAN HASSAN"}], "error": null}
+{"id": "SYN-00480", "spans": [{"start": 7, "end": 25, "text": " Siobhan MacDonald"}], "error": null}
+{"id": "SYN-00481", "spans": [{"start": 11, "end": 33, "text": " Paraskevi Dell'Aquila"}, {"start": 42, "end": 44, "text": "vi"}, {"start": 45, "end": 55, "text": "dellaquila"}], "error": null}
+{"id": "SYN-00482", "spans": [{"start": 29, "end": 44, "text": " Hodann Tesfaye"}], "error": null}
+{"id": "SYN-00483", "spans": [{"start": 41, "end": 56, "text": " Gabriel Fleury"}], "error": null}
+{"id": "SYN-00484", "spans": [{"start": 0, "end": 12, "text": "Kang Min-jun"}], "error": null}
+{"id": "SYN-00485", "spans": [{"start": 14, "end": 25, "text": " Suzuki Aoi"}], "error": null}
+{"id": "SYN-00486", "spans": [{"start": 52, "end": 65, "text": " Ravn Meeches"}], "error": null}
+{"id": "SYN-00487", "spans": [{"start": 35, "end": 50, "text": " yuki kobayashi"}], "error": null}
+{"id": "SYN-00488", "spans": [{"start": 29, "end": 32, "text": " Wo"}, {"start": 32, "end": 46, "text": "uter von Bulow"}], "error": null}
+{"id": "SYN-00489", "spans": [{"start": 0, "end": 21, "text": "Agnieszka Szczepański"}], "error": null}
+{"id": "SYN-00490", "spans": [{"start": 49, "end": 52, "text": " Di"}, {"start": 52, "end": 62, "text": "maculangan"}], "error": null}
+{"id": "SYN-00491", "spans": [{"start": 35, "end": 40, "text": " Yoon"}, {"start": 41, "end": 49, "text": " Jae-won"}], "error": null}
+{"id": "SYN-00492", "spans": [{"start": 15, "end": 27, "text": " Bùi Thị Lan"}], "error": null}
+{"id": "SYN-00493", "spans": [{"start": 33, "end": 35, "text": "Gi"}, {"start": 35, "end": 51, "text": "ulia Dell'Aquila"}], "error": null}
+{"id": "SYN-00494", "spans": [{"start": 7, "end": 19, "text": " Su-bin Kang"}], "error": null}
+{"id": "SYN-00495", "spans": [{"start": 34, "end": 46, "text": " yuki tanaka"}], "error": null}
+{"id": "SYN-00496", "spans": [{"start": 56, "end": 62, "text": " Silva"}], "error": null}
+{"id": "SYN-00497", "spans": [{"start": 45, "end": 61, "text": " Dmitri Petrović"}], "error": null}
+{"id": "SYN-00498", "spans": [{"start": 10, "end": 21, "text": " Leung Jing"}], "error": null}
+{"id": "SYN-00499", "spans": [], "error": null}
+{"id": "SYN-00500", "spans": [{"start": 35, "end": 54, "text": " Oleksandr Petrovic"}], "error": null}
+{"id": "SYN-00501", "spans": [], "error": null}
+{"id": "SYN-00502", "spans": [], "error": null}
+{"id": "SYN-00503", "spans": [{"start": 0, "end": 7, "text": "Hendrik"}], "error": null}
+{"id": "SYN-00504", "spans": [{"start": 18, "end": 28, "text": "John Smith"}], "error": null}
+{"id": "SYN-00505", "spans": [{"start": 35, "end": 40, "text": " Shir"}, {"start": 40, "end": 49, "text": "in Rahimi"}], "error": null}
+{"id": "SYN-00506", "spans": [{"start": 10, "end": 24, "text": " rohit qureshi"}], "error": null}
+{"id": "SYN-00507", "spans": [{"start": 38, "end": 57, "text": " Oleksandr Kowalzyk"}], "error": null}
+{"id": "SYN-00508", "spans": [{"start": 35, "end": 43, "text": " Sukarno"}], "error": null}
+{"id": "SYN-00509", "spans": [], "error": null}
+{"id": "SYN-00510", "spans": [{"start": 29, "end": 31, "text": " E"}, {"start": 31, "end": 41, "text": "un-ji Yoon"}], "error": null}
+{"id": "SYN-00511", "spans": [{"start": 26, "end": 45, "text": " Itzel Ibanez Ortiz"}], "error": null}
+{"id": "SYN-00512", "spans": [{"start": 14, "end": 24, "text": " Zhihao Xu"}], "error": null}
+{"id": "SYN-00513", "spans": [{"start": 12, "end": 27, "text": " JOSÉE LÉVESQUE"}], "error": null}
+{"id": "SYN-00514", "spans": [{"start": 10, "end": 12, "text": " A"}, {"start": 12, "end": 14, "text": "HM"}, {"start": 14, "end": 27, "text": "AD SHAH POPAL"}], "error": null}
+{"id": "SYN-00515", "spans": [{"start": 46, "end": 58, "text": " Seo Ji-yeon"}], "error": null}
+{"id": "SYN-00516", "spans": [{"start": 14, "end": 33, "text": " Ahmad Shah Rahhimi"}], "error": null}
+{"id": "SYN-00517", "spans": [], "error": null}
+{"id": "SYN-00518", "spans": [{"start": 34, "end": 53, "text": " Geneviève Bouchard"}], "error": null}
+{"id": "SYN-00519", "spans": [{"start": 17, "end": 32, "text": " Luis Rodrigues"}], "error": null}
+{"id": "SYN-00520", "spans": [{"start": 10, "end": 19, "text": " Ogunleye"}, {"start": 20, "end": 32, "text": " Chukwuemeka"}, {"start": 36, "end": 55, "text": " salvatore d'angelo"}], "error": null}
+{"id": "SYN-00521", "spans": [{"start": 17, "end": 26, "text": " Akinisie"}], "error": null}
+{"id": "SYN-00522", "spans": [{"start": 29, "end": 46, "text": " SIOBHAN MCCARTHY"}], "error": null}
+{"id": "SYN-00523", "spans": [], "error": null}
+{"id": "SYN-00524", "spans": [{"start": 8, "end": 20, "text": " Anne-Sophie"}], "error": null}
+{"id": "SYN-00525", "spans": [{"start": 30, "end": 33, "text": " No"}, {"start": 33, "end": 44, "text": "ur Al Masri"}], "error": null}
+{"id": "SYN-00526", "spans": [{"start": 38, "end": 61, "text": " Jean-Sébastien Cormier"}], "error": null}
+{"id": "SYN-00527", "spans": [{"start": 35, "end": 54, "text": " SHIRIN TEHRANI-RAD"}], "error": null}
+{"id": "SYN-00528", "spans": [{"start": 12, "end": 32, "text": " Antonio Dell'Aquila"}], "error": null}
+{"id": "SYN-00529", "spans": [{"start": 35, "end": 49, "text": " NODIN MEECHES"}], "error": null}
+{"id": "SYN-00530", "spans": [{"start": 0, "end": 11, "text": "Chukwuemeka"}], "error": null}
+{"id": "SYN-00531", "spans": [{"start": 10, "end": 22, "text": " Seo Ji-yeon"}], "error": null}
+{"id": "SYN-00532", "spans": [{"start": 33, "end": 34, "text": "K"}, {"start": 34, "end": 36, "text": "wa"}, {"start": 36, "end": 48, "text": "me Coulibaly"}], "error": null}
+{"id": "SYN-00533", "spans": [{"start": 24, "end": 34, "text": " Đỗ Phương"}], "error": null}
+{"id": "SYN-00534", "spans": [], "error": null}
+{"id": "SYN-00535", "spans": [{"start": 12, "end": 31, "text": " ibrahim abdel aziz"}], "error": null}
+{"id": "SYN-00536", "spans": [{"start": 0, "end": 17, "text": "Hiral Kaur Sandhu"}], "error": null}
+{"id": "SYN-00537", "spans": [{"start": 35, "end": 49, "text": " Jürgen Müller"}], "error": null}
+{"id": "SYN-00538", "spans": [{"start": 33, "end": 40, "text": "Marivic"}], "error": null}
+{"id": "SYN-00539", "spans": [], "error": null}
+{"id": "SYN-00540", "spans": [{"start": 17, "end": 32, "text": " Tsang Mei Ling"}, {"start": 39, "end": 43, "text": "sang"}], "error": null}
+{"id": "SYN-00541", "spans": [{"start": 10, "end": 26, "text": " D. Papadopoulos"}], "error": null}
+{"id": "SYN-00542", "spans": [{"start": 10, "end": 27, "text": " HARUTO KOBAYASHI"}, {"start": 31, "end": 47, "text": " Uqittuq Kilabuk"}], "error": null}
+{"id": "SYN-00543", "spans": [], "error": null}
+{"id": "SYN-00544", "spans": [{"start": 12, "end": 22, "text": " Fatoumata"}], "error": null}
+{"id": "SYN-00545", "spans": [{"start": 7, "end": 26, "text": " Mariam Tehrani-Rad"}], "error": null}
+{"id": "SYN-00546", "spans": [{"start": 11, "end": 20, "text": " Đặng Đức"}], "error": null}
+{"id": "SYN-00547", "spans": [{"start": 10, "end": 24, "text": " parisa karimi"}, {"start": 28, "end": 43, "text": " Rafiqul Sharma"}], "error": null}
+{"id": "SYN-00548", "spans": [{"start": 10, "end": 18, "text": " Tahmina"}], "error": null}
+{"id": "SYN-00549", "spans": [{"start": 8, "end": 14, "text": " Aoife"}], "error": null}
+{"id": "SYN-00550", "spans": [{"start": 36, "end": 47, "text": " Reza Amiri"}], "error": null}
+{"id": "SYN-00551", "spans": [{"start": 0, "end": 16, "text": "Aïssatou Traooré"}], "error": null}
+{"id": "SYN-00552", "spans": [{"start": 34, "end": 55, "text": " antonio papadopoulos"}], "error": null}
+{"id": "SYN-00553", "spans": [{"start": 7, "end": 29, "text": " ABDULLAHI GEBREMEDHIN"}], "error": null}
+{"id": "SYN-00554", "spans": [{"start": 10, "end": 24, "text": " Inês Ferreira"}], "error": null}
+{"id": "SYN-00555", "spans": [{"start": 26, "end": 40, "text": " A. Shevchenko"}], "error": null}
+{"id": "SYN-00556", "spans": [{"start": 35, "end": 46, "text": " L. Mansour"}], "error": null}
+{"id": "SYN-00557", "spans": [{"start": 7, "end": 9, "text": " G"}, {"start": 9, "end": 17, "text": ". Bailey"}], "error": null}
+{"id": "SYN-00558", "spans": [], "error": null}
+{"id": "SYN-00559", "spans": [{"start": 36, "end": 50, "text": " Mariana Silva"}], "error": null}
+{"id": "SYN-00560", "spans": [], "error": null}
+{"id": "SYN-00561", "spans": [{"start": 35, "end": 51, "text": " Chloé Arsenault"}], "error": null}
+{"id": "SYN-00562", "spans": [{"start": 35, "end": 49, "text": " Parisa Rahimi"}], "error": null}
+{"id": "SYN-00563", "spans": [{"start": 0, "end": 17, "text": "DELBERT CROWCHILD"}], "error": null}
+{"id": "SYN-00564", "spans": [{"start": 52, "end": 60, "text": " Suharti"}], "error": null}
+{"id": "SYN-00565", "spans": [{"start": 24, "end": 35, "text": " Pangilinan"}, {"start": 36, "end": 43, "text": " Jerome"}], "error": null}
+{"id": "SYN-00566", "spans": [], "error": null}
+{"id": "SYN-00567", "spans": [{"start": 8, "end": 11, "text": " ni"}, {"start": 11, "end": 27, "text": "amh macgillivray"}], "error": null}
+{"id": "SYN-00568", "spans": [], "error": null}
+{"id": "SYN-00569", "spans": [{"start": 7, "end": 14, "text": " Maxime"}], "error": null}
+{"id": "SYN-00570", "spans": [{"start": 29, "end": 47, "text": " Giuseppe Georgiou"}], "error": null}
+{"id": "SYN-00571", "spans": [{"start": 8, "end": 18, "text": " Hoàng Đức"}], "error": null}
+{"id": "SYN-00572", "spans": [{"start": 10, "end": 19, "text": " A. ᐊᑭᐊᒐᒃ"}], "error": null}
+{"id": "SYN-00573", "spans": [{"start": 10, "end": 22, "text": " Keviin Chan"}], "error": null}
+{"id": "SYN-00574", "spans": [{"start": 0, "end": 17, "text": "AHMAD SHAH RAHIMI"}], "error": null}
+{"id": "SYN-00575", "spans": [], "error": null}
+{"id": "SYN-00576", "spans": [{"start": 41, "end": 53, "text": "I. Castañeda"}], "error": null}
+{"id": "SYN-00577", "spans": [{"start": 12, "end": 29, "text": " Antonio D'Angelo"}], "error": null}
+{"id": "SYN-00578", "spans": [], "error": null}
+{"id": "SYN-00579", "spans": [{"start": 7, "end": 17, "text": " Rodrigues"}, {"start": 18, "end": 23, "text": " Luís"}], "error": null}
+{"id": "SYN-00580", "spans": [{"start": 12, "end": 27, "text": " Eleni Di Marco"}], "error": null}
+{"id": "SYN-00581", "spans": [{"start": 46, "end": 48, "text": " A"}, {"start": 48, "end": 59, "text": "yaan Hassan"}], "error": null}
+{"id": "SYN-00582", "spans": [], "error": null}
+{"id": "SYN-00583", "spans": [{"start": 12, "end": 29, "text": " Dr van den Broek"}], "error": null}
+{"id": "SYN-00584", "spans": [{"start": 36, "end": 49, "text": " delroy grant"}], "error": null}
+{"id": "SYN-00585", "spans": [], "error": null}
+{"id": "SYN-00586", "spans": [{"start": 29, "end": 42, "text": " Do-hyun Jang"}], "error": null}
+{"id": "SYN-00587", "spans": [{"start": 7, "end": 9, "text": " E"}, {"start": 9, "end": 17, "text": ". Clarke"}], "error": null}
+{"id": "SYN-00588", "spans": [], "error": null}
+{"id": "SYN-00589", "spans": [{"start": 10, "end": 23, "text": " SEO-YEON HAN"}, {"start": 27, "end": 46, "text": " paraskevi esposito"}], "error": null}
+{"id": "SYN-00590", "spans": [], "error": null}
+{"id": "SYN-00591", "spans": [{"start": 15, "end": 40, "text": " Ma. Theersa Dimaculangan"}], "error": null}
+{"id": "SYN-00592", "spans": [], "error": null}
+{"id": "SYN-00593", "spans": [{"start": 3, "end": 12, "text": " Bear Rob"}], "error": null}
+{"id": "SYN-00594", "spans": [{"start": 7, "end": 22, "text": " Tanaka Takeshi"}], "error": null}
+{"id": "SYN-00595", "spans": [], "error": null}
+{"id": "SYN-00596", "spans": [], "error": null}
+{"id": "SYN-00597", "spans": [{"start": 34, "end": 49, "text": " A. Tehrani-Rad"}], "error": null}
+{"id": "SYN-00598", "spans": [{"start": 33, "end": 36, "text": "PIE"}, {"start": 36, "end": 47, "text": "TER JANSSEN"}], "error": null}
+{"id": "SYN-00599", "spans": [], "error": null}
+{"id": "SYN-00600", "spans": [{"start": 29, "end": 50, "text": " SHIRIN HASHEMI-NEJAD"}], "error": null}
+{"id": "SYN-00601", "spans": [{"start": 35, "end": 39, "text": " Ayu"}], "error": null}
+{"id": "SYN-00602", "spans": [{"start": 12, "end": 25, "text": " Seo-yeon Seo"}, {"start": 30, "end": 47, "text": " Andrii Hrytsenko"}], "error": null}
+{"id": "SYN-00603", "spans": [{"start": 14, "end": 19, "text": " Luís"}], "error": null}
+{"id": "SYN-00604", "spans": [], "error": null}
+{"id": "SYN-00605", "spans": [{"start": 33, "end": 34, "text": "M"}, {"start": 34, "end": 45, "text": "x. Akeeagok"}], "error": null}
+{"id": "SYN-00606", "spans": [{"start": 0, "end": 1, "text": "L"}, {"start": 1, "end": 14, "text": "EE-ANN FRASER"}], "error": null}
+{"id": "SYN-00607", "spans": [], "error": null}
+{"id": "SYN-00608", "spans": [{"start": 24, "end": 33, "text": " Hoa Phạm"}], "error": null}
+{"id": "SYN-00609", "spans": [{"start": 12, "end": 28, "text": " Stéphane Bérubé"}], "error": null}
+{"id": "SYN-00610", "spans": [{"start": 29, "end": 37, "text": " D. Abdi"}], "error": null}
+{"id": "SYN-00611", "spans": [{"start": 10, "end": 24, "text": " Réjean Gagnon"}], "error": null}
+{"id": "SYN-00612", "spans": [], "error": null}
+{"id": "SYN-00613", "spans": [{"start": 52, "end": 65, "text": " Min-jun Jang"}], "error": null}
+{"id": "SYN-00614", "spans": [{"start": 0, "end": 13, "text": "Asshley Brown"}], "error": null}
+{"id": "SYN-00615", "spans": [], "error": null}
+{"id": "SYN-00616", "spans": [{"start": 35, "end": 50, "text": " Maria Cristina"}], "error": null}
+{"id": "SYN-00617", "spans": [{"start": 35, "end": 52, "text": " MA. THERESA DEL "}, {"start": 55, "end": 59, "text": "ARIO"}], "error": null}
+{"id": "SYN-00618", "spans": [{"start": 15, "end": 30, "text": " Lakshmi Sandhu"}], "error": null}
+{"id": "SYN-00619", "spans": [{"start": 39, "end": 49, "text": " Kovalenko"}], "error": null}
+{"id": "SYN-00620", "spans": [{"start": 30, "end": 43, "text": " Thunderchild"}], "error": null}
+{"id": "SYN-00621", "spans": [{"start": 52, "end": 68, "text": " Zainab Abu-Bakr"}], "error": null}
+{"id": "SYN-00622", "spans": [{"start": 28, "end": 31, "text": " Ko"}, {"start": 31, "end": 38, "text": "bayashi"}], "error": null}
+{"id": "SYN-00623", "spans": [{"start": 14, "end": 33, "text": " Bong Dimaaculangan"}], "error": null}
+{"id": "SYN-00624", "spans": [{"start": 36, "end": 37, "text": " "}, {"start": 37, "end": 51, "text": "reza mohammadi"}], "error": null}
+{"id": "SYN-00625", "spans": [{"start": 12, "end": 24, "text": " G. Lo Russo"}, {"start": 29, "end": 47, "text": " Vasiliki Lo Russo"}], "error": null}
+{"id": "SYN-00626", "spans": [{"start": 29, "end": 37, "text": " Lakshmi"}], "error": null}
+{"id": "SYN-00627", "spans": [{"start": 15, "end": 32, "text": " ANDRÉS CASTAÑEDA"}], "error": null}
+{"id": "SYN-00628", "spans": [{"start": 9, "end": 23, "text": " Rohan Ramdial"}], "error": null}
+{"id": "SYN-00629", "spans": [{"start": 24, "end": 43, "text": " MUHAMMAD AL-KHATIB"}], "error": null}
+{"id": "SYN-00630", "spans": [], "error": null}
+{"id": "SYN-00631", "spans": [{"start": 12, "end": 30, "text": " NUVALINGA ARNAQUQ"}], "error": null}
+{"id": "SYN-00632", "spans": [{"start": 26, "end": 37, "text": " S. Bennett"}], "error": null}
+{"id": "SYN-00633", "spans": [{"start": 26, "end": 41, "text": " Z. Tehrani-Rad"}], "error": null}
+{"id": "SYN-00634", "spans": [{"start": 10, "end": 19, "text": " Medeiros"}, {"start": 20, "end": 29, "text": " Fernanda"}, {"start": 33, "end": 47, "text": " Joao Ferreira"}], "error": null}
+{"id": "SYN-00635", "spans": [{"start": 26, "end": 36, "text": " A. Suzuki"}], "error": null}
+{"id": "SYN-00636", "spans": [{"start": 33, "end": 45, "text": "N. Chowdhury"}], "error": null}
+{"id": "SYN-00637", "spans": [{"start": 0, "end": 13, "text": "DEEPIKA SIDDI"}], "error": null}
+{"id": "SYN-00638", "spans": [{"start": 0, "end": 4, "text": "Pang"}, {"start": 4, "end": 8, "text": "ilin"}, {"start": 8, "end": 10, "text": "an"}], "error": null}
+{"id": "SYN-00639", "spans": [], "error": null}
+{"id": "SYN-00640", "spans": [{"start": 12, "end": 27, "text": " Samira Mansour"}], "error": null}
+{"id": "SYN-00641", "spans": [{"start": 35, "end": 51, "text": " BONG VILLANUEVA"}], "error": null}
+{"id": "SYN-00642", "spans": [], "error": null}
+{"id": "SYN-00643", "spans": [{"start": 35, "end": 41, "text": " Hodan"}], "error": null}
+{"id": "SYN-00644", "spans": [{"start": 52, "end": 68, "text": " Ana Lucia Munoz"}], "error": null}
+{"id": "SYN-00645", "spans": [], "error": null}
+{"id": "SYN-00646", "spans": [{"start": 8, "end": 15, "text": " Yuliia"}], "error": null}
+{"id": "SYN-00647", "spans": [], "error": null}
+{"id": "SYN-00648", "spans": [{"start": 17, "end": 25, "text": " Takeshi"}, {"start": 30, "end": 34, "text": "zuki"}], "error": null}
+{"id": "SYN-00649", "spans": [{"start": 7, "end": 27, "text": " Mariana Sousa Pinto"}], "error": null}
+{"id": "SYN-00650", "spans": [], "error": null}
+{"id": "SYN-00651", "spans": [], "error": null}
+{"id": "SYN-00652", "spans": [], "error": null}
+{"id": "SYN-00653", "spans": [{"start": 9, "end": 15, "text": " Farah"}, {"start": 16, "end": 18, "text": " T"}, {"start": 18, "end": 23, "text": "igist"}], "error": null}
+{"id": "SYN-00654", "spans": [{"start": 18, "end": 30, "text": "hammed hamda"}], "error": null}
+{"id": "SYN-00655", "spans": [{"start": 11, "end": 24, "text": " Tyler Hughes"}], "error": null}
+{"id": "SYN-00656", "spans": [{"start": 30, "end": 33, "text": " Sa"}, {"start": 33, "end": 35, "text": "to"}, {"start": 36, "end": 39, "text": " Ke"}, {"start": 39, "end": 42, "text": "nji"}], "error": null}
+{"id": "SYN-00657", "spans": [], "error": null}
+{"id": "SYN-00658", "spans": [{"start": 34, "end": 42, "text": " S. Jung"}], "error": null}
+{"id": "SYN-00659", "spans": [{"start": 14, "end": 26, "text": " Xiaoyu Laam"}], "error": null}
+{"id": "SYN-00660", "spans": [{"start": 46, "end": 64, "text": " Dawit Gebremedhin"}], "error": null}
+{"id": "SYN-00661", "spans": [{"start": 0, "end": 18, "text": "Kateryna Hrytsenok"}], "error": null}
+{"id": "SYN-00662", "spans": [{"start": 7, "end": 22, "text": " Rémi St-Pierre"}], "error": null}
+{"id": "SYN-00663", "spans": [{"start": 33, "end": 34, "text": "A"}, {"start": 34, "end": 49, "text": "ïsssatou Kamara"}], "error": null}
+{"id": "SYN-00664", "spans": [{"start": 10, "end": 31, "text": " Abdel-Karim Al Masri"}], "error": null}
+{"id": "SYN-00665", "spans": [{"start": 0, "end": 4, "text": "Jang"}, {"start": 5, "end": 13, "text": " Do-hyun"}], "error": null}
+{"id": "SYN-00666", "spans": [{"start": 10, "end": 17, "text": " Tenzin"}], "error": null}
+{"id": "SYN-00667", "spans": [{"start": 6, "end": 15, "text": " Jane Doe"}], "error": null}
+{"id": "SYN-00668", "spans": [], "error": null}
+{"id": "SYN-00669", "spans": [{"start": 0, "end": 14, "text": "Niamh McCarthy"}], "error": null}
+{"id": "SYN-00670", "spans": [{"start": 16, "end": 20, "text": ". Lê"}], "error": null}
+{"id": "SYN-00671", "spans": [{"start": 26, "end": 40, "text": " M. Ramkissoon"}], "error": null}
+{"id": "SYN-00672", "spans": [{"start": 14, "end": 17, "text": " Cu"}, {"start": 17, "end": 19, "text": "th"}, {"start": 19, "end": 29, "text": "bert Flery"}], "error": null}
+{"id": "SYN-00673", "spans": [], "error": null}
+{"id": "SYN-00674", "spans": [{"start": 56, "end": 60, "text": " Cor"}, {"start": 60, "end": 64, "text": "mier"}], "error": null}
+{"id": "SYN-00675", "spans": [{"start": 9, "end": 11, "text": " A"}, {"start": 11, "end": 28, "text": "RJUN VENKATARAMAN"}], "error": null}
+{"id": "SYN-00676", "spans": [{"start": 26, "end": 38, "text": " J. Baptiste"}], "error": null}
+{"id": "SYN-00677", "spans": [{"start": 9, "end": 17, "text": " Norbert"}], "error": null}
+{"id": "SYN-00678", "spans": [{"start": 33, "end": 46, "text": "Jesús Ramírez"}], "error": null}
+{"id": "SYN-00679", "spans": [{"start": 52, "end": 66, "text": " Ayesha Sandhu"}], "error": null}
+{"id": "SYN-00680", "spans": [{"start": 52, "end": 72, "text": " Anne-Sophie Gélinas"}], "error": null}
+{"id": "SYN-00681", "spans": [{"start": 11, "end": 25, "text": " Dakota Okimaw"}, {"start": 39, "end": 40, "text": "w"}], "error": null}
+{"id": "SYN-00682", "spans": [], "error": null}
+{"id": "SYN-00683", "spans": [{"start": 7, "end": 25, "text": " Abdullahi Tesfaye"}], "error": null}
+{"id": "SYN-00684", "spans": [{"start": 15, "end": 21, "text": " Osman"}], "error": null}
+{"id": "SYN-00685", "spans": [{"start": 7, "end": 23, "text": " Benoit Levesque"}], "error": null}
+{"id": "SYN-00686", "spans": [{"start": 0, "end": 15, "text": "João Rodriguues"}], "error": null}
+{"id": "SYN-00687", "spans": [{"start": 10, "end": 28, "text": " Bohdan Shevchenko"}, {"start": 32, "end": 35, "text": " Be"}, {"start": 35, "end": 39, "text": "kele"}, {"start": 40, "end": 50, "text": " Abdullahi"}], "error": null}
+{"id": "SYN-00688", "spans": [{"start": 29, "end": 46, "text": " Oleksandr Dvořák"}], "error": null}
+{"id": "SYN-00689", "spans": [{"start": 36, "end": 53, "text": " Babatunde Ndiaye"}], "error": null}
+{"id": "SYN-00690", "spans": [{"start": 30, "end": 36, "text": " Hoàng"}, {"start": 37, "end": 46, "text": " Quốc Huy"}], "error": null}
+{"id": "SYN-00691", "spans": [{"start": 0, "end": 7, "text": "Baptist"}, {"start": 7, "end": 8, "text": "e"}, {"start": 9, "end": 13, "text": " Tam"}], "error": null}
+{"id": "SYN-00692", "spans": [], "error": null}
+{"id": "SYN-00693", "spans": [{"start": 0, "end": 4, "text": "mich"}, {"start": 4, "end": 5, "text": "a"}, {"start": 5, "end": 14, "text": "el wilson"}], "error": null}
+{"id": "SYN-00694", "spans": [], "error": null}
+{"id": "SYN-00695", "spans": [], "error": null}
+{"id": "SYN-00696", "spans": [{"start": 0, "end": 1, "text": "A"}, {"start": 0, "end": 13, "text": "ANANYA SANDHU"}], "error": null}
+{"id": "SYN-00697", "spans": [{"start": 24, "end": 37, "text": " R. Mohammadi"}], "error": null}
+{"id": "SYN-00698", "spans": [{"start": 10, "end": 17, "text": " Rahman"}, {"start": 18, "end": 26, "text": " Nirmala"}], "error": null}
+{"id": "SYN-00699", "spans": [{"start": 41, "end": 48, "text": "Qavavau"}, {"start": 49, "end": 60, "text": " Ningiukulu"}], "error": null}
+{"id": "SYN-00700", "spans": [], "error": null}
+{"id": "SYN-00701", "spans": [], "error": null}
+{"id": "SYN-00702", "spans": [{"start": 41, "end": 60, "text": "eoin o'reilly-byrne"}], "error": null}
+{"id": "SYN-00703", "spans": [{"start": 7, "end": 10, "text": " KE"}, {"start": 10, "end": 26, "text": "ISHA JEAN-PIERRE"}], "error": null}
+{"id": "SYN-00704", "spans": [{"start": 26, "end": 42, "text": " Mohamud Tesfaye"}], "error": null}
+{"id": "SYN-00705", "spans": [{"start": 35, "end": 46, "text": " Pangilinan"}, {"start": 47, "end": 55, "text": " Rodelio"}], "error": null}
+{"id": "SYN-00706", "spans": [{"start": 12, "end": 26, "text": " KOFI OGUNLEYE"}], "error": null}
+{"id": "SYN-00707", "spans": [{"start": 7, "end": 22, "text": " Annie Qumuatuq"}], "error": null}
+{"id": "SYN-00708", "spans": [{"start": 26, "end": 41, "text": " brandon clarke"}], "error": null}
+{"id": "SYN-00709", "spans": [{"start": 14, "end": 24, "text": " Hoàng Hoa"}], "error": null}
+{"id": "SYN-00710", "spans": [], "error": null}
+{"id": "SYN-00711", "spans": [], "error": null}
+{"id": "SYN-00712", "spans": [{"start": 26, "end": 40, "text": " Seo-yeon Kang"}], "error": null}
+{"id": "SYN-00713", "spans": [{"start": 15, "end": 16, "text": " "}, {"start": 16, "end": 32, "text": "reza tehrani-rad"}], "error": null}
+{"id": "SYN-00714", "spans": [{"start": 41, "end": 52, "text": " Hiral Kaur"}], "error": null}
+{"id": "SYN-00715", "spans": [{"start": 35, "end": 55, "text": " Conceição Rodrigues"}], "error": null}
+{"id": "SYN-00716", "spans": [{"start": 24, "end": 37, "text": " Lam Wing Sze"}], "error": null}
+{"id": "SYN-00717", "spans": [{"start": 10, "end": 25, "text": " rohan williams"}], "error": null}
+{"id": "SYN-00718", "spans": [], "error": null}
+{"id": "SYN-00719", "spans": [{"start": 56, "end": 59, "text": "zin"}], "error": null}
+{"id": "SYN-00720", "spans": [{"start": 12, "end": 15, "text": " CH"}, {"start": 15, "end": 27, "text": "LOÉ TREMBLAY"}], "error": null}
+{"id": "SYN-00721", "spans": [{"start": 52, "end": 62, "text": " Xiaoyu Ng"}], "error": null}
+{"id": "SYN-00722", "spans": [{"start": 11, "end": 24, "text": " Do-hyun Kang"}], "error": null}
+{"id": "SYN-00723", "spans": [{"start": 17, "end": 25, "text": " Mendoza"}, {"start": 26, "end": 34, "text": " Marivic"}], "error": null}
+{"id": "SYN-00724", "spans": [{"start": 0, "end": 19, "text": "Oleksandr Hrytsenko"}], "error": null}
+{"id": "SYN-00725", "spans": [{"start": 34, "end": 47, "text": " van der Berg"}], "error": null}
+{"id": "SYN-00726", "spans": [{"start": 11, "end": 26, "text": " O'Reilly-Byrne"}], "error": null}
+{"id": "SYN-00727", "spans": [{"start": 0, "end": 17, "text": "Iain MacGillivray"}], "error": null}
+{"id": "SYN-00728", "spans": [{"start": 29, "end": 37, "text": " Qureshi"}, {"start": 38, "end": 44, "text": " Usman"}], "error": null}
+{"id": "SYN-00729", "spans": [{"start": 34, "end": 46, "text": " Choi Eun-ji"}], "error": null}
+{"id": "SYN-00730", "spans": [], "error": null}
+{"id": "SYN-00731", "spans": [{"start": 26, "end": 38, "text": " J. Williams"}], "error": null}
+{"id": "SYN-00732", "spans": [{"start": 10, "end": 21, "text": " dos Santos"}, {"start": 22, "end": 27, "text": " João"}], "error": null}
+{"id": "SYN-00733", "spans": [], "error": null}
+{"id": "SYN-00734", "spans": [{"start": 15, "end": 33, "text": " Rafiqul Chowdhury"}], "error": null}
+{"id": "SYN-00735", "spans": [{"start": 0, "end": 20, "text": "Dimitrios Karamanlis"}], "error": null}
+{"id": "SYN-00736", "spans": [{"start": 29, "end": 32, "text": " WA"}, {"start": 40, "end": 43, "text": "AWA"}, {"start": 48, "end": 50, "text": "CO"}], "error": null}
+{"id": "SYN-00737", "spans": [{"start": 10, "end": 27, "text": " Pieter von Bülow"}], "error": null}
+{"id": "SYN-00738", "spans": [{"start": 0, "end": 12, "text": "Thi Lan Đang"}], "error": null}
+{"id": "SYN-00739", "spans": [{"start": 29, "end": 37, "text": " Antonio"}], "error": null}
+{"id": "SYN-00740", "spans": [{"start": 52, "end": 70, "text": " Pauloosie Qavavau"}], "error": null}
+{"id": "SYN-00741", "spans": [{"start": 24, "end": 26, "text": " F"}, {"start": 27, "end": 38, "text": " dos Santos"}], "error": null}
+{"id": "SYN-00742", "spans": [{"start": 52, "end": 57, "text": " fati"}, {"start": 57, "end": 70, "text": "ma abdel aziz"}], "error": null}
+{"id": "SYN-00743", "spans": [{"start": 33, "end": 48, "text": "Akiko Takahashi"}], "error": null}
+{"id": "SYN-00744", "spans": [{"start": 10, "end": 30, "text": " Mónica Ibáñez Ortiz"}], "error": null}
+{"id": "SYN-00745", "spans": [{"start": 10, "end": 31, "text": " Jürgen van den Broek"}], "error": null}
+{"id": "SYN-00746", "spans": [{"start": 26, "end": 40, "text": " LIBAN WARSAME"}], "error": null}
+{"id": "SYN-00747", "spans": [{"start": 33, "end": 35, "text": "Su"}, {"start": 35, "end": 38, "text": "har"}, {"start": 38, "end": 40, "text": "ti"}], "error": null}
+{"id": "SYN-00748", "spans": [{"start": 0, "end": 2, "text": "Sa"}], "error": null}
+{"id": "SYN-00749", "spans": [{"start": 26, "end": 41, "text": " Thanh Hương Đỗ"}], "error": null}
+{"id": "SYN-00750", "spans": [{"start": 35, "end": 47, "text": " Ximena Pena"}], "error": null}
+{"id": "SYN-00751", "spans": [], "error": null}
+{"id": "SYN-00752", "spans": [{"start": 0, "end": 11, "text": "C. Ferreira"}], "error": null}
+{"id": "SYN-00753", "spans": [], "error": null}
+{"id": "SYN-00754", "spans": [{"start": 14, "end": 37, "text": " Francesca Christdoulou"}], "error": null}
+{"id": "SYN-00755", "spans": [{"start": 0, "end": 24, "text": "Ahmad Shah Hashemi-Nejad"}], "error": null}
+{"id": "SYN-00756", "spans": [{"start": 52, "end": 60, "text": " Mariana"}], "error": null}
+{"id": "SYN-00757", "spans": [{"start": 29, "end": 33, "text": " Che"}, {"start": 33, "end": 45, "text": "yenne Okimaw"}], "error": null}
+{"id": "SYN-00758", "spans": [{"start": 10, "end": 37, "text": " Juan Carlos Gonzalez-Perez"}, {"start": 41, "end": 53, "text": " Selam Haile"}], "error": null}
+{"id": "SYN-00759", "spans": [{"start": 8, "end": 10, "text": " A"}, {"start": 10, "end": 24, "text": "ïssatou Diallo"}], "error": null}
+{"id": "SYN-00760", "spans": [], "error": null}
+{"id": "SYN-00761", "spans": [{"start": 11, "end": 23, "text": " Xiaoyu Wang"}], "error": null}
+{"id": "SYN-00762", "spans": [{"start": 18, "end": 27, "text": " Esposito"}], "error": null}
+{"id": "SYN-00763", "spans": [{"start": 36, "end": 56, "text": " Ohnita Thunderchild"}], "error": null}
+{"id": "SYN-00764", "spans": [{"start": 34, "end": 40, "text": " Hoàng"}], "error": null}
+{"id": "SYN-00765", "spans": [{"start": 15, "end": 27, "text": " Tylre Smith"}], "error": null}
+{"id": "SYN-00766", "spans": [{"start": 10, "end": 17, "text": " Tenzin"}], "error": null}
+{"id": "SYN-00767", "spans": [{"start": 29, "end": 49, "text": " Stéphane Desjardins"}], "error": null}
+{"id": "SYN-00768", "spans": [{"start": 10, "end": 19, "text": " Fernanda"}], "error": null}
+{"id": "SYN-00769", "spans": [{"start": 10, "end": 24, "text": " Parisa Karimi"}], "error": null}
+{"id": "SYN-00770", "spans": [{"start": 33, "end": 35, "text": "Me"}, {"start": 35, "end": 46, "text": "i Ling Wong"}], "error": null}
+{"id": "SYN-00771", "spans": [], "error": null}
+{"id": "SYN-00772", "spans": [{"start": 7, "end": 20, "text": " Choi Do-hyun"}], "error": null}
+{"id": "SYN-00773", "spans": [{"start": 10, "end": 11, "text": " "}, {"start": 11, "end": 30, "text": "EOIN O'REILLY-BYRNE"}, {"start": 34, "end": 53, "text": " Guaalupe Castañeda"}], "error": null}
+{"id": "SYN-00774", "spans": [{"start": 38, "end": 46, "text": " A. Sato"}], "error": null}
+{"id": "SYN-00775", "spans": [{"start": 10, "end": 25, "text": " Elnei Lo Russo"}], "error": null}
+{"id": "SYN-00776", "spans": [], "error": null}
+{"id": "SYN-00777", "spans": [{"start": 44, "end": 50, "text": " Josée"}], "error": null}
+{"id": "SYN-00778", "spans": [{"start": 15, "end": 28, "text": " Kofi Okonkwo"}], "error": null}
+{"id": "SYN-00779", "spans": [{"start": 7, "end": 11, "text": " Al-"}, {"start": 11, "end": 16, "text": "Sayed"}, {"start": 17, "end": 22, "text": " Omar"}], "error": null}
+{"id": "SYN-00780", "spans": [{"start": 10, "end": 24, "text": " Ilse Schröder"}, {"start": 28, "end": 32, "text": " Rod"}, {"start": 32, "end": 48, "text": "elio Villanuevva"}], "error": null}
+{"id": "SYN-00781", "spans": [{"start": 36, "end": 52, "text": " Jürgen Schröder"}], "error": null}
+{"id": "SYN-00782", "spans": [], "error": null}
+{"id": "SYN-00783", "spans": [{"start": 30, "end": 46, "text": " Manpreet Rahman"}], "error": null}
+{"id": "SYN-00784", "spans": [], "error": null}
+{"id": "SYN-00785", "spans": [{"start": 0, "end": 18, "text": "samira abou-khalil"}], "error": null}
+{"id": "SYN-00786", "spans": [], "error": null}
+{"id": "SYN-00787", "spans": [{"start": 16, "end": 24, "text": " El-Amin"}], "error": null}
+{"id": "SYN-00788", "spans": [{"start": 26, "end": 42, "text": " María José Peña"}], "error": null}
+{"id": "SYN-00789", "spans": [{"start": 35, "end": 56, "text": " Pieter van den Broek"}], "error": null}
+{"id": "SYN-00790", "spans": [{"start": 7, "end": 22, "text": " J. Del Rosario"}], "error": null}
+{"id": "SYN-00791", "spans": [{"start": 0, "end": 18, "text": "GABRIEL DESJARLAIS"}], "error": null}
+{"id": "SYN-00792", "spans": [], "error": null}
+{"id": "SYN-00793", "spans": [{"start": 11, "end": 21, "text": " Pauloosie"}, {"start": 25, "end": 28, "text": "vak"}], "error": null}
+{"id": "SYN-00794", "spans": [], "error": null}
+{"id": "SYN-00795", "spans": [{"start": 30, "end": 42, "text": " Iin O'Neill"}], "error": null}
+{"id": "SYN-00796", "spans": [{"start": 35, "end": 52, "text": " Lee-Ann Campbell"}], "error": null}
+{"id": "SYN-00797", "spans": [{"start": 46, "end": 53, "text": " McNeil"}, {"start": 54, "end": 59, "text": " Eoin"}], "error": null}
+{"id": "SYN-00798", "spans": [{"start": 52, "end": 67, "text": " Hiba Al-Khatib"}], "error": null}
+{"id": "SYN-00799", "spans": [{"start": 34, "end": 41, "text": " J. Kim"}], "error": null}
+{"id": "SYN-00800", "spans": [], "error": null}
+{"id": "SYN-00801", "spans": [{"start": 10, "end": 29, "text": " Gabriel Desjarlais"}], "error": null}
+{"id": "SYN-00802", "spans": [{"start": 9, "end": 28, "text": " Fernanda Rodrigues"}], "error": null}
+{"id": "SYN-00803", "spans": [{"start": 26, "end": 29, "text": " Il"}, {"start": 29, "end": 39, "text": "se Janssen"}], "error": null}
+{"id": "SYN-00804", "spans": [{"start": 9, "end": 15, "text": " Megan"}], "error": null}
+{"id": "SYN-00805", "spans": [], "error": null}
+{"id": "SYN-00806", "spans": [], "error": null}
+{"id": "SYN-00807", "spans": [], "error": null}
+{"id": "SYN-00808", "spans": [{"start": 34, "end": 35, "text": " "}, {"start": 35, "end": 46, "text": "ANANYA KAUR"}], "error": null}
+{"id": "SYN-00809", "spans": [{"start": 34, "end": 52, "text": " Garfield Baptiste"}], "error": null}
+{"id": "SYN-00810", "spans": [{"start": 0, "end": 11, "text": "Phương Đặng"}, {"start": 15, "end": 18, "text": "ong"}, {"start": 19, "end": 22, "text": "ang"}], "error": null}
+{"id": "SYN-00811", "spans": [{"start": 35, "end": 63, "text": " Juan Carlos Rodríguez López"}], "error": null}
+{"id": "SYN-00812", "spans": [], "error": null}
+{"id": "SYN-00813", "spans": [], "error": null}
+{"id": "SYN-00814", "spans": [{"start": 45, "end": 57, "text": " Thị Lan Bùi"}], "error": null}
+{"id": "SYN-00815", "spans": [], "error": null}
+{"id": "SYN-00816", "spans": [{"start": 34, "end": 49, "text": " Gabriel Dumont"}], "error": null}
+{"id": "SYN-00817", "spans": [{"start": 7, "end": 22, "text": " Omar Nasrallah"}], "error": null}
+{"id": "SYN-00818", "spans": [], "error": null}
+{"id": "SYN-00819", "spans": [{"start": 52, "end": 61, "text": " jason ho"}], "error": null}
+{"id": "SYN-00820", "spans": [{"start": 12, "end": 15, "text": " Jo"}, {"start": 15, "end": 31, "text": "ost van der Berg"}, {"start": 36, "end": 43, "text": " Suzuki"}], "error": null}
+{"id": "SYN-00821", "spans": [{"start": 36, "end": 49, "text": " K. St. Louis"}], "error": null}
+{"id": "SYN-00822", "spans": [], "error": null}
+{"id": "SYN-00823", "spans": [], "error": null}
+{"id": "SYN-00824", "spans": [{"start": 11, "end": 24, "text": " Ji-eyon Jang"}], "error": null}
+{"id": "SYN-00825", "spans": [{"start": 36, "end": 44, "text": " Sherika"}], "error": null}
+{"id": "SYN-00826", "spans": [{"start": 35, "end": 43, "text": " Wei Lam"}], "error": null}
+{"id": "SYN-00827", "spans": [{"start": 7, "end": 19, "text": " Rohit Singh"}], "error": null}
+{"id": "SYN-00828", "spans": [], "error": null}
+{"id": "SYN-00829", "spans": [{"start": 10, "end": 26, "text": " kwame coulibaly"}, {"start": 30, "end": 46, "text": " Ciaran O Briain"}], "error": null}
+{"id": "SYN-00830", "spans": [{"start": 0, "end": 14, "text": "Anie Anaviapik"}], "error": null}
+{"id": "SYN-00831", "spans": [{"start": 0, "end": 19, "text": "grete van den broek"}, {"start": 30, "end": 37, "text": "enbroek"}], "error": null}
+{"id": "SYN-00832", "spans": [], "error": null}
+{"id": "SYN-00833", "spans": [{"start": 24, "end": 44, "text": " Kateryna Shevchenko"}], "error": null}
+{"id": "SYN-00834", "spans": [], "error": null}
+{"id": "SYN-00835", "spans": [{"start": 9, "end": 25, "text": " Mustaafa Haddad"}], "error": null}
+{"id": "SYN-00836", "spans": [], "error": null}
+{"id": "SYN-00837", "spans": [{"start": 24, "end": 31, "text": " Rahimi"}, {"start": 32, "end": 43, "text": " Ahmad Shah"}], "error": null}
+{"id": "SYN-00838", "spans": [], "error": null}
+{"id": "SYN-00839", "spans": [{"start": 46, "end": 64, "text": " Giuseppe Esposito"}], "error": null}
+{"id": "SYN-00840", "spans": [{"start": 41, "end": 52, "text": "P. Hosseini"}], "error": null}
+{"id": "SYN-00841", "spans": [], "error": null}
+{"id": "SYN-00842", "spans": [{"start": 12, "end": 23, "text": " Thị Lan Lê"}], "error": null}
+{"id": "SYN-00843", "spans": [], "error": null}
+{"id": "SYN-00844", "spans": [{"start": 17, "end": 27, "text": " Gonçalves"}, {"start": 28, "end": 36, "text": " Mariana"}], "error": null}
+{"id": "SYN-00845", "spans": [{"start": 8, "end": 11, "text": " mo"}, {"start": 11, "end": 27, "text": "hammed al-khatib"}], "error": null}
+{"id": "SYN-00846", "spans": [{"start": 10, "end": 27, "text": " Chiamaka Adeyemi"}], "error": null}
+{"id": "SYN-00847", "spans": [{"start": 24, "end": 27, "text": " RA"}, {"start": 27, "end": 40, "text": "VEN CROWCHILD"}], "error": null}
+{"id": "SYN-00848", "spans": [], "error": null}
+{"id": "SYN-00849", "spans": [{"start": 15, "end": 33, "text": " TYLER TAYLOR-REID"}], "error": null}
+{"id": "SYN-00850", "spans": [{"start": 14, "end": 27, "text": " Josee Gagnon"}], "error": null}
+{"id": "SYN-00851", "spans": [{"start": 52, "end": 70, "text": " D. Running Rabbit"}], "error": null}
+{"id": "SYN-00852", "spans": [{"start": 12, "end": 26, "text": " Ceilia Fleury"}], "error": null}
+{"id": "SYN-00853", "spans": [], "error": null}
+{"id": "SYN-00854", "spans": [], "error": null}
+{"id": "SYN-00855", "spans": [{"start": 10, "end": 17, "text": " Iqaluk"}], "error": null}
+{"id": "SYN-00856", "spans": [{"start": 36, "end": 44, "text": " Ngawang"}], "error": null}
+{"id": "SYN-00857", "spans": [{"start": 12, "end": 27, "text": " Minh Anh Hoàng"}], "error": null}
+{"id": "SYN-00858", "spans": [], "error": null}
+{"id": "SYN-00859", "spans": [{"start": 0, "end": 5, "text": "Sarah"}], "error": null}
+{"id": "SYN-00860", "spans": [{"start": 2, "end": 5, "text": " Co"}, {"start": 5, "end": 12, "text": "ulibaly"}], "error": null}
+{"id": "SYN-00861", "spans": [{"start": 7, "end": 10, "text": " Ia"}, {"start": 10, "end": 22, "text": "in MacKinnon"}], "error": null}
+{"id": "SYN-00862", "spans": [{"start": 36, "end": 53, "text": " Paddraig O'Brien"}], "error": null}
+{"id": "SYN-00863", "spans": [], "error": null}
+{"id": "SYN-00864", "spans": [{"start": 12, "end": 28, "text": " WAPUN BEAR ROBE"}, {"start": 33, "end": 43, "text": " Đặng, Hoa"}], "error": null}
+{"id": "SYN-00865", "spans": [{"start": 12, "end": 14, "text": " L"}, {"start": 14, "end": 18, "text": "hamo"}], "error": null}
+{"id": "SYN-00866", "spans": [{"start": 17, "end": 25, "text": " Suharti"}], "error": null}
+{"id": "SYN-00867", "spans": [{"start": 7, "end": 16, "text": " Fernanda"}], "error": null}
+{"id": "SYN-00868", "spans": [{"start": 3, "end": 11, "text": " Kilabuk"}], "error": null}
+{"id": "SYN-00869", "spans": [{"start": 38, "end": 44, "text": " Clark"}, {"start": 44, "end": 45, "text": "e"}, {"start": 46, "end": 54, "text": " Michael"}], "error": null}
+{"id": "SYN-00870", "spans": [{"start": 12, "end": 16, "text": " Thi"}, {"start": 16, "end": 29, "text": "ago Goncalves"}, {"start": 34, "end": 48, "text": " Ashley Frsaer"}], "error": null}
+{"id": "SYN-00871", "spans": [], "error": null}
+{"id": "SYN-00872", "spans": [{"start": 36, "end": 38, "text": " H"}, {"start": 38, "end": 44, "text": "rytsen"}, {"start": 44, "end": 46, "text": "ko"}], "error": null}
+{"id": "SYN-00873", "spans": [{"start": 20, "end": 38, "text": " John A. Macdonald"}], "error": null}
+{"id": "SYN-00874", "spans": [{"start": 14, "end": 25, "text": " Bondarenko"}], "error": null}
+{"id": "SYN-00875", "spans": [], "error": null}
+{"id": "SYN-00876", "spans": [{"start": 17, "end": 30, "text": " Rafiqul Kaur"}], "error": null}
+{"id": "SYN-00877", "spans": [{"start": 39, "end": 48, "text": " Nakamura"}], "error": null}
+{"id": "SYN-00878", "spans": [{"start": 14, "end": 19, "text": " Shaw"}, {"start": 22, "end": 37, "text": " Running Rabbit"}], "error": null}
+{"id": "SYN-00879", "spans": [{"start": 26, "end": 43, "text": " Gonçalo da Costa"}], "error": null}
+{"id": "SYN-00880", "spans": [{"start": 52, "end": 68, "text": " chloé thériault"}], "error": null}
+{"id": "SYN-00881", "spans": [{"start": 30, "end": 38, "text": " Siu Wai"}], "error": null}
+{"id": "SYN-00882", "spans": [{"start": 26, "end": 44, "text": " Cecilia Parenteau"}], "error": null}
+{"id": "SYN-00883", "spans": [{"start": 7, "end": 25, "text": " Lucassie Iqqaqsaq"}], "error": null}
+{"id": "SYN-00884", "spans": [], "error": null}
+{"id": "SYN-00885", "spans": [], "error": null}
+{"id": "SYN-00886", "spans": [{"start": 0, "end": 22, "text": "ABDEL-KARIM IBN RASHID"}], "error": null}
+{"id": "SYN-00887", "spans": [{"start": 52, "end": 60, "text": " Gabriel"}], "error": null}
+{"id": "SYN-00888", "spans": [{"start": 12, "end": 23, "text": " Eun-ji Seo"}], "error": null}
+{"id": "SYN-00889", "spans": [{"start": 41, "end": 55, "text": " Jun-Jun Reyes"}], "error": null}
+{"id": "SYN-00890", "spans": [{"start": 8, "end": 18, "text": " Dr Santos"}], "error": null}
+{"id": "SYN-00891", "spans": [{"start": 35, "end": 47, "text": " Sousa Pinto"}, {"start": 48, "end": 55, "text": " Thiago"}], "error": null}
+{"id": "SYN-00892", "spans": [{"start": 56, "end": 59, "text": "nya"}], "error": null}
+{"id": "SYN-00893", "spans": [], "error": null}
+{"id": "SYN-00894", "spans": [{"start": 38, "end": 42, "text": " Med"}, {"start": 42, "end": 47, "text": "eiros"}, {"start": 48, "end": 57, "text": " Fernanda"}], "error": null}
+{"id": "SYN-00895", "spans": [], "error": null}
+{"id": "SYN-00896", "spans": [{"start": 0, "end": 7, "text": "Sherika"}], "error": null}
+{"id": "SYN-00897", "spans": [{"start": 34, "end": 41, "text": " Wangmo"}], "error": null}
+{"id": "SYN-00898", "spans": [{"start": 59, "end": 62, "text": "Ève"}], "error": null}
+{"id": "SYN-00899", "spans": [{"start": 12, "end": 13, "text": " "}, {"start": 13, "end": 30, "text": "baptiste belcourt"}], "error": null}
+{"id": "SYN-00900", "spans": [{"start": 0, "end": 12, "text": "Papadopoulos"}, {"start": 13, "end": 22, "text": " Giuseppe"}], "error": null}
+{"id": "SYN-00901", "spans": [{"start": 24, "end": 47, "text": " Wojciech Ivanov-Petrov"}], "error": null}
+{"id": "SYN-00902", "spans": [{"start": 12, "end": 18, "text": " Clark"}, {"start": 18, "end": 19, "text": "e"}], "error": null}
+{"id": "SYN-00903", "spans": [], "error": null}
+{"id": "SYN-00904", "spans": [{"start": 12, "end": 24, "text": " ibn Rashid,"}, {"start": 24, "end": 37, "text": " Abdul Rahman"}], "error": null}
+{"id": "SYN-00905", "spans": [{"start": 52, "end": 65, "text": " Thị Lan Trần"}], "error": null}
+{"id": "SYN-00906", "spans": [{"start": 33, "end": 34, "text": "K"}, {"start": 34, "end": 50, "text": "laus van er Berg"}], "error": null}
+{"id": "SYN-00907", "spans": [{"start": 17, "end": 41, "text": " Alejandro de laa Fuente"}, {"start": 53, "end": 63, "text": "delafuente"}], "error": null}
+{"id": "SYN-00908", "spans": [{"start": 35, "end": 46, "text": " Abebe Jama"}], "error": null}
+{"id": "SYN-00909", "spans": [{"start": 52, "end": 73, "text": " Giuseppe Dell'Aquila"}], "error": null}
+{"id": "SYN-00910", "spans": [{"start": 7, "end": 28, "text": " Omar Bin Salim-Smith"}], "error": null}
+{"id": "SYN-00911", "spans": [{"start": 35, "end": 43, "text": " Suharti"}], "error": null}
+{"id": "SYN-00912", "spans": [{"start": 30, "end": 44, "text": " Nguyễn Phương"}], "error": null}
+{"id": "SYN-00913", "spans": [], "error": null}
+{"id": "SYN-00914", "spans": [{"start": 34, "end": 42, "text": " Suharti"}], "error": null}
+{"id": "SYN-00915", "spans": [{"start": 0, "end": 3, "text": "SAM"}, {"start": 3, "end": 6, "text": "IRA"}, {"start": 12, "end": 14, "text": "DD"}], "error": null}
+{"id": "SYN-00916", "spans": [{"start": 0, "end": 20, "text": "Mary-Kate Fitzgerald"}], "error": null}
+{"id": "SYN-00917", "spans": [{"start": 14, "end": 16, "text": " T"}, {"start": 16, "end": 24, "text": "shibangu"}], "error": null}
+{"id": "SYN-00918", "spans": [{"start": 12, "end": 18, "text": " Aoife"}, {"start": 23, "end": 31, "text": " Sukarno"}], "error": null}
+{"id": "SYN-00919", "spans": [{"start": 52, "end": 66, "text": " Leung Ka Ming"}], "error": null}
+{"id": "SYN-00920", "spans": [{"start": 24, "end": 34, "text": " M. Bailey"}], "error": null}
+{"id": "SYN-00921", "spans": [{"start": 0, "end": 4, "text": "Wang"}], "error": null}
+{"id": "SYN-00922", "spans": [{"start": 10, "end": 29, "text": " Guadalupe Del Vale"}], "error": null}
+{"id": "SYN-00923", "spans": [{"start": 14, "end": 34, "text": " Brittany Fitzgerald"}], "error": null}
+{"id": "SYN-00924", "spans": [], "error": null}
+{"id": "SYN-00925", "spans": [{"start": 36, "end": 44, "text": " Sukarno"}], "error": null}
+{"id": "SYN-00926", "spans": [{"start": 15, "end": 28, "text": " Ji-yeon Jung"}], "error": null}
+{"id": "SYN-00927", "spans": [{"start": 8, "end": 26, "text": " Jacob Taylor-Reid"}], "error": null}
+{"id": "SYN-00928", "spans": [{"start": 35, "end": 49, "text": " Tanis Meeches"}], "error": null}
+{"id": "SYN-00929", "spans": [], "error": null}
+{"id": "SYN-00930", "spans": [], "error": null}
+{"id": "SYN-00931", "spans": [], "error": null}
+{"id": "SYN-00932", "spans": [], "error": null}
+{"id": "SYN-00933", "spans": [], "error": null}
+{"id": "SYN-00934", "spans": [{"start": 0, "end": 2, "text": "ju"}, {"start": 2, "end": 17, "text": "an carlos muñoz"}], "error": null}
+{"id": "SYN-00935", "spans": [{"start": 11, "end": 36, "text": " Tehoniekonhrathe Meeches"}], "error": null}
+{"id": "SYN-00936", "spans": [{"start": 34, "end": 48, "text": " Zainab Haddad"}], "error": null}
+{"id": "SYN-00937", "spans": [{"start": 7, "end": 10, "text": " ni"}, {"start": 10, "end": 13, "text": "amh"}], "error": null}
+{"id": "SYN-00938", "spans": [], "error": null}
+{"id": "SYN-00939", "spans": [{"start": 10, "end": 17, "text": " Wilson"}, {"start": 18, "end": 26, "text": " Michael"}], "error": null}
+{"id": "SYN-00940", "spans": [{"start": 0, "end": 4, "text": "Maar"}, {"start": 4, "end": 14, "text": "ten Müller"}], "error": null}
+{"id": "SYN-00941", "spans": [{"start": 10, "end": 12, "text": " T"}, {"start": 12, "end": 25, "text": "sang Xiaoming"}], "error": null}
+{"id": "SYN-00942", "spans": [{"start": 29, "end": 42, "text": " Mx. Martínez"}], "error": null}
+{"id": "SYN-00943", "spans": [{"start": 19, "end": 23, "text": "hyun"}], "error": null}
+{"id": "SYN-00944", "spans": [], "error": null}
+{"id": "SYN-00945", "spans": [{"start": 8, "end": 23, "text": " Andrii Popescu"}], "error": null}
+{"id": "SYN-00946", "spans": [], "error": null}
+{"id": "SYN-00947", "spans": [{"start": 37, "end": 49, "text": " Tehrani-Rad"}], "error": null}
+{"id": "SYN-00948", "spans": [{"start": 36, "end": 41, "text": " Phạm"}, {"start": 42, "end": 47, "text": " Tuấn"}], "error": null}
+{"id": "SYN-00949", "spans": [{"start": 11, "end": 24, "text": " Delos Santos"}], "error": null}
+{"id": "SYN-00950", "spans": [], "error": null}
+{"id": "SYN-00951", "spans": [{"start": 0, "end": 1, "text": "A"}, {"start": 0, "end": 20, "text": "ANNE-SOPHIE LÉVESQUE"}], "error": null}
+{"id": "SYN-00952", "spans": [{"start": 30, "end": 32, "text": " E"}, {"start": 32, "end": 40, "text": ". Hughes"}], "error": null}
+{"id": "SYN-00953", "spans": [{"start": 24, "end": 40, "text": " Parisa Ghorbani"}], "error": null}
+{"id": "SYN-00954", "spans": [], "error": null}
+{"id": "SYN-00955", "spans": [], "error": null}
+{"id": "SYN-00956", "spans": [], "error": null}
+{"id": "SYN-00957", "spans": [], "error": null}
+{"id": "SYN-00958", "spans": [{"start": 29, "end": 38, "text": " Đứcc Bùi"}], "error": null}
+{"id": "SYN-00959", "spans": [{"start": 46, "end": 59, "text": " Wong Tsz Kin"}], "error": null}
+{"id": "SYN-00960", "spans": [{"start": 10, "end": 17, "text": " Rowena"}, {"start": 21, "end": 33, "text": " T. Bouchard"}], "error": null}
+{"id": "SYN-00961", "spans": [], "error": null}
+{"id": "SYN-00962", "spans": [], "error": null}
+{"id": "SYN-00963", "spans": [{"start": 17, "end": 29, "text": " Abebe Haile"}], "error": null}
+{"id": "SYN-00964", "spans": [{"start": 33, "end": 36, "text": "cía"}, {"start": 40, "end": 45, "text": "tínez"}], "error": null}
+{"id": "SYN-00965", "spans": [{"start": 15, "end": 23, "text": " D. Jung"}], "error": null}
+{"id": "SYN-00966", "spans": [{"start": 35, "end": 37, "text": " H"}, {"start": 37, "end": 49, "text": "ARUTO SUZUKI"}], "error": null}
+{"id": "SYN-00967", "spans": [{"start": 30, "end": 45, "text": " Kanen Cardinal"}], "error": null}
+{"id": "SYN-00968", "spans": [{"start": 15, "end": 21, "text": " Arjun"}], "error": null}
+{"id": "SYN-00969", "spans": [{"start": 14, "end": 27, "text": " Anneke Müler"}], "error": null}
+{"id": "SYN-00970", "spans": [], "error": null}
+{"id": "SYN-00971", "spans": [{"start": 7, "end": 13, "text": " Niamh"}], "error": null}
+{"id": "SYN-00972", "spans": [{"start": 17, "end": 25, "text": " Gélinas"}, {"start": 26, "end": 33, "text": " Hélène"}], "error": null}
+{"id": "SYN-00973", "spans": [{"start": 26, "end": 38, "text": " Kofi Traoré"}], "error": null}
+{"id": "SYN-00974", "spans": [], "error": null}
+{"id": "SYN-00975", "spans": [{"start": 24, "end": 35, "text": " N. Boateng"}], "error": null}
+{"id": "SYN-00976", "spans": [{"start": 11, "end": 18, "text": " Shirin"}], "error": null}
+{"id": "SYN-00977", "spans": [{"start": 9, "end": 24, "text": " Rania Al Masri"}], "error": null}
+{"id": "SYN-00978", "spans": [{"start": 26, "end": 46, "text": " PRINCESS PANGILINAN"}], "error": null}
+{"id": "SYN-00979", "spans": [{"start": 39, "end": 41, "text": " N"}, {"start": 41, "end": 45, "text": "wosu"}, {"start": 46, "end": 50, "text": " Kwa"}, {"start": 50, "end": 52, "text": "me"}], "error": null}
+{"id": "SYN-00980", "spans": [{"start": 26, "end": 38, "text": " JOON-HO SEO"}], "error": null}
+{"id": "SYN-00981", "spans": [{"start": 12, "end": 17, "text": " João"}], "error": null}
+{"id": "SYN-00982", "spans": [], "error": null}
+{"id": "SYN-00983", "spans": [{"start": 7, "end": 21, "text": " Rohan Ramdial"}], "error": null}
+{"id": "SYN-00984", "spans": [{"start": 0, "end": 3, "text": "Bau"}], "error": null}
+{"id": "SYN-00985", "spans": [], "error": null}
+{"id": "SYN-00986", "spans": [], "error": null}
+{"id": "SYN-00987", "spans": [{"start": 0, "end": 11, "text": "Abdel-Karim"}], "error": null}
+{"id": "SYN-00988", "spans": [{"start": 10, "end": 28, "text": " Khaled ibn Rashid"}], "error": null}
+{"id": "SYN-00989", "spans": [{"start": 10, "end": 18, "text": " Kevni 李"}, {"start": 22, "end": 41, "text": " Saoirse O'Sullivan"}], "error": null}
+{"id": "SYN-00990", "spans": [{"start": 52, "end": 58, "text": " Clark"}, {"start": 58, "end": 59, "text": "e"}, {"start": 60, "end": 64, "text": " Roh"}, {"start": 64, "end": 66, "text": "an"}], "error": null}
+{"id": "SYN-00991", "spans": [{"start": 11, "end": 25, "text": " YUI KOBAYASHI"}, {"start": 33, "end": 37, "text": "baya"}], "error": null}
+{"id": "SYN-00992", "spans": [{"start": 26, "end": 44, "text": " Delbert Crowchild"}], "error": null}
+{"id": "SYN-00993", "spans": [], "error": null}
+{"id": "SYN-00994", "spans": [{"start": 14, "end": 29, "text": " Josée Bélanger"}], "error": null}
+{"id": "SYN-00995", "spans": [], "error": null}
+{"id": "SYN-00996", "spans": [{"start": 7, "end": 28, "text": " Antonio Papadopoulos"}], "error": null}
+{"id": "SYN-00997", "spans": [], "error": null}
+{"id": "SYN-00998", "spans": [], "error": null}
+{"id": "SYN-00999", "spans": [{"start": 0, "end": 3, "text": "Kal"}], "error": null}
+{"id": "SYN-01000", "spans": [{"start": 0, "end": 19, "text": "Muhammad ibn Rashid"}], "error": null}
+{"id": "SYN-01001", "spans": [{"start": 9, "end": 16, "text": " K. Eze"}], "error": null}
+{"id": "SYN-01002", "spans": [{"start": 10, "end": 25, "text": " Klaus JJanssen"}], "error": null}
+{"id": "SYN-01003", "spans": [{"start": 10, "end": 29, "text": " Akinisie Anaviapik"}], "error": null}
+{"id": "SYN-01004", "spans": [{"start": 52, "end": 55, "text": " gi"}, {"start": 55, "end": 67, "text": "ulia de luca"}], "error": null}
+{"id": "SYN-01005", "spans": [{"start": 34, "end": 40, "text": " Kunuk"}], "error": null}
+{"id": "SYN-01006", "spans": [{"start": 15, "end": 21, "text": " Wapun"}], "error": null}
+{"id": "SYN-01007", "spans": [], "error": null}
+{"id": "SYN-01008", "spans": [{"start": 41, "end": 56, "text": " Akosua Boateng"}], "error": null}
+{"id": "SYN-01009", "spans": [], "error": null}
+{"id": "SYN-01010", "spans": [{"start": 10, "end": 17, "text": " Đỗ Hoa"}], "error": null}
+{"id": "SYN-01011", "spans": [{"start": 35, "end": 55, "text": " Bohdaan Szczepański"}], "error": null}
+{"id": "SYN-01012", "spans": [{"start": 0, "end": 18, "text": "Ningiukulu Qavavau"}], "error": null}
+{"id": "SYN-01013", "spans": [{"start": 9, "end": 17, "text": " Thị Lan"}], "error": null}
+{"id": "SYN-01014", "spans": [{"start": 29, "end": 45, "text": " Keisha Williams"}], "error": null}
+{"id": "SYN-01015", "spans": [{"start": 17, "end": 28, "text": " Jean Coutu"}], "error": null}
+{"id": "SYN-01016", "spans": [{"start": 38, "end": 41, "text": " If"}, {"start": 41, "end": 44, "text": "rah"}], "error": null}
+{"id": "SYN-01017", "spans": [{"start": 24, "end": 33, "text": " ali-reza"}], "error": null}
+{"id": "SYN-01018", "spans": [{"start": 35, "end": 49, "text": " Ahmad El-Amin"}], "error": null}
+{"id": "SYN-01019", "spans": [{"start": 10, "end": 23, "text": " Kang Do-hyun"}], "error": null}
+{"id": "SYN-01020", "spans": [{"start": 12, "end": 29, "text": " norbert larocque"}], "error": null}
+{"id": "SYN-01021", "spans": [{"start": 0, "end": 3, "text": "Sao"}, {"start": 3, "end": 22, "text": "irse O'Reilly-Byrne"}], "error": null}
+{"id": "SYN-01022", "spans": [{"start": 0, "end": 10, "text": "M. Durrani"}], "error": null}
+{"id": "SYN-01023", "spans": [{"start": 0, "end": 2, "text": "St"}, {"start": 2, "end": 18, "text": "éphane Arsenault"}], "error": null}
+{"id": "SYN-01024", "spans": [{"start": 29, "end": 46, "text": " Brandon Anderson"}], "error": null}
+{"id": "SYN-01025", "spans": [{"start": 7, "end": 18, "text": " A. Boateng"}], "error": null}
+{"id": "SYN-01026", "spans": [{"start": 29, "end": 45, "text": " Marivic Mendoza"}], "error": null}
+{"id": "SYN-01027", "spans": [], "error": null}
+{"id": "SYN-01028", "spans": [{"start": 10, "end": 13, "text": " mo"}, {"start": 13, "end": 23, "text": "hamud abdi"}], "error": null}
+{"id": "SYN-01029", "spans": [], "error": null}
+{"id": "SYN-01030", "spans": [{"start": 14, "end": 21, "text": " Tunnil"}, {"start": 21, "end": 24, "text": "lie"}], "error": null}
+{"id": "SYN-01031", "spans": [{"start": 29, "end": 37, "text": " Janssen"}, {"start": 38, "end": 45, "text": " Pieter"}], "error": null}
+{"id": "SYN-01032", "spans": [{"start": 24, "end": 43, "text": " Wojciech Bondarnko"}], "error": null}
+{"id": "SYN-01033", "spans": [], "error": null}
+{"id": "SYN-01034", "spans": [{"start": 26, "end": 39, "text": " Vivian Tsang"}], "error": null}
+{"id": "SYN-01035", "spans": [{"start": 0, "end": 5, "text": "Andri"}, {"start": 5, "end": 16, "text": "i Kovalenko"}], "error": null}
+{"id": "SYN-01036", "spans": [{"start": 8, "end": 11, "text": " Cu"}, {"start": 11, "end": 24, "text": "thbert Lépine"}], "error": null}
+{"id": "SYN-01037", "spans": [], "error": null}
+{"id": "SYN-01038", "spans": [], "error": null}
+{"id": "SYN-01039", "spans": [], "error": null}
+{"id": "SYN-01040", "spans": [], "error": null}
+{"id": "SYN-01041", "spans": [{"start": 30, "end": 37, "text": " Hughes"}, {"start": 38, "end": 47, "text": " Jennifer"}], "error": null}
+{"id": "SYN-01042", "spans": [{"start": 52, "end": 57, "text": " Marg"}, {"start": 57, "end": 70, "text": "uerite Lepine"}], "error": null}
+{"id": "SYN-01043", "spans": [{"start": 30, "end": 48, "text": " Delroy Ramkissoon"}], "error": null}
+{"id": "SYN-01044", "spans": [{"start": 26, "end": 49, "text": " Ana Lucía de la Fuente"}], "error": null}
+{"id": "SYN-01045", "spans": [{"start": 7, "end": 8, "text": " "}, {"start": 8, "end": 22, "text": "bong dela cruz"}], "error": null}
+{"id": "SYN-01046", "spans": [{"start": 12, "end": 25, "text": " Sato Takeshi"}], "error": null}
+{"id": "SYN-01047", "spans": [{"start": 52, "end": 55, "text": " Ay"}, {"start": 55, "end": 59, "text": "asha"}], "error": null}
+{"id": "SYN-01048", "spans": [{"start": 10, "end": 22, "text": " Sota Suzuki"}], "error": null}
+{"id": "SYN-01049", "spans": [{"start": 30, "end": 35, "text": " Take"}, {"start": 35, "end": 47, "text": "shi Watanabe"}], "error": null}
+{"id": "SYN-01050", "spans": [{"start": 33, "end": 34, "text": "E"}, {"start": 34, "end": 50, "text": "wan MacGillivray"}], "error": null}
+{"id": "SYN-01051", "spans": [{"start": 14, "end": 21, "text": " Tenzin"}], "error": null}
+{"id": "SYN-01052", "spans": [{"start": 7, "end": 32, "text": " Ma. Theresa Delos Santos"}], "error": null}
+{"id": "SYN-01053", "spans": [], "error": null}
+{"id": "SYN-01054", "spans": [{"start": 52, "end": 60, "text": " Kalsang"}], "error": null}
+{"id": "SYN-01055", "spans": [], "error": null}
+{"id": "SYN-01056", "spans": [], "error": null}
+{"id": "SYN-01057", "spans": [{"start": 35, "end": 52, "text": " Chloé Desjardins"}], "error": null}
+{"id": "SYN-01058", "spans": [], "error": null}
+{"id": "SYN-01059", "spans": [{"start": 0, "end": 16, "text": "Kenji Kobayasshi"}], "error": null}
+{"id": "SYN-01060", "spans": [{"start": 19, "end": 28, "text": " Nakamura"}], "error": null}
+{"id": "SYN-01061", "spans": [], "error": null}
+{"id": "SYN-01062", "spans": [], "error": null}
+{"id": "SYN-01063", "spans": [{"start": 17, "end": 28, "text": "KE SCHRÖDER"}, {"start": 33, "end": 47, "text": " Xiaomingg Liu"}], "error": null}
+{"id": "SYN-01064", "spans": [{"start": 15, "end": 29, "text": " Wing Sze Wong"}], "error": null}
+{"id": "SYN-01065", "spans": [{"start": 0, "end": 2, "text": "So"}, {"start": 4, "end": 7, "text": " Sa"}], "error": null}
+{"id": "SYN-01066", "spans": [{"start": 26, "end": 39, "text": " Chiamaka Eze"}], "error": null}
+{"id": "SYN-01067", "spans": [{"start": 10, "end": 20, "text": " Hrytsenko"}, {"start": 21, "end": 31, "text": " Oleksandr"}], "error": null}
+{"id": "SYN-01068", "spans": [{"start": 38, "end": 44, "text": " Z. Ho"}], "error": null}
+{"id": "SYN-01069", "spans": [{"start": 14, "end": 34, "text": " Mariviic Pangilinan"}], "error": null}
+{"id": "SYN-01070", "spans": [{"start": 10, "end": 19, "text": " Moosomin"}, {"start": 20, "end": 26, "text": " Kanen"}], "error": null}
+{"id": "SYN-01071", "spans": [{"start": 0, "end": 9, "text": "A. Suzuki"}], "error": null}
+{"id": "SYN-01072", "spans": [{"start": 12, "end": 14, "text": " S"}, {"start": 14, "end": 26, "text": "OTA WATANABE"}, {"start": 31, "end": 33, "text": " M"}, {"start": 33, "end": 41, "text": ". Rahman"}], "error": null}
+{"id": "SYN-01073", "spans": [{"start": 33, "end": 34, "text": "D"}, {"start": 34, "end": 36, "text": "MI"}, {"start": 36, "end": 50, "text": "TRI WIŚNIEWSKA"}], "error": null}
+{"id": "SYN-01074", "spans": [{"start": 29, "end": 39, "text": " O. Clarke"}], "error": null}
+{"id": "SYN-01075", "spans": [{"start": 29, "end": 47, "text": " Thérèse Arsenault"}], "error": null}
+{"id": "SYN-01076", "spans": [{"start": 29, "end": 46, "text": " Abdullahi Faraah"}], "error": null}
+{"id": "SYN-01077", "spans": [{"start": 29, "end": 44, "text": " Aoife Ó Briain"}], "error": null}
+{"id": "SYN-01078", "spans": [{"start": 38, "end": 40, "text": " G"}, {"start": 40, "end": 56, "text": "IUSEPPE DI MARCO"}], "error": null}
+{"id": "SYN-01079", "spans": [], "error": null}
+{"id": "SYN-01080", "spans": [], "error": null}
+{"id": "SYN-01081", "spans": [{"start": 0, "end": 22, "text": "Ibrahim Bin Sali-Smith"}], "error": null}
+{"id": "SYN-01082", "spans": [{"start": 29, "end": 33, "text": " ant"}, {"start": 33, "end": 46, "text": "onio esposito"}], "error": null}
+{"id": "SYN-01083", "spans": [{"start": 26, "end": 33, "text": " Mirela"}], "error": null}
+{"id": "SYN-01084", "spans": [{"start": 46, "end": 48, "text": " M"}, {"start": 48, "end": 68, "text": "ónica Sánchez Torres"}], "error": null}
+{"id": "SYN-01085", "spans": [{"start": 41, "end": 64, "text": " Tanis Many Grey Horses"}], "error": null}
+{"id": "SYN-01086", "spans": [{"start": 10, "end": 25, "text": " Jignesh Rahman"}], "error": null}
+{"id": "SYN-01087", "spans": [], "error": null}
+{"id": "SYN-01088", "spans": [{"start": 0, "end": 25, "text": "Marie-Josée Tremblay-Côté"}], "error": null}
+{"id": "SYN-01089", "spans": [{"start": 29, "end": 35, "text": " Patel"}, {"start": 36, "end": 43, "text": " Ananya"}], "error": null}
+{"id": "SYN-01090", "spans": [{"start": 0, "end": 5, "text": "Conce"}, {"start": 13, "end": 19, "text": "sa Pin"}], "error": null}
+{"id": "SYN-01091", "spans": [{"start": 0, "end": 9, "text": "K. Taylor"}], "error": null}
+{"id": "SYN-01092", "spans": [{"start": 17, "end": 31, "text": " Siu Wai Zhang"}], "error": null}
+{"id": "SYN-01093", "spans": [{"start": 56, "end": 65, "text": " Larocque"}], "error": null}
+{"id": "SYN-01094", "spans": [{"start": 26, "end": 40, "text": " Chan Wing Sze"}], "error": null}
+{"id": "SYN-01095", "spans": [{"start": 7, "end": 15, "text": " Cecilia"}], "error": null}
+{"id": "SYN-01096", "spans": [{"start": 10, "end": 16, "text": " Popal"}, {"start": 17, "end": 26, "text": " Ali-Reza"}], "error": null}
+{"id": "SYN-01097", "spans": [], "error": null}
+{"id": "SYN-01098", "spans": [{"start": 33, "end": 36, "text": "And"}, {"start": 36, "end": 39, "text": "rés"}], "error": null}
+{"id": "SYN-01099", "spans": [], "error": null}
+{"id": "SYN-01100", "spans": [{"start": 0, "end": 3, "text": "ABD"}, {"start": 7, "end": 10, "text": "MAN"}], "error": null}
+{"id": "SYN-01101", "spans": [{"start": 29, "end": 33, "text": " She"}, {"start": 33, "end": 40, "text": "vchenko"}, {"start": 41, "end": 50, "text": " Wojciech"}], "error": null}
+{"id": "SYN-01102", "spans": [], "error": null}
+{"id": "SYN-01103", "spans": [{"start": 12, "end": 22, "text": " Kerry-Ann"}], "error": null}
+{"id": "SYN-01104", "spans": [{"start": 35, "end": 56, "text": " Mirela Ivanov-Petrov"}], "error": null}
+{"id": "SYN-01105", "spans": [{"start": 17, "end": 20, "text": " mé"}, {"start": 20, "end": 35, "text": "lanie thériault"}], "error": null}
+{"id": "SYN-01106", "spans": [{"start": 34, "end": 50, "text": " ali-reza rahimi"}], "error": null}
+{"id": "SYN-01107", "spans": [{"start": 36, "end": 41, "text": " Peña"}, {"start": 42, "end": 52, "text": " José Luis"}], "error": null}
+{"id": "SYN-01108", "spans": [{"start": 12, "end": 30, "text": " Giuseppe Esposito"}], "error": null}
+{"id": "SYN-01109", "spans": [{"start": 7, "end": 23, "text": " zahra mohammadi"}], "error": null}
+{"id": "SYN-01110", "spans": [], "error": null}
+{"id": "SYN-01111", "spans": [{"start": 36, "end": 43, "text": " Arreak"}, {"start": 48, "end": 54, "text": "seolak"}], "error": null}
+{"id": "SYN-01112", "spans": [{"start": 0, "end": 1, "text": "z"}, {"start": 0, "end": 12, "text": "zhihao tsang"}], "error": null}
+{"id": "SYN-01113", "spans": [{"start": 35, "end": 39, "text": " Ayu"}], "error": null}
+{"id": "SYN-01114", "spans": [{"start": 10, "end": 20, "text": " T. Bailey"}], "error": null}
+{"id": "SYN-01115", "spans": [{"start": 13, "end": 22, "text": " Petrović"}], "error": null}
+{"id": "SYN-01116", "spans": [{"start": 10, "end": 21, "text": " Marguerite"}], "error": null}
+{"id": "SYN-01117", "spans": [{"start": 24, "end": 33, "text": " Gurpreet"}], "error": null}
+{"id": "SYN-01118", "spans": [{"start": 17, "end": 28, "text": " Karamanlis"}], "error": null}
+{"id": "SYN-01119", "spans": [{"start": 46, "end": 51, "text": " Jang"}, {"start": 52, "end": 59, "text": " Eun-ji"}], "error": null}
+{"id": "SYN-01120", "spans": [], "error": null}
+{"id": "SYN-01121", "spans": [{"start": 35, "end": 50, "text": " Aoife Ó Briain"}], "error": null}
+{"id": "SYN-01122", "spans": [], "error": null}
+{"id": "SYN-01123", "spans": [], "error": null}
+{"id": "SYN-01124", "spans": [{"start": 10, "end": 17, "text": " J. Lam"}], "error": null}
+{"id": "SYN-01125", "spans": [], "error": null}
+{"id": "SYN-01126", "spans": [], "error": null}
+{"id": "SYN-01127", "spans": [{"start": 46, "end": 66, "text": " AGNIESZKA KOWALCZYK"}], "error": null}
+{"id": "SYN-01128", "spans": [{"start": 10, "end": 12, "text": " P"}, {"start": 12, "end": 28, "text": "ITSEOLAK ARNAQUQ"}], "error": null}
+{"id": "SYN-01129", "spans": [], "error": null}
+{"id": "SYN-01130", "spans": [{"start": 52, "end": 60, "text": " Suharti"}], "error": null}
+{"id": "SYN-01131", "spans": [{"start": 8, "end": 21, "text": " Mary Swammpy"}], "error": null}
+{"id": "SYN-01132", "spans": [{"start": 17, "end": 35, "text": " DMITRI SHEVCHENKO"}, {"start": 45, "end": 53, "text": "evchenko"}], "error": null}
+{"id": "SYN-01133", "spans": [], "error": null}
+{"id": "SYN-01134", "spans": [], "error": null}
+{"id": "SYN-01135", "spans": [{"start": 12, "end": 28, "text": " jaypeetee kunuk"}], "error": null}
+{"id": "SYN-01136", "spans": [{"start": 38, "end": 64, "text": " Alejandro Rodriguez Lopez"}], "error": null}
+{"id": "SYN-01137", "spans": [{"start": 12, "end": 17, "text": " take"}, {"start": 17, "end": 29, "text": "shi watanabe"}], "error": null}
+{"id": "SYN-01138", "spans": [], "error": null}
+{"id": "SYN-01139", "spans": [{"start": 12, "end": 15, "text": " gi"}, {"start": 15, "end": 28, "text": "nette leblanc"}], "error": null}
+{"id": "SYN-01140", "spans": [{"start": 11, "end": 18, "text": " Müller"}], "error": null}
+{"id": "SYN-01141", "spans": [{"start": 52, "end": 54, "text": " Đ"}, {"start": 54, "end": 61, "text": "ỨC ĐẶNG"}], "error": null}
+{"id": "SYN-01142", "spans": [{"start": 35, "end": 48, "text": " HODAN BEKELE"}], "error": null}
+{"id": "SYN-01143", "spans": [{"start": 26, "end": 34, "text": " X. Zhou"}], "error": null}
+{"id": "SYN-01144", "spans": [{"start": 10, "end": 20, "text": " Pauloosie"}], "error": null}
+{"id": "SYN-01145", "spans": [{"start": 0, "end": 14, "text": "Hall-Mackenzie"}, {"start": 15, "end": 22, "text": " Olivia"}], "error": null}
+{"id": "SYN-01146", "spans": [{"start": 26, "end": 47, "text": " Małgorzata Kovalenko"}], "error": null}
+{"id": "SYN-01147", "spans": [{"start": 35, "end": 43, "text": " Ngawang"}], "error": null}
+{"id": "SYN-01148", "spans": [{"start": 0, "end": 22, "text": "Rodrigo Sánchez Torres"}], "error": null}
+{"id": "SYN-01149", "spans": [{"start": 7, "end": 27, "text": " Jaypeetee Tunnillie"}], "error": null}
+{"id": "SYN-01150", "spans": [{"start": 17, "end": 23, "text": " Lhamo"}], "error": null}
+{"id": "SYN-01151", "spans": [], "error": null}
+{"id": "SYN-01152", "spans": [{"start": 15, "end": 26, "text": " I. Van Dyk"}], "error": null}
+{"id": "SYN-01153", "spans": [{"start": 14, "end": 20, "text": " Silva"}], "error": null}
+{"id": "SYN-01154", "spans": [{"start": 26, "end": 36, "text": " A. McLeod"}], "error": null}
+{"id": "SYN-01155", "spans": [{"start": 24, "end": 37, "text": " Usman Grewal"}], "error": null}
+{"id": "SYN-01156", "spans": [{"start": 7, "end": 15, "text": " Popescu"}, {"start": 16, "end": 27, "text": " Małgorzata"}], "error": null}
+{"id": "SYN-01157", "spans": [], "error": null}
+{"id": "SYN-01158", "spans": [{"start": 3, "end": 12, "text": " Schröder"}], "error": null}
+{"id": "SYN-01159", "spans": [{"start": 12, "end": 20, "text": " Sukarno"}], "error": null}
+{"id": "SYN-01160", "spans": [{"start": 14, "end": 17, "text": " Go"}, {"start": 17, "end": 24, "text": "nçalves"}], "error": null}
+{"id": "SYN-01161", "spans": [{"start": 52, "end": 66, "text": " Luis Ferreira"}], "error": null}
+{"id": "SYN-01162", "spans": [{"start": 14, "end": 17, "text": " cu"}, {"start": 17, "end": 19, "text": "th"}, {"start": 19, "end": 32, "text": "bert belcourt"}], "error": null}
+{"id": "SYN-01163", "spans": [{"start": 52, "end": 72, "text": " Mariam Tehranii-Rad"}], "error": null}
+{"id": "SYN-01164", "spans": [{"start": 12, "end": 22, "text": " Oleksandr"}], "error": null}
+{"id": "SYN-01165", "spans": [], "error": null}
+{"id": "SYN-01166", "spans": [{"start": 10, "end": 13, "text": " us"}, {"start": 13, "end": 16, "text": "man"}, {"start": 16, "end": 22, "text": " patel"}, {"start": 26, "end": 42, "text": " Seamus McCarthy"}], "error": null}
+{"id": "SYN-01167", "spans": [{"start": 12, "end": 16, "text": " Lam"}, {"start": 17, "end": 26, "text": " Wing Sze"}], "error": null}
+{"id": "SYN-01168", "spans": [{"start": 12, "end": 31, "text": " Padraig MacKinnoon"}], "error": null}
+{"id": "SYN-01169", "spans": [{"start": 14, "end": 24, "text": " Mohammadi"}, {"start": 28, "end": 48, "text": " Baptiste Desajrlais"}], "error": null}
+{"id": "SYN-01170", "spans": [{"start": 9, "end": 25, "text": " Abdirahman Abdi"}], "error": null}
+{"id": "SYN-01171", "spans": [{"start": 33, "end": 53, "text": "Shirin Hashemi-Nejad"}], "error": null}
+{"id": "SYN-01172", "spans": [], "error": null}
+{"id": "SYN-01173", "spans": [{"start": 52, "end": 72, "text": " Margerite Parenteau"}], "error": null}
+{"id": "SYN-01174", "spans": [], "error": null}
+{"id": "SYN-01175", "spans": [{"start": 42, "end": 45, "text": " SO"}], "error": null}
+{"id": "SYN-01176", "spans": [{"start": 12, "end": 27, "text": " Garfield Grant"}], "error": null}
+{"id": "SYN-01177", "spans": [{"start": 29, "end": 38, "text": " M. Osman"}], "error": null}
+{"id": "SYN-01178", "spans": [{"start": 11, "end": 22, "text": " Hoa Nguyễn"}], "error": null}
+{"id": "SYN-01179", "spans": [], "error": null}
+{"id": "SYN-01180", "spans": [{"start": 24, "end": 31, "text": " Ndiaye"}, {"start": 32, "end": 39, "text": " Moussa"}], "error": null}
+{"id": "SYN-01181", "spans": [{"start": 52, "end": 56, "text": " Ayu"}], "error": null}
+{"id": "SYN-01182", "spans": [{"start": 29, "end": 47, "text": " Andrii Shevchenko"}], "error": null}
+{"id": "SYN-01183", "spans": [{"start": 15, "end": 24, "text": " Gurpreet"}], "error": null}
+{"id": "SYN-01184", "spans": [], "error": null}
+{"id": "SYN-01185", "spans": [{"start": 35, "end": 51, "text": " Marrivic Santos"}], "error": null}
+{"id": "SYN-01186", "spans": [{"start": 15, "end": 34, "text": " Bohdan Szczepański"}], "error": null}
+{"id": "SYN-01187", "spans": [{"start": 33, "end": 51, "text": "Mirela Szczepański"}], "error": null}
+{"id": "SYN-01188", "spans": [{"start": 14, "end": 35, "text": " Margueriet Parenteau"}], "error": null}
+{"id": "SYN-01189", "spans": [{"start": 12, "end": 27, "text": " maxime cormier"}], "error": null}
+{"id": "SYN-01190", "spans": [{"start": 34, "end": 47, "text": " Josee Nadeau"}], "error": null}
+{"id": "SYN-01191", "spans": [{"start": 7, "end": 8, "text": " "}, {"start": 8, "end": 18, "text": "CINDY ZHOU"}], "error": null}
+{"id": "SYN-01192", "spans": [], "error": null}
+{"id": "SYN-01193", "spans": [{"start": 10, "end": 13, "text": " TH"}, {"start": 13, "end": 25, "text": "Ị LAN NGUYỄN"}], "error": null}
+{"id": "SYN-01194", "spans": [], "error": null}
+{"id": "SYN-01195", "spans": [], "error": null}
+{"id": "SYN-01196", "spans": [{"start": 7, "end": 30, "text": " Abdel-Karim ibn Rashid"}], "error": null}
+{"id": "SYN-01197", "spans": [{"start": 36, "end": 52, "text": " Maxime Boudreau"}], "error": null}
+{"id": "SYN-01198", "spans": [{"start": 12, "end": 27, "text": " gabriel lépine"}, {"start": 32, "end": 35, "text": " AY"}, {"start": 35, "end": 44, "text": "AAN HAILE"}], "error": null}
+{"id": "SYN-01199", "spans": [{"start": 34, "end": 35, "text": " "}, {"start": 35, "end": 46, "text": "ngozi nwosu"}], "error": null}
+{"id": "SYN-01200", "spans": [{"start": 0, "end": 3, "text": "Far"}, {"start": 3, "end": 15, "text": "had Hosseini"}], "error": null}
+{"id": "SYN-01201", "spans": [{"start": 3, "end": 12, "text": " Macaraeg"}], "error": null}
+{"id": "SYN-01202", "spans": [{"start": 26, "end": 27, "text": " "}, {"start": 27, "end": 41, "text": "RAFIQUL GREWAL"}], "error": null}
+{"id": "SYN-01203", "spans": [{"start": 26, "end": 51, "text": " Mikisew Kahnawake-Jacobs"}], "error": null}
+{"id": "SYN-01204", "spans": [{"start": 33, "end": 34, "text": "L"}, {"start": 34, "end": 37, "text": "ham"}, {"start": 37, "end": 38, "text": "o"}], "error": null}
+{"id": "SYN-01205", "spans": [{"start": 30, "end": 53, "text": " Ahmad Shah Tehrani-Rad"}], "error": null}
+{"id": "SYN-01206", "spans": [], "error": null}
+{"id": "SYN-01207", "spans": [{"start": 14, "end": 24, "text": " Rao-Mehta"}, {"start": 25, "end": 37, "text": " Thusyanthan"}], "error": null}
+{"id": "SYN-01208", "spans": [{"start": 38, "end": 41, "text": " TH"}, {"start": 41, "end": 53, "text": "Ị LAN NGUYỄN"}], "error": null}
+{"id": "SYN-01209", "spans": [{"start": 24, "end": 40, "text": " Saoiirse McNeil"}], "error": null}
+{"id": "SYN-01210", "spans": [{"start": 11, "end": 17, "text": " Jacob"}], "error": null}
+{"id": "SYN-01211", "spans": [{"start": 33, "end": 35, "text": "Qa"}, {"start": 35, "end": 37, "text": "ja"}], "error": null}
+{"id": "SYN-01212", "spans": [{"start": 16, "end": 25, "text": ". Boateng"}], "error": null}
+{"id": "SYN-01213", "spans": [{"start": 29, "end": 49, "text": " Jaypeetee Anaviapik"}], "error": null}
+{"id": "SYN-01214", "spans": [{"start": 7, "end": 24, "text": " Luís Sousa Pinto"}], "error": null}
+{"id": "SYN-01215", "spans": [{"start": 36, "end": 48, "text": " S. Esposito"}], "error": null}
+{"id": "SYN-01216", "spans": [{"start": 26, "end": 39, "text": " Raven Okemaw"}], "error": null}
+{"id": "SYN-01217", "spans": [{"start": 30, "end": 39, "text": " Georgiou"}], "error": null}
+{"id": "SYN-01218", "spans": [{"start": 7, "end": 29, "text": " Abdel-Karim ibn Rshid"}], "error": null}
+{"id": "SYN-01219", "spans": [{"start": 52, "end": 64, "text": " Pieter Weiß"}], "error": null}
+{"id": "SYN-01220", "spans": [{"start": 0, "end": 14, "text": "Szeto Mei Ling"}], "error": null}
+{"id": "SYN-01221", "spans": [], "error": null}
+{"id": "SYN-01222", "spans": [{"start": 10, "end": 27, "text": " Muhammad El-Amin"}], "error": null}
+{"id": "SYN-01223", "spans": [{"start": 52, "end": 70, "text": " RODRIGO CASTAÑEDA"}], "error": null}
+{"id": "SYN-01224", "spans": [], "error": null}
+{"id": "SYN-01225", "spans": [{"start": 34, "end": 54, "text": " Anneke van der Berg"}], "error": null}
+{"id": "SYN-01226", "spans": [{"start": 9, "end": 15, "text": " Klaus"}], "error": null}
+{"id": "SYN-01227", "spans": [{"start": 29, "end": 42, "text": " Papadopoulos"}, {"start": 43, "end": 50, "text": " Giulia"}], "error": null}
+{"id": "SYN-01228", "spans": [], "error": null}
+{"id": "SYN-01229", "spans": [{"start": 12, "end": 21, "text": " da Costa"}, {"start": 22, "end": 31, "text": " Fernanda"}], "error": null}
+{"id": "SYN-01230", "spans": [], "error": null}
+{"id": "SYN-01231", "spans": [{"start": 17, "end": 27, "text": " S. Bekele"}], "error": null}
+{"id": "SYN-01232", "spans": [{"start": 35, "end": 43, "text": " Suharti"}], "error": null}
+{"id": "SYN-01233", "spans": [{"start": 29, "end": 42, "text": " Mx. D'Angelo"}], "error": null}
+{"id": "SYN-01234", "spans": [{"start": 15, "end": 32, "text": " Nirmala Raghavan"}], "error": null}
+{"id": "SYN-01235", "spans": [], "error": null}
+{"id": "SYN-01236", "spans": [], "error": null}
+{"id": "SYN-01237", "spans": [{"start": 15, "end": 38, "text": " ABDUL RAHMAN AL-KHATIB"}], "error": null}
+{"id": "SYN-01238", "spans": [{"start": 0, "end": 6, "text": "Wangmo"}], "error": null}
+{"id": "SYN-01239", "spans": [{"start": 7, "end": 27, "text": " Shanice Jean-Pierre"}], "error": null}
+{"id": "SYN-01240", "spans": [], "error": null}
+{"id": "SYN-01241", "spans": [{"start": 46, "end": 67, "text": " JOSE MARI PANGILINAN"}], "error": null}
+{"id": "SYN-01242", "spans": [], "error": null}
+{"id": "SYN-01243", "spans": [{"start": 10, "end": 17, "text": " hoa đỗ"}], "error": null}
+{"id": "SYN-01244", "spans": [{"start": 35, "end": 41, "text": " Lhamo"}], "error": null}
+{"id": "SYN-01245", "spans": [{"start": 35, "end": 47, "text": " Sota Tanaka"}], "error": null}
+{"id": "SYN-01246", "spans": [{"start": 26, "end": 41, "text": " mariam durrani"}], "error": null}
+{"id": "SYN-01247", "spans": [{"start": 7, "end": 29, "text": " Jose Mari Del Rosario"}], "error": null}
+{"id": "SYN-01248", "spans": [], "error": null}
+{"id": "SYN-01249", "spans": [{"start": 10, "end": 22, "text": " nour haddad"}], "error": null}
+{"id": "SYN-01250", "spans": [{"start": 26, "end": 41, "text": " Ximena Ramirez"}], "error": null}
+{"id": "SYN-01251", "spans": [{"start": 7, "end": 23, "text": " Ashley Campbell"}], "error": null}
+{"id": "SYN-01252", "spans": [{"start": 41, "end": 63, "text": "ali-reza hashemi-nejad"}], "error": null}
+{"id": "SYN-01253", "spans": [{"start": 12, "end": 22, "text": " Kerry-Ann"}], "error": null}
+{"id": "SYN-01254", "spans": [], "error": null}
+{"id": "SYN-01255", "spans": [{"start": 14, "end": 29, "text": " Mélanie Nadeau"}], "error": null}
+{"id": "SYN-01256", "spans": [{"start": 0, "end": 8, "text": "A. Haile"}], "error": null}
+{"id": "SYN-01257", "spans": [{"start": 33, "end": 45, "text": "MIN-JUN JUNG"}], "error": null}
+{"id": "SYN-01258", "spans": [{"start": 0, "end": 5, "text": "NGOZI"}, {"start": 7, "end": 10, "text": "BEK"}], "error": null}
+{"id": "SYN-01259", "spans": [{"start": 36, "end": 45, "text": " Thompson"}], "error": null}
+{"id": "SYN-01260", "spans": [{"start": 12, "end": 31, "text": " Mary-Kate Campbell"}], "error": null}
