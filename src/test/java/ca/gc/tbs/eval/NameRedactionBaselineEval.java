@@ -2,6 +2,8 @@ package ca.gc.tbs.eval;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +13,7 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -37,14 +40,42 @@ public class NameRedactionBaselineEval {
 
   private static final ObjectMapper MAPPER = new ObjectMapper();
   private static final DateTimeFormatter TS = DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmmss");
+  /** Drop OpenNLP person spans whose confidence is below this cutoff. */
+  private static double openNlpConfidenceThreshold = 0.0;
+
+  /** When true, skip synthetic-label size checks (real/unlabeled feedback samples). */
+  private static boolean unlabeledMode = false;
 
   public static void main(String[] args) throws Exception {
-    String modelId = args.length > 0 ? sanitizeModelId(args[0]) : "opennlp";
     Path root = findProjectRoot();
+    if (args.length > 0 && "--rebuild-index".equals(args[0])) {
+      Path evalResultsDir = root.resolve("eval-results");
+      writeIndexHtml(evalResultsDir);
+      System.out.println("Rebuilt comparison index: " + evalResultsDir.resolve("index.html"));
+      return;
+    }
+
+    List<String> positional = new ArrayList<>();
     Path dataFile = root.resolve("eval-data/synthetic_names_pi_test.ndjson");
+    for (String arg : args) {
+      if (arg.startsWith("--data=")) {
+        dataFile = Path.of(arg.substring("--data=".length())).toAbsolutePath().normalize();
+      } else if (arg.startsWith("--opennlp-threshold=")) {
+        openNlpConfidenceThreshold =
+            Double.parseDouble(arg.substring("--opennlp-threshold=".length()));
+      } else if ("--unlabeled".equals(arg)) {
+        unlabeledMode = true;
+      } else if (arg.startsWith("--")) {
+        throw new IllegalArgumentException("Unknown option: " + arg);
+      } else {
+        positional.add(arg);
+      }
+    }
+
+    String modelId = positional.isEmpty() ? "opennlp" : sanitizeModelId(positional.get(0));
     Path predictionsFile =
-        args.length > 1
-            ? Path.of(args[1]).toAbsolutePath().normalize()
+        positional.size() > 1
+            ? Path.of(positional.get(1)).toAbsolutePath().normalize()
             : root.resolve("eval-data/predictions").resolve(modelId + ".jsonl");
     String timestamp = LocalDateTime.now().format(TS);
     Path outDir = root.resolve("eval-results").resolve(modelId).resolve(timestamp);
@@ -53,6 +84,9 @@ public class NameRedactionBaselineEval {
     System.out.println("Project root: " + root);
     System.out.println("Reading labels from: " + dataFile);
     System.out.println("Writing results to: " + outDir);
+    if (unlabeledMode) {
+      System.out.println("Mode: unlabeled (no gold-name F1; prediction/redaction reports only)");
+    }
     System.out.println();
 
     List<Comment> comments = loadComments(dataFile);
@@ -68,8 +102,11 @@ public class NameRedactionBaselineEval {
     String guessSource;
     if ("opennlp".equals(modelId)) {
       System.out.println("Guess source: built-in OpenNLP models");
+      System.out.println("OpenNLP confidence threshold: " + openNlpConfidenceThreshold);
       predictions = runOpenNlpPredictions(comments);
-      guessSource = "Apache OpenNLP (en-token.bin + en-ner-person.bin)";
+      guessSource =
+          "Apache OpenNLP (en-token.bin + en-ner-person.bin), threshold="
+              + openNlpConfidenceThreshold;
     } else {
       System.out.println("Guess source: " + predictionsFile);
       predictions = loadPredictions(predictionsFile, comments);
@@ -127,15 +164,17 @@ public class NameRedactionBaselineEval {
         combined,
         results,
         failures);
+    Path evalResultsDir = root.resolve("eval-results");
     appendComparisonCsv(
-        root.resolve("eval-results/comparison.csv"),
+        evalResultsDir.resolve("comparison.csv"),
         modelId,
         timestamp,
         english,
         french,
         combined,
         outDir);
-    writeIndexHtml(root.resolve("eval-results"), root.resolve("eval-results/comparison.csv"));
+    registerResultInActiveRun(evalResultsDir, modelId, timestamp);
+    writeIndexHtml(evalResultsDir);
 
     System.out.println(summaryText);
     System.out.println();
@@ -264,9 +303,6 @@ public class NameRedactionBaselineEval {
     report.policyCount =
         (int) comments.stream().filter(c -> "policy_decision".equals(c.shouldRedact)).count();
 
-    if (report.total != 1260) {
-      report.failures.add("Expected 1260 comments, found " + report.total);
-    }
     if (report.uniqueIds != report.total) {
       report.failures.add(
           "Duplicate IDs detected: unique=" + report.uniqueIds + " total=" + report.total);
@@ -274,8 +310,13 @@ public class NameRedactionBaselineEval {
     if (report.duplicateIds != 0) {
       report.failures.add("Duplicate ID count=" + report.duplicateIds);
     }
-    if (report.scoredForF1 != 1244) {
-      report.failures.add("Expected 1244 non-policy comments, found " + report.scoredForF1);
+    if (!unlabeledMode) {
+      if (report.total != 1260) {
+        report.failures.add("Expected 1260 comments, found " + report.total);
+      }
+      if (report.scoredForF1 != 1244) {
+        report.failures.add("Expected 1244 non-policy comments, found " + report.scoredForF1);
+      }
     }
     report.ok = report.failures.isEmpty();
     return report;
@@ -312,8 +353,13 @@ public class NameRedactionBaselineEval {
         Span[] tokenSpans = tokenizer.tokenizePos(comment.text);
         String[] tokens = Span.spansToStrings(tokenSpans, comment.text);
         Span[] nameSpans = nameFinder.find(tokens);
+        double[] probs = nameFinder.probs();
         List<CharSpan> predicted = new ArrayList<>();
-        for (Span name : nameSpans) {
+        for (int i = 0; i < nameSpans.length; i++) {
+          Span name = nameSpans[i];
+          if (i < probs.length && probs[i] < openNlpConfidenceThreshold) {
+            continue;
+          }
           if (name.getStart() < 0
               || name.getEnd() > tokenSpans.length
               || name.getStart() >= name.getEnd()) {
@@ -513,6 +559,21 @@ public class NameRedactionBaselineEval {
   }
 
   private static String csvMetrics(String language, Metrics m) {
+    if (unlabeledMode) {
+      // No gold labels: keep prediction counts, mark score columns as n/a for the index.
+      return String.format(
+          Locale.ROOT,
+          "%s,%d,%d,%d,%d,%d,%d,n/a,n/a,n/a,%d,%d,n/a%n",
+          language,
+          m.comments,
+          m.goldSpans,
+          m.predictedSpans,
+          m.truePositives,
+          m.falsePositives,
+          m.falseNegatives,
+          m.hardNegativeComments,
+          m.hardNegativeCorrect);
+    }
     return String.format(
         Locale.ROOT,
         "%s,%d,%d,%d,%d,%d,%d,%.6f,%.6f,%.6f,%d,%d,%.6f%n",
@@ -534,7 +595,7 @@ public class NameRedactionBaselineEval {
   private static void writePerCommentCsv(Path path, List<CommentResult> results) throws IOException {
     StringBuilder sb = new StringBuilder();
     sb.append(
-        "id,language,split,should_redact,error_type,in_main_f1,gold_spans,predicted_spans,true_positives,false_positives,false_negatives,gold_text,predicted_text,comment_text,failure\n");
+        "id,language,split,should_redact,error_type,in_main_f1,gold_spans,predicted_spans,true_positives,false_positives,false_negatives,gold_text,predicted_text,comment_text,redacted_text,failure\n");
     for (CommentResult r : results) {
       sb.append(csv(r.comment.id)).append(',');
       sb.append(csv(r.comment.language)).append(',');
@@ -550,6 +611,7 @@ public class NameRedactionBaselineEval {
       sb.append(csv(joinSpans(r.comment.gold))).append(',');
       sb.append(csv(joinSpans(r.predicted))).append(',');
       sb.append(csv(r.comment.text)).append(',');
+      sb.append(csv(redactPredictedSpans(r.comment.text, r.predicted))).append(',');
       sb.append(csv(r.failureMessage == null ? "" : r.failureMessage)).append('\n');
     }
     Files.writeString(path, sb.toString(), StandardCharsets.UTF_8);
@@ -559,6 +621,31 @@ public class NameRedactionBaselineEval {
     return spans.stream()
         .map(s -> s.text + " [" + s.start + ":" + s.end + "]")
         .collect(Collectors.joining(" | "));
+  }
+
+  /**
+   * Replace each predicted name span with {@code #} characters (same style as production
+   * {@code ContentService.cleanNames}).
+   */
+  private static String redactPredictedSpans(String text, List<CharSpan> predicted) {
+    if (text == null) {
+      return "";
+    }
+    if (predicted == null || predicted.isEmpty()) {
+      return text;
+    }
+    List<CharSpan> ordered =
+        predicted.stream()
+            .filter(s -> s != null && s.start >= 0 && s.end <= text.length() && s.start < s.end)
+            .sorted(Comparator.comparingInt((CharSpan s) -> s.start).reversed())
+            .toList();
+    StringBuilder sb = new StringBuilder(text);
+    for (CharSpan span : ordered) {
+      char[] replacement = new char[span.end - span.start];
+      Arrays.fill(replacement, '#');
+      sb.replace(span.start, span.end, new String(replacement));
+    }
+    return sb.toString();
   }
 
   private static String csv(String value) {
@@ -601,62 +688,200 @@ public class NameRedactionBaselineEval {
             all.f1(),
             outDir.resolve("report.html"));
 
-    List<String> kept = new ArrayList<>();
-    if (Files.exists(comparisonPath) && Files.size(comparisonPath) > 0) {
-      List<String> lines = Files.readAllLines(comparisonPath, StandardCharsets.UTF_8);
-      for (int i = 1; i < lines.size(); i++) {
-        String line = lines.get(i).trim();
-        if (line.isEmpty()) {
-          continue;
-        }
-        String[] parts = splitCsv(line);
-        if (parts.length > 0 && parts[0].equals(modelId)) {
-          continue; // replace prior row for this model
-        }
-        kept.add(line);
-      }
+    if (!Files.exists(comparisonPath) || Files.size(comparisonPath) == 0) {
+      Files.writeString(comparisonPath, header + newRow, StandardCharsets.UTF_8);
+      return;
     }
-    StringBuilder sb = new StringBuilder(header);
-    for (String line : kept) {
-      sb.append(line).append('\n');
-    }
-    sb.append(newRow);
-    Files.writeString(comparisonPath, sb.toString(), StandardCharsets.UTF_8);
+    Files.writeString(
+        comparisonPath, newRow, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
   }
 
-  private static void writeIndexHtml(Path evalResultsDir, Path comparisonPath) throws IOException {
-    List<String> rows = new ArrayList<>();
-    if (Files.exists(comparisonPath) && Files.size(comparisonPath) > 0) {
-      List<String> lines = Files.readAllLines(comparisonPath, StandardCharsets.UTF_8);
-      for (int i = 1; i < lines.size(); i++) {
-        String line = lines.get(i).trim();
-        if (line.isEmpty()) {
-          continue;
-        }
-        String[] parts = splitCsv(line);
-        if (parts.length < 15) {
-          continue;
-        }
-        String report = parts[14];
-        String href = evalResultsDir.relativize(Path.of(report)).toString().replace('\\', '/');
-        rows.add(
-            "<tr>"
-                + "<td>"
-                + esc(parts[0])
-                + "</td>"
-                + "<td>"
-                + esc(parts[5])
-                + "</td><td>"
-                + esc(parts[9])
-                + "</td><td>"
-                + esc(parts[13])
-                + "</td>"
-                + "<td><a href=\""
-                + esc(href)
-                + "\">Open report</a></td>"
-                + "</tr>");
+  private static void registerResultInActiveRun(
+      Path evalResultsDir, String modelId, String timestamp) throws IOException {
+    Path runsPath = evalResultsDir.resolve("runs.json");
+    ObjectNode root = loadOrCreateRunsDocument(runsPath);
+    String activeDatasetId = textOr(root.get("activeDatasetId"), "synthetic-pi");
+    String activeRunId = textOr(root.get("activeRunId"), "original");
+    ObjectNode dataset = findOrCreateDataset(root, activeDatasetId);
+    ObjectNode targetRun = null;
+    for (JsonNode runNode : dataset.withArray("runs")) {
+      if (runNode.isObject() && activeRunId.equals(textOr(runNode.get("id"), ""))) {
+        targetRun = (ObjectNode) runNode;
+        break;
       }
     }
+    if (targetRun == null) {
+      targetRun = dataset.withArray("runs").addObject();
+      targetRun.put("id", activeRunId);
+      targetRun.put("label", activeRunId);
+      targetRun.put("notes", "");
+      targetRun.putObject("thresholds");
+      targetRun.putObject("results");
+    }
+    targetRun.with("results").put(modelId, timestamp);
+    ObjectMapper pretty = MAPPER.copy().enable(SerializationFeature.INDENT_OUTPUT);
+    Files.writeString(runsPath, pretty.writeValueAsString(root) + "\n", StandardCharsets.UTF_8);
+  }
+
+  private static ObjectNode findOrCreateDataset(ObjectNode root, String datasetId) {
+    for (JsonNode node : root.withArray("datasets")) {
+      if (node.isObject() && datasetId.equals(textOr(node.get("id"), ""))) {
+        return (ObjectNode) node;
+      }
+    }
+    ObjectNode created = root.withArray("datasets").addObject();
+    created.put("id", datasetId);
+    created.put("label", datasetId);
+    created.put("notes", "");
+    created.putArray("runs");
+    return created;
+  }
+
+  private static ObjectNode loadOrCreateRunsDocument(Path runsPath) throws IOException {
+    if (Files.exists(runsPath) && Files.size(runsPath) > 0) {
+      JsonNode parsed = MAPPER.readTree(Files.readString(runsPath, StandardCharsets.UTF_8));
+      if (parsed != null && parsed.isObject()) {
+        ObjectNode root = (ObjectNode) parsed;
+        // Migrate older flat {runs:[...]} docs into a single synthetic-pi dataset.
+        if ((!root.has("datasets") || !root.get("datasets").isArray())
+            && root.has("runs")
+            && root.get("runs").isArray()) {
+          ObjectNode migrated = MAPPER.createObjectNode();
+          migrated.put("activeDatasetId", "synthetic-pi");
+          migrated.put("activeRunId", textOr(root.get("activeRunId"), "original"));
+          ObjectNode dataset = migrated.putArray("datasets").addObject();
+          dataset.put("id", "synthetic-pi");
+          dataset.put("label", "Sample 1 — Synthetic PI test");
+          dataset.put("notes", "Labeled synthetic name dataset.");
+          dataset.set("runs", root.get("runs"));
+          return migrated;
+        }
+        return root;
+      }
+    }
+    ObjectNode root = MAPPER.createObjectNode();
+    root.put("activeDatasetId", "synthetic-pi");
+    root.put("activeRunId", "original");
+    root.putArray("datasets");
+    return root;
+  }
+
+  private static String textOr(JsonNode node, String fallback) {
+    return node == null || node.isNull() ? fallback : node.asText(fallback);
+  }
+
+  private static void writeIndexHtml(Path evalResultsDir) throws IOException {
+    Path runsPath = evalResultsDir.resolve("runs.json");
+    ObjectNode runsDoc = loadOrCreateRunsDocument(runsPath);
+    JsonNode datasets = runsDoc.get("datasets");
+    if (datasets == null || !datasets.isArray() || datasets.isEmpty()) {
+      Files.writeString(
+          evalResultsDir.resolve("index.html"),
+          """
+          <!DOCTYPE html>
+          <html lang="en"><head><meta charset="utf-8"/><title>Name redaction model comparison</title></head>
+          <body><h1>Name redaction model comparison</h1><p>No datasets defined in runs.json yet.</p></body></html>
+          """,
+          StandardCharsets.UTF_8);
+      return;
+    }
+
+    String activeDatasetId = textOr(runsDoc.get("activeDatasetId"), textOr(datasets.get(0).get("id"), "synthetic-pi"));
+    String activeRunId = textOr(runsDoc.get("activeRunId"), "original");
+    String defaultDatasetId = chooseDefaultDatasetId(datasets, activeDatasetId);
+
+    StringBuilder datasetTabs = new StringBuilder();
+    StringBuilder datasetPanels = new StringBuilder();
+    for (JsonNode datasetNode : datasets) {
+      if (!datasetNode.isObject()) {
+        continue;
+      }
+      String datasetId = textOr(datasetNode.get("id"), "dataset");
+      String datasetLabel = textOr(datasetNode.get("label"), datasetId);
+      String datasetNotes = textOr(datasetNode.get("notes"), "");
+      JsonNode runs = datasetNode.path("runs");
+      boolean datasetSelected = datasetId.equals(defaultDatasetId);
+      String defaultRunId =
+          runs.isArray() && !runs.isEmpty()
+              ? chooseDefaultTabId(runs, datasetSelected ? activeRunId : textOr(runs.get(0).get("id"), "run"))
+              : "";
+
+      datasetTabs
+          .append("<button type=\"button\" class=\"dataset-tab")
+          .append(datasetSelected ? " active" : "")
+          .append("\" data-dataset=\"")
+          .append(esc(datasetId))
+          .append("\" role=\"tab\" aria-selected=\"")
+          .append(datasetSelected)
+          .append("\">")
+          .append(esc(datasetLabel))
+          .append("</button>\n");
+
+      datasetPanels
+          .append("<section class=\"dataset-panel")
+          .append(datasetSelected ? " active" : "")
+          .append("\" data-dataset-panel=\"")
+          .append(esc(datasetId))
+          .append("\">\n");
+      if (!datasetNotes.isBlank()) {
+        datasetPanels
+            .append("<p class=\"note\">")
+            .append(esc(datasetNotes))
+            .append("</p>\n");
+      }
+
+      if (!runs.isArray() || runs.isEmpty()) {
+        datasetPanels.append("<p class=\"muted\">No experiment runs yet for this sample.</p>\n");
+      } else {
+        StringBuilder runTabs = new StringBuilder();
+        StringBuilder runPanels = new StringBuilder();
+        for (JsonNode runNode : runs) {
+          if (!runNode.isObject()) {
+            continue;
+          }
+          String runId = textOr(runNode.get("id"), "run");
+          String label = textOr(runNode.get("label"), runId);
+          String notes = textOr(runNode.get("notes"), "");
+          boolean selected = runId.equals(defaultRunId);
+          String tabKey = datasetId + "::" + runId;
+          runTabs
+              .append("<button type=\"button\" class=\"tab")
+              .append(selected ? " active" : "")
+              .append("\" data-tab=\"")
+              .append(esc(tabKey))
+              .append("\" data-dataset=\"")
+              .append(esc(datasetId))
+              .append("\" role=\"tab\" aria-selected=\"")
+              .append(selected)
+              .append("\">")
+              .append(esc(label))
+              .append("</button>\n");
+          runPanels
+              .append("<section class=\"panel")
+              .append(selected ? " active" : "")
+              .append("\" data-panel=\"")
+              .append(esc(tabKey))
+              .append("\" data-dataset=\"")
+              .append(esc(datasetId))
+              .append("\" role=\"tabpanel\">\n");
+          if (!notes.isBlank()) {
+            runPanels.append("<p class=\"note\">").append(esc(notes)).append("</p>\n");
+          }
+          runPanels.append(buildThresholdListHtml(runNode.get("thresholds")));
+          runPanels.append(
+              buildRunResultsTableHtml(
+                  evalResultsDir, runNode.get("results"), runNode.get("thresholds")));
+          runPanels.append("</section>\n");
+        }
+        datasetPanels
+            .append("<div class=\"tabs\" role=\"tablist\">\n")
+            .append(runTabs)
+            .append("</div>\n")
+            .append(runPanels);
+      }
+      datasetPanels.append("</section>\n");
+    }
+
     String html =
         """
         <!DOCTYPE html>
@@ -667,34 +892,245 @@ public class NameRedactionBaselineEval {
           <style>
             body { font-family: Georgia, serif; margin: 2rem; color: #1b1b1b; background: #f7f4ef; }
             h1 { margin-bottom: 0.25rem; }
-            p { max-width: 50rem; }
+            p { max-width: 52rem; }
+            .dataset-tabs, .tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1.25rem 0 0.75rem; }
+            .dataset-tab, .tab {
+              font: inherit; cursor: pointer; background: #ebe4d8; border: 1px solid #c9beae;
+              border-radius: 4px 4px 0 0; padding: 0.45rem 0.9rem; color: #1b1b1b;
+            }
+            .dataset-tab.active, .tab.active { background: white; border-bottom-color: white; font-weight: 700; }
+            .dataset-tab { background: #d9cfc0; }
+            .dataset-tab.active { background: #fff8e7; border-bottom-color: #fff8e7; }
+            .dataset-panel { display: none; }
+            .dataset-panel.active { display: block; }
+            .panel {
+              display: none; background: white; border: 1px solid #c9beae; padding: 1rem 1.1rem 1.25rem;
+            }
+            .panel.active { display: block; }
             table { border-collapse: collapse; width: 100%; background: white; }
             th, td { border: 1px solid #ccc; padding: 0.55rem 0.7rem; text-align: left; }
             th { background: #ebe4d8; }
             .note { background: #fff8e7; border-left: 4px solid #c48a00; padding: 0.8rem 1rem; }
+            .thresholds { margin: 0.75rem 0 1rem; padding: 0; list-style: none; }
+            .thresholds li { margin: 0.2rem 0; }
+            .muted { color: #666; }
           </style>
         </head>
         <body>
           <h1>Name redaction model comparison</h1>
-          <p>Open this file to compare every model you tested. Each row is the latest result for that model.</p>
-          <table>
-            <thead>
-              <tr>
-                <th>Model</th>
-                <th>English F1</th><th>French F1</th><th>Combined F1</th>
-                <th>Detailed report</th>
-              </tr>
-            </thead>
-            <tbody>
+          <p>Pick a data sample first, then an experiment run. Only models scored in that run are listed.</p>
+          <div class="dataset-tabs" role="tablist" aria-label="Data samples">
         """
-            + String.join("\n", rows)
+            + datasetTabs
             + """
-            </tbody>
-          </table>
+          </div>
+        """
+            + datasetPanels
+            + """
+          <script>
+            document.querySelectorAll('.dataset-tab').forEach(function (tab) {
+              tab.addEventListener('click', function () {
+                var id = tab.getAttribute('data-dataset');
+                document.querySelectorAll('.dataset-tab').forEach(function (t) {
+                  t.classList.toggle('active', t === tab);
+                  t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+                });
+                document.querySelectorAll('.dataset-panel').forEach(function (panel) {
+                  panel.classList.toggle('active', panel.getAttribute('data-dataset-panel') === id);
+                });
+              });
+            });
+            document.querySelectorAll('.tab').forEach(function (tab) {
+              tab.addEventListener('click', function () {
+                var id = tab.getAttribute('data-tab');
+                var dataset = tab.getAttribute('data-dataset');
+                document.querySelectorAll('.tab[data-dataset=\"' + dataset + '\"]').forEach(function (t) {
+                  t.classList.toggle('active', t === tab);
+                  t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+                });
+                document.querySelectorAll('.panel[data-dataset=\"' + dataset + '\"]').forEach(function (panel) {
+                  panel.classList.toggle('active', panel.getAttribute('data-panel') === id);
+                });
+              });
+            });
+          </script>
         </body>
         </html>
         """;
     Files.writeString(evalResultsDir.resolve("index.html"), html, StandardCharsets.UTF_8);
+  }
+
+  private static String chooseDefaultDatasetId(JsonNode datasets, String activeDatasetId) {
+    for (JsonNode dataset : datasets) {
+      if (dataset.isObject() && activeDatasetId.equals(textOr(dataset.get("id"), ""))) {
+        return activeDatasetId;
+      }
+    }
+    return textOr(datasets.get(0).get("id"), "synthetic-pi");
+  }
+
+  private static String chooseDefaultTabId(JsonNode runs, String activeRunId) {
+    for (JsonNode runNode : runs) {
+      if (runNode.isObject()
+          && activeRunId.equals(textOr(runNode.get("id"), ""))
+          && runNode.path("results").isObject()
+          && runNode.path("results").size() > 0) {
+        return activeRunId;
+      }
+    }
+    for (JsonNode runNode : runs) {
+      if (runNode.isObject()
+          && runNode.path("results").isObject()
+          && runNode.path("results").size() > 0) {
+        return textOr(runNode.get("id"), "original");
+      }
+    }
+    return textOr(runs.get(0).get("id"), "original");
+  }
+
+  private static String buildThresholdListHtml(JsonNode thresholds) {
+    if (thresholds == null || !thresholds.isObject() || thresholds.size() == 0) {
+      return "";
+    }
+    StringBuilder sb = new StringBuilder("<ul class=\"thresholds\">\n");
+    thresholds
+        .fields()
+        .forEachRemaining(
+            entry ->
+                sb.append("<li><strong>")
+                    .append(esc(entry.getKey()))
+                    .append("</strong>: threshold ")
+                    .append(esc(entry.getValue().asText()))
+                    .append("</li>\n"));
+    sb.append("</ul>\n");
+    return sb.toString();
+  }
+
+  private static String buildRunResultsTableHtml(
+      Path evalResultsDir, JsonNode results, JsonNode thresholds) throws IOException {
+    if (results == null || !results.isObject() || results.size() == 0) {
+      return "<p class=\"muted\">No results yet for this run.</p>\n";
+    }
+    List<Map.Entry<String, JsonNode>> entries = new ArrayList<>();
+    results.fields().forEachRemaining(entries::add);
+    entries.sort(Comparator.comparing(Map.Entry::getKey));
+
+    // Detect unlabeled runs (F1 stored as n/a) and show prediction counts instead.
+    boolean unlabeled = false;
+    Map<String, Map<String, String>> metricsByModel = new LinkedHashMap<>();
+    for (Map.Entry<String, JsonNode> entry : entries) {
+      Path summaryCsv =
+          evalResultsDir
+              .resolve(entry.getKey())
+              .resolve(entry.getValue().asText())
+              .resolve("summary.csv");
+      Map<String, String> metrics = readSummaryMetrics(summaryCsv);
+      metricsByModel.put(entry.getKey(), metrics);
+      String combinedF1 = metrics.getOrDefault("combined.f1", "");
+      if ("n/a".equalsIgnoreCase(combinedF1)) {
+        unlabeled = true;
+      }
+    }
+
+    StringBuilder rows = new StringBuilder();
+    for (Map.Entry<String, JsonNode> entry : entries) {
+      String modelId = entry.getKey();
+      String timestamp = entry.getValue().asText();
+      Path reportHtml = evalResultsDir.resolve(modelId).resolve(timestamp).resolve("report.html");
+      Map<String, String> metrics = metricsByModel.getOrDefault(modelId, Map.of());
+      String threshold =
+          thresholds != null && thresholds.has(modelId)
+              ? thresholds.get(modelId).asText()
+              : "n/a";
+      String href = evalResultsDir.relativize(reportHtml).toString().replace('\\', '/');
+      String en =
+          unlabeled
+              ? metrics.getOrDefault("english.predicted", "—")
+              : metrics.getOrDefault("english.f1", "—");
+      String fr =
+          unlabeled
+              ? metrics.getOrDefault("french.predicted", "—")
+              : metrics.getOrDefault("french.f1", "—");
+      String all =
+          unlabeled
+              ? metrics.getOrDefault("combined.predicted", "—")
+              : metrics.getOrDefault("combined.f1", "—");
+      rows.append("<tr>")
+          .append("<td>")
+          .append(esc(modelId))
+          .append("</td>")
+          .append("<td>")
+          .append(esc(threshold))
+          .append("</td>")
+          .append("<td>")
+          .append(esc(en))
+          .append("</td>")
+          .append("<td>")
+          .append(esc(fr))
+          .append("</td>")
+          .append("<td>")
+          .append(esc(all))
+          .append("</td>")
+          .append("<td><a href=\"")
+          .append(esc(href))
+          .append("\">Open report</a></td>")
+          .append("</tr>\n");
+    }
+
+    String enHeader = unlabeled ? "EN names found" : "English F1";
+    String frHeader = unlabeled ? "FR names found" : "French F1";
+    String allHeader = unlabeled ? "Total names found" : "Combined F1";
+    return """
+        <table>
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Threshold</th>
+              <th>"""
+        + esc(enHeader)
+        + """
+</th>
+              <th>"""
+        + esc(frHeader)
+        + """
+</th>
+              <th>"""
+        + esc(allHeader)
+        + """
+</th>
+              <th>Detailed report</th>
+            </tr>
+          </thead>
+          <tbody>
+        """
+        + rows
+        + """
+          </tbody>
+        </table>
+        """;
+  }
+
+  /** Reads F1 and predicted_names per language from summary.csv. */
+  private static Map<String, String> readSummaryMetrics(Path summaryCsv) throws IOException {
+    Map<String, String> out = new LinkedHashMap<>();
+    if (!Files.exists(summaryCsv)) {
+      return out;
+    }
+    List<String> lines = Files.readAllLines(summaryCsv, StandardCharsets.UTF_8);
+    for (int i = 1; i < lines.size(); i++) {
+      String line = lines.get(i).trim();
+      if (line.isEmpty()) {
+        continue;
+      }
+      String[] parts = splitCsv(line);
+      // language, comments, gold, predicted(3), ..., f1(9)
+      if (parts.length > 9) {
+        String lang = parts[0];
+        out.put(lang + ".predicted", parts[3]);
+        out.put(lang + ".f1", parts[9]);
+      }
+    }
+    return out;
   }
 
   private static String[] splitCsv(String line) {
@@ -759,6 +1195,9 @@ public class NameRedactionBaselineEval {
       rows.append("<td>").append(esc(joinSpans(r.comment.gold))).append("</td>");
       rows.append("<td>").append(esc(joinSpans(r.predicted))).append("</td>");
       rows.append("<td class=\"comment\">").append(esc(r.comment.text)).append("</td>");
+      rows.append("<td class=\"comment\">")
+          .append(esc(redactPredictedSpans(r.comment.text, r.predicted)))
+          .append("</td>");
       rows.append("</tr>\n");
     }
 
@@ -932,7 +1371,7 @@ public class NameRedactionBaselineEval {
               <thead>
                 <tr>
                   <th>ID</th><th>Lang</th><th>shouldRedact</th><th>Error</th>
-                  <th>Correct names</th><th>Model guesses</th><th>Comment</th>
+                  <th>Correct names</th><th>Model guesses</th><th>Comment</th><th>Redacted comment</th>
                 </tr>
               </thead>
               <tbody id="rows">

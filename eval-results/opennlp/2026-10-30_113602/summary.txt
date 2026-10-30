@@ -1,0 +1,32 @@
+NAME REDACTION EVALUATION SUMMARY
+=================================
+Model nickname: opennlp
+Run timestamp: 2026-10-30_113602
+Guess source: Apache OpenNLP (en-token.bin + en-ner-person.bin), threshold=0.7
+
+What was scored
+- All 1260 labeled comments (dev/test split IGNORED)
+- Main F1 uses 1244 comments (excludes 16 policy_decision rows)
+- Matching rule: exact character start/end must match
+- Model prediction failures recorded (not dropped): 0
+
+ENGLISH
+  comments=798  gold_names=795  predicted_names=166
+  true_positives=102  false_positives=64  false_negatives=693
+  precision=0.6145  recall=0.1283  F1=0.2123
+  hard_negative_comments=31  hard_negative_correct=27  hard_negative_accuracy=0.8710
+
+FRENCH
+  comments=446  gold_names=444  predicted_names=90
+  true_positives=44  false_positives=46  false_negatives=400
+  precision=0.4889  recall=0.0991  F1=0.1648
+  hard_negative_comments=17  hard_negative_correct=14  hard_negative_accuracy=0.8235
+
+COMBINED
+  comments=1244  gold_names=1239  predicted_names=256
+  true_positives=146  false_positives=110  false_negatives=1093
+  precision=0.5703  recall=0.1178  F1=0.1953
+  hard_negative_comments=48  hard_negative_correct=41  hard_negative_accuracy=0.8542
+
+POLICY_DECISION (not in main F1)
+  comments=16  predicted_spans=3  gold_spans=16

@@ -50,7 +50,7 @@ def write_predictions(path: Path, rows: list[dict]) -> None:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
-def predict_gliner(comments: list[dict]) -> list[dict]:
+def predict_gliner(comments: list[dict], threshold: float) -> list[dict]:
     try:
         from gliner import GLiNER
     except ImportError as exc:
@@ -60,6 +60,7 @@ def predict_gliner(comments: list[dict]) -> list[dict]:
         ) from exc
 
     print("Loading GLiNER model urchade/gliner_multi-v2.1 (first time may download)...")
+    print(f"GLiNER confidence threshold: {threshold}")
     model = GLiNER.from_pretrained("urchade/gliner_multi-v2.1")
     labels = ["person"]
     out = []
@@ -68,7 +69,7 @@ def predict_gliner(comments: list[dict]) -> list[dict]:
         if i == 1 or i % 50 == 0 or i == total:
             print(f"  GLiNER progress: {i}/{total}")
         try:
-            ents = model.predict_entities(comment["text"], labels, threshold=0.5)
+            ents = model.predict_entities(comment["text"], labels, threshold=threshold)
             spans = []
             for ent in ents:
                 start = int(ent["start"])
@@ -201,11 +202,31 @@ def main() -> int:
         choices=SUPPORTED,
         help="Which single model should create the guesses",
     )
+    parser.add_argument(
+        "--data",
+        type=Path,
+        default=None,
+        help="Comments NDJSON (default: eval-data/synthetic_names_pi_test.ndjson)",
+    )
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=None,
+        help="Predictions JSONL path (default: eval-data/predictions/<model>.jsonl)",
+    )
+    parser.add_argument(
+        "--threshold",
+        type=float,
+        default=0.5,
+        help="GLiNER confidence threshold (ignored for other models)",
+    )
     args = parser.parse_args()
 
     root = project_root()
-    data_path = root / "eval-data" / "synthetic_names_pi_test.ndjson"
-    out_path = root / "eval-data" / "predictions" / f"{args.model}.jsonl"
+    data_path = (args.data or (root / "eval-data" / "synthetic_names_pi_test.ndjson")).resolve()
+    out_path = (
+        args.out or (root / "eval-data" / "predictions" / f"{args.model}.jsonl")
+    ).resolve()
 
     if not data_path.exists():
         print(f"Missing labeled data file: {data_path}", file=sys.stderr)
@@ -218,7 +239,7 @@ def main() -> int:
     print()
 
     if args.model == "gliner":
-        rows = predict_gliner(comments)
+        rows = predict_gliner(comments, args.threshold)
     elif args.model == "xlm-roberta-ner":
         rows = predict_xlm_roberta(comments)
     else:
@@ -230,7 +251,7 @@ def main() -> int:
     print(f"Wrote predictions: {out_path}")
     print(f"Rows: {len(rows)}  (prediction errors recorded: {errors})")
     print("Next step: score them with:")
-    print(f"  ./scripts/run-name-eval.sh {args.model}")
+    print(f"  ./scripts/run-name-eval.sh {args.model} {out_path}")
     return 0
 
 

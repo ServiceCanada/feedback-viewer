@@ -4,11 +4,10 @@
 # Usage:
 #   ./scripts/run-name-eval.sh opennlp
 #   ./scripts/run-name-eval.sh gliner
+#   ./scripts/run-name-eval.sh gliner path/to/preds.jsonl --data=... --unlabeled
 #
-# For external models, create guesses first:
-#   python3 scripts/predict_names.py gliner
-# or use the one-command wrapper:
-#   ./scripts/run-model-eval.sh gliner
+# Extra args after the optional predictions path are forwarded to the Java evaluator
+# (e.g. --data=..., --opennlp-threshold=0.5, --unlabeled).
 #
 # After it finishes, open:
 #   eval-results/index.html
@@ -19,7 +18,14 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 MODEL_ID="${1:-opennlp}"
-PRED_FILE="${2:-}"
+shift || true
+PRED_FILE=""
+EXTRA_ARGS=()
+if [[ $# -gt 0 && "${1}" != --* ]]; then
+  PRED_FILE="$1"
+  shift
+fi
+EXTRA_ARGS=("$@")
 
 echo "============================================"
 echo " Name redaction evaluation"
@@ -27,6 +33,7 @@ echo "============================================"
 echo "Project folder: $ROOT"
 echo "Model nickname: $MODEL_ID"
 echo
+
 echo "Step 1/3: Compiling the evaluator (this can take a minute the first time)..."
 mvn -q test-compile
 
@@ -41,10 +48,11 @@ FILTERED_CP="$(
 )"
 CP="target/classes:target/test-classes:${FILTERED_CP}"
 
-echo "Step 3/3: Scoring all labeled comments..."
+echo "Step 3/3: Scoring comments..."
 echo
+JAVA_ARGS=("$MODEL_ID")
 if [[ -n "${PRED_FILE}" ]]; then
-  java -cp "$CP" ca.gc.tbs.eval.NameRedactionBaselineEval "$MODEL_ID" "$PRED_FILE"
-else
-  java -cp "$CP" ca.gc.tbs.eval.NameRedactionBaselineEval "$MODEL_ID"
+  JAVA_ARGS+=("$PRED_FILE")
 fi
+JAVA_ARGS+=("${EXTRA_ARGS[@]}")
+java -cp "$CP" ca.gc.tbs.eval.NameRedactionBaselineEval "${JAVA_ARGS[@]}"

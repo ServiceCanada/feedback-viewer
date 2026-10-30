@@ -1,0 +1,155 @@
+{
+  "activeDatasetId" : "feedback-2026-10-29",
+  "activeRunId" : "gliner-0.9-opennlp-0.1",
+  "datasets" : [ {
+    "id" : "synthetic-pi",
+    "label" : "Sample 1 — Synthetic PI test",
+    "notes" : "Labeled synthetic name dataset (1,260 comments). Threshold experiments on this sample.",
+    "runs" : [ {
+      "id" : "original",
+      "label" : "Original run",
+      "notes" : "GLiNER threshold 0.5; OpenNLP, XLM-RoBERTa, spaCy: no threshold",
+      "thresholds" : {
+        "gliner" : "0.5",
+        "opennlp" : "none",
+        "xlm-roberta-ner" : "none",
+        "spacy-xx" : "none"
+      },
+      "results" : {
+        "opennlp" : "2026-10-29_133107",
+        "gliner" : "2026-10-29_140229",
+        "xlm-roberta-ner" : "2026-10-29_140433",
+        "spacy-xx" : "2026-10-29_140449"
+      }
+    }, {
+      "id" : "threshold-0.7",
+      "label" : "Threshold 0.7",
+      "notes" : "GLiNER 0.7; OpenNLP 0.7",
+      "thresholds" : {
+        "gliner" : "0.7",
+        "opennlp" : "0.7"
+      },
+      "results" : {
+        "gliner" : "2026-10-30_114726",
+        "opennlp" : "2026-10-30_114710"
+      }
+    }, {
+      "id" : "gliner-0.6-opennlp-0.5",
+      "label" : "GLiNER 0.6 / OpenNLP 0.5",
+      "notes" : "GLiNER 0.6; OpenNLP 0.5",
+      "thresholds" : {
+        "gliner" : "0.6",
+        "opennlp" : "0.5"
+      },
+      "results" : {
+        "gliner" : "2026-10-30_115123",
+        "opennlp" : "2026-10-30_115127"
+      }
+    }, {
+      "id" : "gliner-0.55-opennlp-0.3",
+      "label" : "GLiNER 0.55 / OpenNLP 0.3",
+      "notes" : "GLiNER 0.55; OpenNLP 0.3",
+      "thresholds" : {
+        "gliner" : "0.55",
+        "opennlp" : "0.3"
+      },
+      "results" : {
+        "gliner" : "2026-10-30_115720",
+        "opennlp" : "2026-10-30_115724"
+      }
+    }, {
+      "id" : "gliner-0.4-opennlp-0.2",
+      "label" : "GLiNER 0.4 / OpenNLP 0.2",
+      "notes" : "GLiNER 0.4; OpenNLP 0.2",
+      "thresholds" : {
+        "gliner" : "0.4",
+        "opennlp" : "0.2"
+      },
+      "results" : {
+        "gliner" : "2026-10-30_130847",
+        "opennlp" : "2026-10-30_130852"
+      }
+    } ]
+  }, {
+    "id" : "feedback-2026-10-29",
+    "label" : "Sample 2 — feedback_2026-10-29",
+    "notes" : "Real Oct 29 feedback sample (3,319 comments).",
+    "runs" : [ {
+      "id" : "original",
+      "label" : "Original run",
+      "notes" : "GLiNER 0.5; OpenNLP none; XLM-RoBERTa/spaCy no threshold.",
+      "thresholds" : {
+        "gliner" : "0.5",
+        "opennlp" : "none",
+        "xlm-roberta-ner" : "none",
+        "spacy-xx" : "none"
+      },
+      "results" : {
+        "gliner" : "2026-10-30_152614",
+        "opennlp" : "2026-10-30_152618",
+        "xlm-roberta-ner" : "2026-10-30_152624",
+        "spacy-xx" : "2026-10-30_152628"
+      }
+    }, {
+      "id" : "threshold-0.7",
+      "label" : "Threshold 0.7",
+      "notes" : "GLiNER 0.7; OpenNLP 0.7.",
+      "thresholds" : {
+        "gliner" : "0.7",
+        "opennlp" : "0.7"
+      },
+      "results" : {
+        "gliner" : "2026-10-30_152633",
+        "opennlp" : "2026-10-30_152637"
+      }
+    }, {
+      "id" : "gliner-0.6-opennlp-0.5",
+      "label" : "GLiNER 0.6 / OpenNLP 0.5",
+      "notes" : "GLiNER 0.6; OpenNLP 0.5.",
+      "thresholds" : {
+        "gliner" : "0.6",
+        "opennlp" : "0.5"
+      },
+      "results" : {
+        "gliner" : "2026-10-30_152643",
+        "opennlp" : "2026-10-30_152647"
+      }
+    }, {
+      "id" : "gliner-0.55-opennlp-0.3",
+      "label" : "GLiNER 0.55 / OpenNLP 0.3",
+      "notes" : "GLiNER 0.55; OpenNLP 0.3.",
+      "thresholds" : {
+        "gliner" : "0.55",
+        "opennlp" : "0.3"
+      },
+      "results" : {
+        "gliner" : "2026-10-30_152652",
+        "opennlp" : "2026-10-30_143532"
+      }
+    }, {
+      "id" : "gliner-0.4-opennlp-0.2",
+      "label" : "GLiNER 0.4 / OpenNLP 0.2",
+      "notes" : "GLiNER 0.4; OpenNLP 0.2.",
+      "thresholds" : {
+        "gliner" : "0.4",
+        "opennlp" : "0.2"
+      },
+      "results" : {
+        "gliner" : "2026-10-30_144034",
+        "opennlp" : "2026-10-30_144040"
+      }
+    }, {
+      "id" : "gliner-0.9-opennlp-0.1",
+      "label" : "GLiNER 0.9 / OpenNLP 0.1",
+      "notes" : "GLiNER 0.9; OpenNLP 0.1.",
+      "thresholds" : {
+        "gliner" : "0.9",
+        "opennlp" : "0.1"
+      },
+      "results" : {
+        "gliner" : "2026-10-30_155249",
+        "opennlp" : "2026-10-30_155254"
+      }
+    } ]
+  } ]
+}

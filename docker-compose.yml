@@ -1,0 +1,46 @@
+# Local development stack: `docker-compose up`, then open http://localhost:8080.
+# Builds and runs the app from source against a throwaway MongoDB, so no
+# application.properties or decrypted secrets are needed. The prod image is
+# built separately from docker/Dockerfile by CI.
+services:
+  mongodb:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    image: maven:3.9.15-eclipse-temurin-21
+    working_dir: /app
+    # Serves templates and static files straight from src/main/resources (edits show on
+    # refresh) and recompiles Java on save, which triggers a devtools restart.
+    command: sh docker/dev.sh
+    ports:
+      - "8080:8080"
+      - "8000:8000" # remote debugger
+    volumes:
+      - .:/app
+      - maven_repo:/root/.m2
+      - /app/target # keep container build output out of the host's target/
+    environment:
+      # Environment variables override application.properties, so a dev who has
+      # the decrypted prod file still talks to the local database here.
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/pagesuccess
+      SPRING_DATA_MONGODB_DATABASE: pagesuccess
+      JWT_SECRET_KEY: local-dev-only-jwt-secret-not-for-prod
+      GC_IP_FILTER_ENABLED: "false"
+      SPRING_THREADS_VIRTUAL_ENABLED: "true"
+      SPRING_DEVTOOLS_RESTART_TRIGGER_FILE: .reloadtrigger
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+volumes:
+  mongodb_data:
+  maven_repo:
