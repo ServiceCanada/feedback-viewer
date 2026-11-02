@@ -2,9 +2,19 @@
 # Builds and runs the app from source against a throwaway MongoDB, so no
 # application.properties or decrypted secrets are needed. The prod image is
 # built separately from docker/Dockerfile by CI.
+#
+# The feedback-cj's docker-compose.yml uses the same project name, so locally the two
+# repos share one MongoDB, like prod: whichever starts first creates it, and rows the
+# cron job processes show up here on refresh.
+name: pagesuccess
+
 services:
+  # Keep this service identical to the one in the feedback-cj's docker-compose.yml, or
+  # starting either stack restarts the shared database.
   mongodb:
     image: mongo:7.0
+    # Keeps its logs out of `up`, and lets the cron job's `up` return once the job is done.
+    attach: false
     ports:
       - "27017:27017"
     volumes:

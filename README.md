@@ -61,6 +61,16 @@ db.problem.insertOne({ url: "https://www.canada.ca/en/test.html", title: "Test p
 
 The app counts rows when it starts, so run `docker-compose restart app` after adding data.
 
+### Sharing the database with feedback-cj
+
+Locally this shares one MongoDB with the feedback-cj cron job, like prod: both repos'
+`docker-compose.yml` files use the project name `pagesuccess`. Whichever you start first creates
+the database and the other reuses it, so comments the job processes show up here.
+
+- **`docker-compose down -v` wipes the shared database**, the cron job's data included.
+- **"Found orphan containers ([pagesuccess-job-1])"** is expected after running the cron job: it's
+  part of the same project but not of this file. Don't pass `--remove-orphans`.
+
 ### Formatting
 
 Java code follows [Google Java Format](https://github.com/google/google-java-format). Run
@@ -99,13 +109,15 @@ redeploy.
 | `docker-compose ps` | Check what's running |
 | `docker-compose restart app` | Restart the app (e.g. after adding data) |
 | `docker-compose stop` | Stop everything; your data is kept |
-| `docker-compose down -v` | Stop and wipe the local database and Maven cache |
+| `docker-compose down -v` | Stop and wipe the shared local database and Maven cache |
 
 ### Troubleshooting
 
 - **`docker: 'compose' is not a docker command`:** use `docker-compose` (with a hyphen) instead.
 - **Port 8080 or 27017 is already in use:** stop whatever else is using it, such as a copy of the
-  app started from your IDE or a local MongoDB.
+  app started from your IDE or a local MongoDB. A stack started before the database was shared
+  with feedback-cj runs under the old project name; stop it with `docker-compose -p feedback-viewer
+  down` (its data is kept).
 - **A Java change doesn't show up:** check `docker-compose logs --since 5m app` for a compile error.
 - **Debugging:** a Java debugger can attach to `localhost:8000`.
 
