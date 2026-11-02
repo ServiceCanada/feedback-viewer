@@ -40,6 +40,7 @@ public class NameRedactionBaselineEval {
 
   private static final ObjectMapper MAPPER = new ObjectMapper();
   private static final DateTimeFormatter TS = DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmmss");
+
   /** Drop OpenNLP person spans whose confidence is below this cutoff. */
   private static double openNlpConfidenceThreshold = 0.0;
 
@@ -127,8 +128,7 @@ public class NameRedactionBaselineEval {
       }
       if (prediction.error != null && !prediction.error.isBlank()) {
         failures++;
-        results.add(
-            CommentResult.failed(comment, new IllegalStateException(prediction.error)));
+        results.add(CommentResult.failed(comment, new IllegalStateException(prediction.error)));
         continue;
       }
       try {
@@ -145,7 +145,8 @@ public class NameRedactionBaselineEval {
     Metrics policy = Metrics.of(results, null, false);
 
     if (!combined.reconciles() || !english.reconciles() || !french.reconciles()) {
-      throw new IllegalStateException("Totals do not reconcile with per-comment results. Aborting.");
+      throw new IllegalStateException(
+          "Totals do not reconcile with per-comment results. Aborting.");
     }
 
     String summaryText =
@@ -375,9 +376,7 @@ public class NameRedactionBaselineEval {
         predictions.put(
             comment.id,
             new Prediction(
-                comment.id,
-                List.of(),
-                e.getClass().getSimpleName() + ": " + e.getMessage()));
+                comment.id, List.of(), e.getClass().getSimpleName() + ": " + e.getMessage()));
       } finally {
         nameFinder.clearAdaptiveData();
       }
@@ -385,8 +384,8 @@ public class NameRedactionBaselineEval {
     return predictions;
   }
 
-  private static Map<String, Prediction> loadPredictions(Path predictionsFile, List<Comment> comments)
-      throws IOException {
+  private static Map<String, Prediction> loadPredictions(
+      Path predictionsFile, List<Comment> comments) throws IOException {
     if (!Files.exists(predictionsFile)) {
       throw new IllegalStateException(
           "Missing predictions file: "
@@ -592,7 +591,8 @@ public class NameRedactionBaselineEval {
         m.hardNegativeAccuracy());
   }
 
-  private static void writePerCommentCsv(Path path, List<CommentResult> results) throws IOException {
+  private static void writePerCommentCsv(Path path, List<CommentResult> results)
+      throws IOException {
     StringBuilder sb = new StringBuilder();
     sb.append(
         "id,language,split,should_redact,error_type,in_main_f1,gold_spans,predicted_spans,true_positives,false_positives,false_negatives,gold_text,predicted_text,comment_text,redacted_text,failure\n");
@@ -624,8 +624,8 @@ public class NameRedactionBaselineEval {
   }
 
   /**
-   * Replace each predicted name span with {@code #} characters (same style as production
-   * {@code ContentService.cleanNames}).
+   * Replace each predicted name span with {@code #} characters (same style as production {@code
+   * ContentService.cleanNames}).
    */
   private static String redactPredictedSpans(String text, List<CharSpan> predicted) {
     if (text == null) {
@@ -692,8 +692,7 @@ public class NameRedactionBaselineEval {
       Files.writeString(comparisonPath, header + newRow, StandardCharsets.UTF_8);
       return;
     }
-    Files.writeString(
-        comparisonPath, newRow, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+    Files.writeString(comparisonPath, newRow, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
   }
 
   private static void registerResultInActiveRun(
@@ -786,7 +785,8 @@ public class NameRedactionBaselineEval {
       return;
     }
 
-    String activeDatasetId = textOr(runsDoc.get("activeDatasetId"), textOr(datasets.get(0).get("id"), "synthetic-pi"));
+    String activeDatasetId =
+        textOr(runsDoc.get("activeDatasetId"), textOr(datasets.get(0).get("id"), "synthetic-pi"));
     String activeRunId = textOr(runsDoc.get("activeRunId"), "original");
     String defaultDatasetId = chooseDefaultDatasetId(datasets, activeDatasetId);
 
@@ -803,7 +803,8 @@ public class NameRedactionBaselineEval {
       boolean datasetSelected = datasetId.equals(defaultDatasetId);
       String defaultRunId =
           runs.isArray() && !runs.isEmpty()
-              ? chooseDefaultTabId(runs, datasetSelected ? activeRunId : textOr(runs.get(0).get("id"), "run"))
+              ? chooseDefaultTabId(
+                  runs, datasetSelected ? activeRunId : textOr(runs.get(0).get("id"), "run"))
               : "";
 
       datasetTabs
@@ -824,10 +825,7 @@ public class NameRedactionBaselineEval {
           .append(esc(datasetId))
           .append("\">\n");
       if (!datasetNotes.isBlank()) {
-        datasetPanels
-            .append("<p class=\"note\">")
-            .append(esc(datasetNotes))
-            .append("</p>\n");
+        datasetPanels.append("<p class=\"note\">").append(esc(datasetNotes)).append("</p>\n");
       }
 
       if (!runs.isArray() || runs.isEmpty()) {
@@ -1039,9 +1037,7 @@ public class NameRedactionBaselineEval {
       Path reportHtml = evalResultsDir.resolve(modelId).resolve(timestamp).resolve("report.html");
       Map<String, String> metrics = metricsByModel.getOrDefault(modelId, Map.of());
       String threshold =
-          thresholds != null && thresholds.has(modelId)
-              ? thresholds.get(modelId).asText()
-              : "n/a";
+          thresholds != null && thresholds.has(modelId) ? thresholds.get(modelId).asText() : "n/a";
       String href = evalResultsDir.relativize(reportHtml).toString().replace('\\', '/');
       String en =
           unlabeled
@@ -1088,15 +1084,18 @@ public class NameRedactionBaselineEval {
               <th>Threshold</th>
               <th>"""
         + esc(enHeader)
-        + """
+        +
+"""
 </th>
               <th>"""
         + esc(frHeader)
-        + """
+        +
+"""
 </th>
               <th>"""
         + esc(allHeader)
-        + """
+        +
+"""
 </th>
               <th>Detailed report</th>
             </tr>
