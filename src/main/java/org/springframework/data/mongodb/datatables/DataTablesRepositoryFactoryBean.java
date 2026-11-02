@@ -1,5 +1,6 @@
 package org.springframework.data.mongodb.datatables;
 
+import java.io.Serializable;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
 import org.springframework.data.mongodb.repository.support.MongoRepositoryFactory;
@@ -9,13 +10,12 @@ import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
-import java.io.Serializable;
-
 /**
- * Factory bean that creates DataTablesRepository instances.
- * Register via @EnableMongoRepositories(repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class)
+ * Factory bean that creates DataTablesRepository instances. Register
+ * via @EnableMongoRepositories(repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class)
  */
-public class DataTablesRepositoryFactoryBean<R extends Repository<T, ID>, T, ID extends Serializable>
+public class DataTablesRepositoryFactoryBean<
+        R extends Repository<T, ID>, T, ID extends Serializable>
     extends MongoRepositoryFactoryBean<R, T, ID> {
 
   public DataTablesRepositoryFactoryBean(Class<? extends R> repositoryInterface) {

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Request parameters sent by jQuery DataTables.
- * Maps the server-side processing protocol from DataTables.
+ * Request parameters sent by jQuery DataTables. Maps the server-side processing protocol from
+ * DataTables.
  */
 public class DataTablesInput {
 

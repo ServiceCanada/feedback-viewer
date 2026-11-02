@@ -1,11 +1,11 @@
 package ca.gc.tbs.repository;
 
 import ca.gc.tbs.domain.Problem;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-import jakarta.validation.Valid;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
@@ -124,6 +124,7 @@ public interface ProblemRepository extends DataTablesRepository<Problem, String>
         "{ '$sort': { '_id': 1 } }"
       })
   List<String> findPageTitlesBySearch(String search);
+
   @Aggregation(
       pipeline = {
         "{ '$match': { 'processed': 'true' } }",

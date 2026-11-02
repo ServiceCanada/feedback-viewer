@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Response object for jQuery DataTables server-side processing.
- * Contains the data plus pagination metadata.
+ * Response object for jQuery DataTables server-side processing. Contains the data plus pagination
+ * metadata.
  */
 public class DataTablesOutput<T> {
 

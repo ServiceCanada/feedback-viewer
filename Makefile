@@ -1,42 +1,27 @@
-# Java formatter Makefile
-# Keep this file locally, don't commit it to the repository
+# Formatting runs in the docker-compose app container, so only Docker is needed.
+# With Maven installed locally, `mvn spotless:apply` / `mvn spotless:check` do the same.
+MVN = docker-compose run --rm --no-deps app mvn -q
 
-# Variables
-FORMATTER_VERSION = 1.17.0
-FORMATTER_JAR = google-java-format-$(FORMATTER_VERSION)-all-deps.jar
-FORMATTER_URL = https://github.com/google/google-java-format/releases/download/v$(FORMATTER_VERSION)/$(FORMATTER_JAR)
-JAVA_FILES = $(shell find src -name "*.java")
-
-# Default target
 .PHONY: help
 help:
 	@echo "Available targets:"
-	@echo "  format     - Format all Java files using Google Java Format"
-	@echo "  check      - Check if files need formatting without changing them"
-	@echo "  clean      - Remove the formatter jar"
-	@echo ""
-	@echo "Note: Keep this Makefile locally, don't commit it to your repository"
+	@echo "  fmt        - Format all Java files (Google Java Format)"
+	@echo "  fmt-check  - Fail if any Java file needs formatting (what CI runs)"
+	@echo "  check-ingress - Validate the decrypted ingress before re-encrypting it"
 
-# Download the formatter if it doesn't exist
-$(FORMATTER_JAR):
-	@echo "Downloading Google Java Format..."
-	@curl -L $(FORMATTER_URL) -o $(FORMATTER_JAR)
+.PHONY: fmt
+fmt:
+	@$(MVN) spotless:apply
 
-# Format all Java files
-.PHONY: format
-format: $(FORMATTER_JAR)
-	@echo "Formatting Java files..."
-	@java -jar $(FORMATTER_JAR) --replace $(JAVA_FILES)
-	@echo "Formatting complete!"
+.PHONY: fmt-check
+fmt-check:
+	@$(MVN) spotless:check
 
-# Check if files need formatting without changing them
-.PHONY: check
-check: $(FORMATTER_JAR)
-	@echo "Checking Java files for formatting issues..."
-	@java -jar $(FORMATTER_JAR) --dry-run --set-exit-if-changed $(JAVA_FILES)
+# CI can't check the ingress (it stays encrypted there), so check it here before
+# re-encrypting. The file is piped in on stdin rather than mounted into the container.
+INGRESS ?= kubernetes/feedback-viewer-ingress.yml
 
-# Clean up
-.PHONY: clean
-clean:
-	@echo "Removing formatter jar..."
-	@rm -f $(FORMATTER_JAR)
+.PHONY: check-ingress
+check-ingress:
+	@test -f $(INGRESS) || { echo "$(INGRESS) not found: decrypt it first."; exit 1; }
+	@docker run --rm -i ghcr.io/yannh/kubeconform:v0.6.7 -strict -summary < $(INGRESS)

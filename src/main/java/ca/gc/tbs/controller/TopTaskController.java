@@ -1,5 +1,16 @@
 package ca.gc.tbs.controller;
 
+import ca.gc.tbs.domain.TopTaskSurvey;
+import ca.gc.tbs.domain.User;
+import ca.gc.tbs.repository.TopTaskRepository;
+import ca.gc.tbs.security.JWTUtil;
+import ca.gc.tbs.service.ProblemDateService;
+import ca.gc.tbs.service.UserService;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -16,11 +27,6 @@ import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
-
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,15 +45,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
-import ca.gc.tbs.domain.TopTaskSurvey;
-import ca.gc.tbs.domain.User;
-import ca.gc.tbs.repository.TopTaskRepository;
-import ca.gc.tbs.security.JWTUtil;
-import ca.gc.tbs.service.ProblemDateService;
-import ca.gc.tbs.service.UserService;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 
 @Controller
 public class TopTaskController {
@@ -88,6 +85,7 @@ public class TopTaskController {
     this.jwtUtil = jwtUtil;
     this.surveyFieldValues = new SurveyFieldValues(mongoTemplate);
   }
+
   private static final Map<String, List<String>> institutionMappings = new HashMap<>();
 
   static {
@@ -577,7 +575,9 @@ public class TopTaskController {
     return String.valueOf(totalTaskCount);
   }
 
-  @RequestMapping(value = "/topTaskData", method = {RequestMethod.GET, RequestMethod.POST})
+  @RequestMapping(
+      value = "/topTaskData",
+      method = {RequestMethod.GET, RequestMethod.POST})
   @ResponseBody
   public DataTablesOutput<TopTaskSurvey> list(
       @Valid DataTablesInput input, HttpServletRequest request) {
@@ -586,7 +586,7 @@ public class TopTaskController {
     String departmentFilterVal = request.getParameter("department");
     String themeFilterVal = request.getParameter("theme");
     if (themeFilterVal != null) {
-        themeFilterVal = themeFilterVal.trim().replaceAll("\\s+", " ");
+      themeFilterVal = themeFilterVal.trim().replaceAll("\\s+", " ");
     }
     String[] taskFilterVals = request.getParameterValues("tasks[]");
     String startDateVal = request.getParameter("startDate");
@@ -594,7 +594,8 @@ public class TopTaskController {
     String groupFilterVal = request.getParameter("group");
     String language = request.getParameter("language");
     String includeCommentsOnlyParam = request.getParameter("includeCommentsOnly");
-    boolean includeCommentsOnly = includeCommentsOnlyParam != null && includeCommentsOnlyParam.equals("true");
+    boolean includeCommentsOnly =
+        includeCommentsOnlyParam != null && includeCommentsOnlyParam.equals("true");
     String taskCompletionFilterVal = request.getParameter("taskCompletion");
     String comments = request.getParameter("comments");
 
@@ -645,31 +646,37 @@ public class TopTaskController {
     } else if (!combinedOrCriteria.isEmpty()) {
       criteria.orOperator(combinedOrCriteria.toArray(new Criteria[0]));
     }
-    //taskCompletion filter
-      if (taskCompletionFilterVal != null && !taskCompletionFilterVal.isEmpty()) {
-          List<String> allowed = new ArrayList<>();
-          if (taskCompletionFilterVal.equals("Yes")) {
-              allowed.add("Yes / Oui");
-          } else if (taskCompletionFilterVal.equals("No")) {
-              allowed.add("No / Non");
-          } else if (taskCompletionFilterVal.equals("I started this survey before I finished my visit")) {
-              allowed.add("I started this survey before I finished my visit / J’ai commencé ce sondage avant d’avoir terminé ma visite");
-          }
-          if (!allowed.isEmpty()) {
-              criteria.and("taskCompletion").in(allowed);
-          }
+    // taskCompletion filter
+    if (taskCompletionFilterVal != null && !taskCompletionFilterVal.isEmpty()) {
+      List<String> allowed = new ArrayList<>();
+      if (taskCompletionFilterVal.equals("Yes")) {
+        allowed.add("Yes / Oui");
+      } else if (taskCompletionFilterVal.equals("No")) {
+        allowed.add("No / Non");
+      } else if (taskCompletionFilterVal.equals(
+          "I started this survey before I finished my visit")) {
+        allowed.add(
+            "I started this survey before I finished my visit / J’ai commencé ce sondage avant d’avoir terminé ma visite");
       }
-      // Comments filtering
-      if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments. trim())) {
-          String escapedComment = escapeSpecialRegexCharacters(comments.trim());
-          List<Criteria> commentCriteria = new ArrayList<>();
-          commentCriteria.add(Criteria.where("taskImproveComment").regex(escapedComment, "i"));
-          commentCriteria.add(Criteria.where("taskWhyNotComment").regex(escapedComment, "i"));
-          commentCriteria.add(Criteria.where("taskOther").regex(escapedComment, "i"));
-
-          criteria = new Criteria().andOperator(criteria, new Criteria().orOperator(commentCriteria.toArray(new Criteria[0])));
+      if (!allowed.isEmpty()) {
+        criteria.and("taskCompletion").in(allowed);
       }
+    }
+    // Comments filtering
+    if (comments != null
+        && !comments.trim().isEmpty()
+        && !"null".equalsIgnoreCase(comments.trim())) {
+      String escapedComment = escapeSpecialRegexCharacters(comments.trim());
+      List<Criteria> commentCriteria = new ArrayList<>();
+      commentCriteria.add(Criteria.where("taskImproveComment").regex(escapedComment, "i"));
+      commentCriteria.add(Criteria.where("taskWhyNotComment").regex(escapedComment, "i"));
+      commentCriteria.add(Criteria.where("taskOther").regex(escapedComment, "i"));
 
+      criteria =
+          new Criteria()
+              .andOperator(
+                  criteria, new Criteria().orOperator(commentCriteria.toArray(new Criteria[0])));
+    }
 
     final Criteria filters = criteria;
     totalDistinctTasks =
@@ -679,18 +686,22 @@ public class TopTaskController {
 
     // Use estimatedDocumentCount (metadata-based, instant) when no filters are applied,
     // to avoid an expensive count query against CosmosDB.
-    boolean isFiltered = (startDateVal != null && endDateVal != null)
-        || (language != null && !language.isEmpty())
-        || (departmentFilterVal != null && !departmentFilterVal.isEmpty())
-        || (themeFilterVal != null && !themeFilterVal.isEmpty())
-        || (groupFilterVal != null && !groupFilterVal.isEmpty())
-        || (taskFilterVals != null && taskFilterVals.length > 0)
-        || (taskCompletionFilterVal != null && !taskCompletionFilterVal.isEmpty())
-        || (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim()))
-        || includeCommentsOnly;
-    long cachedCount = isFiltered ? -1
-        : mongoTemplate.getCollection("toptasksurvey").estimatedDocumentCount();
-    DataTablesOutput<TopTaskSurvey> results = topTaskRepository.findAll(input, criteria, cachedCount);
+    boolean isFiltered =
+        (startDateVal != null && endDateVal != null)
+            || (language != null && !language.isEmpty())
+            || (departmentFilterVal != null && !departmentFilterVal.isEmpty())
+            || (themeFilterVal != null && !themeFilterVal.isEmpty())
+            || (groupFilterVal != null && !groupFilterVal.isEmpty())
+            || (taskFilterVals != null && taskFilterVals.length > 0)
+            || (taskCompletionFilterVal != null && !taskCompletionFilterVal.isEmpty())
+            || (comments != null
+                && !comments.trim().isEmpty()
+                && !"null".equalsIgnoreCase(comments.trim()))
+            || includeCommentsOnly;
+    long cachedCount =
+        isFiltered ? -1 : mongoTemplate.getCollection("toptasksurvey").estimatedDocumentCount();
+    DataTablesOutput<TopTaskSurvey> results =
+        topTaskRepository.findAll(input, criteria, cachedCount);
 
     totalTaskCount = (int) results.getRecordsFiltered();
     return results;
@@ -738,7 +749,10 @@ public class TopTaskController {
   public void exportTopTaskExcel(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     EXPORT.writeExcel(
-        () -> streamExportRows(request), contentDisposition("xlsx"), "Top Task Survey Data", response);
+        () -> streamExportRows(request),
+        contentDisposition("xlsx"),
+        "Top Task Survey Data",
+        response);
   }
 
   @GetMapping("/exportTopTaskCSV")
@@ -842,28 +856,37 @@ public class TopTaskController {
                       taskCriteria,
                       new Criteria().orOperator(nonEmptyCriteria.toArray(new Criteria[0]))));
         }
-        criteria = new Criteria().andOperator(criteria,
-            new Criteria().orOperator(commentCriteriaWithTasks.toArray(new Criteria[0])));
+        criteria =
+            new Criteria()
+                .andOperator(
+                    criteria,
+                    new Criteria().orOperator(commentCriteriaWithTasks.toArray(new Criteria[0])));
       } else {
-        criteria = new Criteria().andOperator(criteria,
-            new Criteria().orOperator(nonEmptyCriteria.toArray(new Criteria[0])));
+        criteria =
+            new Criteria()
+                .andOperator(
+                    criteria, new Criteria().orOperator(nonEmptyCriteria.toArray(new Criteria[0])));
       }
     } else if (!combinedOrCriteria.isEmpty()) {
-      criteria = new Criteria().andOperator(criteria,
-          new Criteria().orOperator(combinedOrCriteria.toArray(new Criteria[0])));
+      criteria =
+          new Criteria()
+              .andOperator(
+                  criteria, new Criteria().orOperator(combinedOrCriteria.toArray(new Criteria[0])));
     }
 
-      if (comments != null && !comments.isEmpty()) {
-          String escapedComment = escapeSpecialRegexCharacters(comments);
-          List<Criteria> commentCriteria = new ArrayList<>();
-          commentCriteria.add(Criteria.where("taskImproveComment").regex(escapedComment, "i"));
-          commentCriteria.add(Criteria.where("taskWhyNotComment").regex(escapedComment, "i"));
-          commentCriteria.add(Criteria.where("themeOther").regex(escapedComment, "i"));
-          commentCriteria.add(Criteria.where("taskOther").regex(escapedComment, "i"));
+    if (comments != null && !comments.isEmpty()) {
+      String escapedComment = escapeSpecialRegexCharacters(comments);
+      List<Criteria> commentCriteria = new ArrayList<>();
+      commentCriteria.add(Criteria.where("taskImproveComment").regex(escapedComment, "i"));
+      commentCriteria.add(Criteria.where("taskWhyNotComment").regex(escapedComment, "i"));
+      commentCriteria.add(Criteria.where("themeOther").regex(escapedComment, "i"));
+      commentCriteria.add(Criteria.where("taskOther").regex(escapedComment, "i"));
 
-          criteria = new Criteria().andOperator(criteria,
-              new Criteria().orOperator(commentCriteria.toArray(new Criteria[0])));
-      }
+      criteria =
+          new Criteria()
+              .andOperator(
+                  criteria, new Criteria().orOperator(commentCriteria.toArray(new Criteria[0])));
+    }
 
     return criteria;
   }
@@ -901,7 +924,6 @@ public class TopTaskController {
             (a, b) -> a.get("display").compareToIgnoreCase(b.get("display"))) // Sort alphabetically
         .collect(Collectors.toList());
   }
-
 
   @GetMapping("/api/toptasks")
   public ResponseEntity<?> getProblemsJson(
@@ -1150,11 +1172,10 @@ public class TopTaskController {
   }
 
   private String escapeSpecialRegexCharacters(String input) {
-      if (input == null) {
-          return null;
-      }
-      // Escape all regex metacharacters
-      return input.replaceAll("([\\\\.|^$|()\\[\\]{}*+?])", "\\\\$1");
+    if (input == null) {
+      return null;
+    }
+    // Escape all regex metacharacters
+    return input.replaceAll("([\\\\.|^$|()\\[\\]{}*+?])", "\\\\$1");
   }
-
 }

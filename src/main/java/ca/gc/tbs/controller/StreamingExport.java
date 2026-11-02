@@ -28,10 +28,10 @@ import org.springframework.data.mongodb.core.query.Query;
  *
  * <p>Cosmos DB paces cursors by the collection's RU/s, so rows are read ahead on a background
  * thread and the database keeps fetching while earlier rows are written. The Excel file is
- * generated during {@code write()}, so bytes flow from the first row instead of after the last,
- * and the CSV is gzip-compressed when the browser accepts it. Once bytes have been sent, a failure
- * is rethrown so the container aborts the connection instead of ending a truncated file as if it
- * were complete.
+ * generated during {@code write()}, so bytes flow from the first row instead of after the last, and
+ * the CSV is gzip-compressed when the browser accepts it. Once bytes have been sent, a failure is
+ * rethrown so the container aborts the connection instead of ending a truncated file as if it were
+ * complete.
  */
 final class StreamingExport<T> {
 
@@ -159,7 +159,8 @@ final class StreamingExport<T> {
         response.setHeader("Vary", "Accept-Encoding");
         body = new GZIPOutputStream(body, CSV_BUFFER_SIZE);
       }
-      // Unlike the servlet's PrintWriter, this writer reports a client disconnect as an IOException.
+      // Unlike the servlet's PrintWriter, this writer reports a client disconnect as an
+      // IOException.
       // It is closed only on success (see below), so it is deliberately not try-with-resources.
       Writer writer =
           new BufferedWriter(new OutputStreamWriter(body, StandardCharsets.UTF_8), CSV_BUFFER_SIZE);
@@ -193,8 +194,8 @@ final class StreamingExport<T> {
   }
 
   /**
-   * Waits for the first row. When there is none and this export answers that with 204, sends it
-   * and returns true.
+   * Waits for the first row. When there is none and this export answers that with 204, sends it and
+   * returns true.
    */
   private boolean sentNoContent(
       PrefetchingIterator<T> iterator, long startTime, HttpServletResponse response)

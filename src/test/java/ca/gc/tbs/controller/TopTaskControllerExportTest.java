@@ -51,12 +51,33 @@ class TopTaskControllerExportTest {
 
   private static final List<String> HEADERS =
       List.of(
-          "Date Time", "Time Stamp (UTC)", "Survey Referrer", "Language", "Device", "Screener",
-          "Department", "Theme", "Theme Other", "Grouping", "Task", "Task Other",
-          "Task Satisfaction", "Task Ease", "Task Completion", "Task Improve",
-          "Task Improve Comment", "Task Why Not", "Task Why Not Comment", "Task Sampling",
-          "Sampling Invitation", "Sampling GC", "Sampling Canada", "Sampling Theme",
-          "Sampling Institution", "Sampling Grouping", "Sampling Task");
+          "Date Time",
+          "Time Stamp (UTC)",
+          "Survey Referrer",
+          "Language",
+          "Device",
+          "Screener",
+          "Department",
+          "Theme",
+          "Theme Other",
+          "Grouping",
+          "Task",
+          "Task Other",
+          "Task Satisfaction",
+          "Task Ease",
+          "Task Completion",
+          "Task Improve",
+          "Task Improve Comment",
+          "Task Why Not",
+          "Task Why Not Comment",
+          "Task Sampling",
+          "Sampling Invitation",
+          "Sampling GC",
+          "Sampling Canada",
+          "Sampling Theme",
+          "Sampling Institution",
+          "Sampling Grouping",
+          "Sampling Task");
 
   private MongoTemplate mongoTemplate;
   private TopTaskController controller;
@@ -346,7 +367,9 @@ class TopTaskControllerExportTest {
     when(mongoTemplate.stream(any(Query.class), eq(TopTaskSurvey.class))).thenReturn(rows);
   }
 
-  /** A cursor that yields {@code rows} surveys and then fails, like a dropped database connection. */
+  /**
+   * A cursor that yields {@code rows} surveys and then fails, like a dropped database connection.
+   */
   private static Stream<TopTaskSurvey> failingAfter(int rows, AtomicBoolean closed) {
     Iterator<TopTaskSurvey> iterator =
         new Iterator<>() {
@@ -366,7 +389,8 @@ class TopTaskControllerExportTest {
             return survey("2026-07-01", "row " + served++ + " " + UUID.randomUUID());
           }
         };
-    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false)
+    return StreamSupport.stream(
+            Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false)
         .onClose(() -> closed.set(true));
   }
 

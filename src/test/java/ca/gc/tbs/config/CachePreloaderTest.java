@@ -23,7 +23,8 @@ class CachePreloaderTest {
     ProblemDateService dates = mock(ProblemDateService.class);
     DashboardService dashboard = mock(DashboardService.class);
     CacheManager cacheManager =
-        new ConcurrentMapCacheManager("processedProblems", "distinctUrls", "dashboardStats", "problemDates");
+        new ConcurrentMapCacheManager(
+            "processedProblems", "distinctUrls", "dashboardStats", "problemDates");
     cacheManager.getCache("processedProblems").put("all", "yesterday");
     cacheManager.getCache("dashboardStats").put("all", "yesterday");
 

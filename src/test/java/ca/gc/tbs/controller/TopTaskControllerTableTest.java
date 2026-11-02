@@ -46,7 +46,8 @@ class TopTaskControllerTableTest {
     repository = mock(TopTaskRepository.class);
     storedDepartments = new ArrayList<>(List.of("IRCC / IRCC", "ESDC / EDSC", " / "));
     storedThemes = new ArrayList<>(List.of("Immigration / Immigration", "Taxes / Impôts"));
-    when(mongoTemplate.aggregate(any(Aggregation.class), eq(TopTaskSurvey.class), eq(Document.class)))
+    when(mongoTemplate.aggregate(
+            any(Aggregation.class), eq(TopTaskSurvey.class), eq(Document.class)))
         .thenAnswer(
             invocation -> {
               boolean dept = invocation.getArgument(0).toString().contains("$dept");
@@ -93,7 +94,8 @@ class TopTaskControllerTableTest {
   void themeFilterUsesTheStoredThemesThatContainTheText() {
     Document query = tableQuery(request("theme", "immigration"));
 
-    assertThat(query.get("theme")).isEqualTo(new Document("$in", List.of("Immigration / Immigration")));
+    assertThat(query.get("theme"))
+        .isEqualTo(new Document("$in", List.of("Immigration / Immigration")));
   }
 
   @Test

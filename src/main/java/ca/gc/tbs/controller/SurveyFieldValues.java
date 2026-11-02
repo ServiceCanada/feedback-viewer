@@ -22,8 +22,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
  * <p>Cosmos DB can't use an index for a case-insensitive regex, so a filter written as one reads
  * every row in the date range (about 20,000 RU for one department over a quarter). Fields like
  * department and theme hold only a few dozen distinct spellings, so the filters pick the matching
- * spellings here and query them with an indexed {@code $in}, which returns the same rows. The
- * lists are refreshed in the background every 10 minutes.
+ * spellings here and query them with an indexed {@code $in}, which returns the same rows. The lists
+ * are refreshed in the background every 10 minutes.
  */
 final class SurveyFieldValues {
 
@@ -74,7 +74,8 @@ final class SurveyFieldValues {
         Aggregation.newAggregation(
             Aggregation.match(Criteria.where("processed").is("true")), Aggregation.group(field));
     List<String> stored = new ArrayList<>();
-    for (Document value : mongoTemplate.aggregate(distinctValues, TopTaskSurvey.class, Document.class)) {
+    for (Document value :
+        mongoTemplate.aggregate(distinctValues, TopTaskSurvey.class, Document.class)) {
       if (value.get("_id") instanceof String text) {
         stored.add(text);
       }

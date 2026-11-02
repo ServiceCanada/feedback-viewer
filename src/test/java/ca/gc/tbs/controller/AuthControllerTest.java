@@ -1,5 +1,7 @@
 package ca.gc.tbs.controller;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
 import ca.gc.tbs.domain.Role;
 import ca.gc.tbs.security.JWTUtil;
 import ca.gc.tbs.service.UserService;
@@ -54,11 +56,13 @@ class AuthControllerTest {
     mockMvc
         .perform(
             MockMvcRequestBuilders.post("/createApiUser")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"username\":\"test@example.com\",\"password\":\"secret\"}"))
-        .andExpect(result ->
-            org.assertj.core.api.Assertions.assertThat(result.getResponse().getStatus())
-                .isNotEqualTo(405));
+        .andExpect(
+            result ->
+                org.assertj.core.api.Assertions.assertThat(result.getResponse().getStatus())
+                    .isNotEqualTo(405));
   }
 
   @Configuration
@@ -67,11 +71,11 @@ class AuthControllerTest {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-      http
-          .csrf(csrf -> csrf.disable())
-          .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-          .exceptionHandling(ex -> ex.authenticationEntryPoint(
-              (request, response, authException) -> response.sendError(401)));
+      http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+          .exceptionHandling(
+              ex ->
+                  ex.authenticationEntryPoint(
+                      (request, response, authException) -> response.sendError(401)));
       return http.build();
     }
   }
