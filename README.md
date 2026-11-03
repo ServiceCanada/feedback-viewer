@@ -59,7 +59,8 @@ db.problem.insertOne({ url: "https://www.canada.ca/en/test.html", title: "Test p
   problemDate: "2026-10-29", timeStamp: "2026-10-29T12:00:00Z", processed: "true" })
 ```
 
-The app counts rows when it starts, so run `docker-compose restart app` after adding data.
+New rows show in the table when you refresh the page. The total count above the table is cached
+when the app starts, so run `docker-compose restart app` if you need it to match.
 
 ### Sharing the database with feedback-cj
 
@@ -107,7 +108,7 @@ redeploy.
 | --- | --- |
 | `docker-compose up -d` | Start everything in the background |
 | `docker-compose ps` | Check what's running |
-| `docker-compose restart app` | Restart the app (e.g. after adding data) |
+| `docker-compose restart app` | Restart the app (e.g. to update the cached total count) |
 | `docker-compose stop` | Stop everything; your data is kept |
 | `docker-compose down -v` | Stop and wipe the shared local database and Maven cache |
 
