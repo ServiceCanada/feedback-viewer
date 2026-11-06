@@ -12,7 +12,6 @@ buildNumber.properties
 
 # Spring Boot files
 **/application.properties
-**/application-local.properties
 
 # Secrets - never commit unencrypted files
 secrets/gc_ip_whitelist.txt
@@ -34,14 +33,10 @@ docker/.env
 .idea/
 .vscode/
 .settings
-# Kubernetes secrets
-kubernetes/feedback-viewer-ingress.yml
-
 # Other
 google-java-format-*.jar
 # Spring Boot files
 **/application.properties
-**/application-local.properties
 .DS_Store
 .settings/org.springframework.ide.eclipse.prefs
 .settings/org.eclipse.m2e.core.prefs
@@ -55,7 +50,6 @@ PageSuccess.iml
 .idea/vcs.xml
 .idea/misc.xml
 .idea/.name
-kubernetes/feedback-viewer-ingress.yml
 .vscode/settings.json
 google-java-format-*.jar
 .idea/copilot.data.migration.ask.xml

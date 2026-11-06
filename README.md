@@ -87,9 +87,9 @@ in `pom.xml`, or your editor and the check will disagree.
 
 ### Updating the ingress (IP allowlist)
 
-`kubernetes/feedback-viewer-ingress.yml` is committed only in encrypted form, so pull request
-checks can't validate it. After editing your decrypted copy, run `make check-ingress` before
-re-encrypting it; otherwise a mistake only shows up when the deploy from `main` fails.
+The allowlist is the `INGRESS_ALLOWLIST` repository secret (comma-separated CIDR ranges). The deploy
+fills it into `kubernetes/feedback-viewer-ingress.yml`. To change it, edit the secret and
+redeploy.
 
 ### Everyday commands
 
