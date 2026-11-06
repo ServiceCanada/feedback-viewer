@@ -20,6 +20,12 @@ spec:
         - name: feedback-viewer
           image: tbsacr.azurecr.io/feedback-viewer:1.0.0
           imagePullPolicy: Always
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+          envFrom:
+            - secretRef:
+                name: feedback-viewer-secrets
           resources:
             limits:
               cpu: "2"

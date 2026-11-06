@@ -24,8 +24,6 @@ jobs:
           distribution: "temurin"
           cache: maven
 
-      # The build and tests don't need the encrypted application.properties,
-      # so no secrets are decrypted here and pull requests from forks run in full.
       - name: Build and test
         run: mvn -B verify
 
@@ -35,13 +33,12 @@ jobs:
         run: docker build -f ./docker/Dockerfile . -t feedback-viewer:${{ github.sha }}
 
       # Validates the manifests main.yml deploys against the Kubernetes schemas
-      # offline. The ingress is left out on purpose: it is encrypted because it
-      # holds the IP allowlist, and decrypting it here would put it within reach
-      # of pull request code whose logs are public. Check it locally with
-      # `make check-ingress` before re-encrypting it.
+      # offline. The ingress is checked with a placeholder allowlist.
       - name: Validate Kubernetes manifests
         run: |
           curl -sSLo kubeconform.tar.gz https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz
           echo "95f14e87aa28c09d5941f11bd024c1d02fdc0303ccaa23f61cef67bc92619d73  kubeconform.tar.gz" | sha256sum -c -
           tar xzf kubeconform.tar.gz kubeconform
           ./kubeconform -strict -summary kubernetes/feedback-viewer-deployment.yml kubernetes/feedback-viewer-service.yml
+          INGRESS_ALLOWLIST=192.0.2.0/24 envsubst '${INGRESS_ALLOWLIST}' < kubernetes/feedback-viewer-ingress.yml \
+            | ./kubeconform -strict -summary -

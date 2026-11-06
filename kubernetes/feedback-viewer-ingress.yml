@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: feedback-viewer-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/enable-access-log: "true"
+    nginx.ingress.kubernetes.io/whitelist-source-range: "${INGRESS_ALLOWLIST}"
+spec:
+  tls:
+    - hosts:
+        - feedback-viewer.tbs.alpha.canada.ca
+      secretName: feedback-viewer-tls-secret-prod
+  rules:
+    - host: feedback-viewer.tbs.alpha.canada.ca
+      http:
+        paths:
+          - backend:
+              service:
+                name: feedback-viewer
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix

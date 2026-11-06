@@ -34,9 +34,6 @@ docker/.env
 .idea/
 .vscode/
 .settings
-# Kubernetes secrets
-kubernetes/feedback-viewer-ingress.yml
-
 # Other
 google-java-format-*.jar
 # Spring Boot files
@@ -55,7 +52,6 @@ PageSuccess.iml
 .idea/vcs.xml
 .idea/misc.xml
 .idea/.name
-kubernetes/feedback-viewer-ingress.yml
 .vscode/settings.json
 google-java-format-*.jar
 .idea/copilot.data.migration.ask.xml
