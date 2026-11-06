@@ -205,7 +205,8 @@ public class ContentService {
     try {
       // Tokenize the content
       var tokenizer = new TokenizerME(tokenizerModel);
-      var tokens = tokenizer.tokenize(content);
+      var tokenSpans = tokenizer.tokenizePos(content);
+      var tokens = Span.spansToStrings(tokenSpans, content);
 
       // Find person names
       var nameFinder = new NameFinderME(nerModel);
@@ -248,13 +249,10 @@ public class ContentService {
         }
 
         if (!commonPronouns.contains(nameLower) && !isAllowed) {
-          // Find the name in the original content and replace
-          int nameIndex = content.indexOf(nameText);
-          if (nameIndex >= 0) {
-            char[] replacement = new char[nameText.length()];
-            Arrays.fill(replacement, '#');
-            sb.replace(nameIndex, nameIndex + nameText.length(), new String(replacement));
-          }
+          // Replace the name at its position in the content
+          int nameStart = tokenSpans[span.getStart()].getStart();
+          int nameEnd = tokenSpans[span.getEnd() - 1].getEnd();
+          sb.replace(nameStart, nameEnd, "#".repeat(nameEnd - nameStart));
         }
       }
 
