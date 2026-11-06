@@ -12,7 +12,6 @@ buildNumber.properties
 
 # Spring Boot files
 **/application.properties
-**/application-local.properties
 
 # Secrets - never commit unencrypted files
 secrets/gc_ip_whitelist.txt
@@ -38,7 +37,6 @@ docker/.env
 google-java-format-*.jar
 # Spring Boot files
 **/application.properties
-**/application-local.properties
 .DS_Store
 .settings/org.springframework.ide.eclipse.prefs
 .settings/org.eclipse.m2e.core.prefs
