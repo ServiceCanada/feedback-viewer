@@ -201,6 +201,7 @@
                             <classifier>classes</classifier>
                             <includes>
                                 <include>**/*.class</include>
+                                <include>opennlp/**</include>
                             </includes>
                         </configuration>
                     </execution>
