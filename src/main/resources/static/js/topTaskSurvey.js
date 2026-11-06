@@ -521,6 +521,7 @@ $(document).ready(function () {
            }
          });
        },
+       columnDefs: SafeRender.columnDefs,
        columns: [
          { data: 'dateTime', title: isFrench ? 'Date' : 'Date', visible: true, width: "10%", className: "dt-left" },
          { data: 'timeStamp', title: isFrench ? 'Horodatage' : 'Time Stamp', visible: false },
