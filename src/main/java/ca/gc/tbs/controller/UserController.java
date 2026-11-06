@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.HtmlUtils;
 
 @Controller
@@ -45,20 +42,6 @@ public class UserController {
     } catch (Exception e) {
       LOG.error("Error deleting user", e);
       return "Error: an internal error occurred";
-    }
-  }
-
-  /* TODO check for prod environment and disable */
-  @GetMapping(value = "/enableAdmin")
-  public View enableAdmin(HttpServletRequest request, RedirectAttributes atts) {
-    try {
-      this.service.enableAdmin(request.getParameter("email"));
-      atts.addFlashAttribute("successMessage", "User has been enabled and admin");
-      return new RedirectView("/success");
-    } catch (Exception e) {
-      LOG.error("Failed to enable admin", e);
-      atts.addFlashAttribute("errorMessage", "Failed to enable admin. Please try again.");
-      return new RedirectView("/error");
     }
   }
 

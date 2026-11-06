@@ -2,6 +2,7 @@ package ca.gc.tbs.controller;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import ca.gc.tbs.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -29,9 +31,9 @@ class UserControllerSecurityTest {
   @MockBean private UserService userService;
 
   @Test
-  void anonymousUsersAreRedirectedFromEnableAdmin() throws Exception {
+  void anonymousUsersAreRedirectedFromUserManagement() throws Exception {
     mockMvc
-        .perform(MockMvcRequestBuilders.get("/enableAdmin").param("email", "admin@example.com"))
+        .perform(MockMvcRequestBuilders.post("/u/update").param("id", "1").with(csrf()))
         .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
         .andExpect(MockMvcResultMatchers.redirectedUrl("/login"));
 
@@ -39,24 +41,33 @@ class UserControllerSecurityTest {
   }
 
   @Test
-  @org.springframework.security.test.context.support.WithMockUser(authorities = "USER")
-  void nonAdminUsersAreForbiddenFromEnableAdmin() throws Exception {
+  @WithMockUser(authorities = "USER")
+  void nonAdminUsersAreForbiddenFromUserManagement() throws Exception {
     mockMvc
-        .perform(MockMvcRequestBuilders.get("/enableAdmin").param("email", "admin@example.com"))
+        .perform(MockMvcRequestBuilders.post("/u/update").param("id", "1").with(csrf()))
         .andExpect(MockMvcResultMatchers.status().isForbidden());
 
     verifyNoInteractions(userService);
   }
 
   @Test
-  @org.springframework.security.test.context.support.WithMockUser(authorities = "ADMIN")
-  void adminsCanPromoteUsers() throws Exception {
+  @WithMockUser(authorities = "ADMIN")
+  void adminsCanEnableUsers() throws Exception {
     mockMvc
-        .perform(MockMvcRequestBuilders.get("/enableAdmin").param("email", "admin@example.com"))
-        .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-        .andExpect(MockMvcResultMatchers.redirectedUrl("/success"));
+        .perform(MockMvcRequestBuilders.post("/u/update").param("id", "1").with(csrf()))
+        .andExpect(MockMvcResultMatchers.status().isOk());
 
-    verify(userService).enableAdmin("admin@example.com");
+    verify(userService).enable("1");
+  }
+
+  @Test
+  @WithMockUser(authorities = "ADMIN")
+  void enableAdminEndpointIsGone() throws Exception {
+    mockMvc
+        .perform(MockMvcRequestBuilders.get("/enableAdmin").param("email", "attacker@example.com"))
+        .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+    verifyNoInteractions(userService);
   }
 
   @Configuration

@@ -121,13 +121,6 @@ public class UserService implements UserDetailsService {
     userRepository.save(user);
   }
 
-  public void enableAdmin(String email) {
-    var user = this.findUserByEmail(email);
-    user.setRoles(new HashSet<>(Arrays.asList(roleRepository.findByRole(ADMIN_ROLE))));
-    user.setEnabled(true);
-    userRepository.save(user);
-  }
-
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
