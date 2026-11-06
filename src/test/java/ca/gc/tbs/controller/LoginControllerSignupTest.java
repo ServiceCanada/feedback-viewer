@@ -52,6 +52,15 @@ class LoginControllerSignupTest {
     assertThat(bound.getDateCreated()).isNull();
   }
 
+  @Test
+  void checkExistsEndpointIsGone() throws Exception {
+    mockMvc
+        .perform(MockMvcRequestBuilders.get("/checkExists").param("email", "someone@example.com"))
+        .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+    Mockito.verifyNoInteractions(userService);
+  }
+
   private User captureSavedUser() {
     ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
     verify(userService).saveUser(captor.capture());

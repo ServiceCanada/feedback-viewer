@@ -43,17 +43,6 @@ public class LoginController {
     return modelAndView;
   }
 
-  @GetMapping("/checkExists")
-  public @ResponseBody String checkExists(@RequestParam String email) {
-    // verify that one has not already been created.
-    User userExists = userService.findUserByEmail(email);
-    if (userExists != null) {
-      return "true";
-    } else {
-      return "false";
-    }
-  }
-
   @InitBinder("user")
   void restrictSignupFields(WebDataBinder binder) {
     binder.setAllowedFields("email", "password", "institution");

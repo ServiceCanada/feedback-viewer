@@ -75,10 +75,14 @@ public class UserService implements UserDetailsService {
   }
 
   public void saveUser(User user) {
+    String hashedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+    if (userRepository.findByEmail(user.getEmail()) != null) {
+      return;
+    }
     boolean firstUser = this.userRepository.count() <= 0;
     user.setId(null);
     user.setEnabled(firstUser);
-    user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+    user.setPassword(hashedPassword);
     user.setDateCreated(DATE_FORMATTER.format(LocalDate.now()));
     Role role = roleRepository.findByRole(firstUser ? ADMIN_ROLE : USER_ROLE);
     user.setRoles(new HashSet<>(Arrays.asList(role)));
