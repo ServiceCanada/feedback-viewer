@@ -75,16 +75,13 @@ public class UserService implements UserDetailsService {
   }
 
   public void saveUser(User user) {
+    boolean firstUser = this.userRepository.count() <= 0;
+    user.setId(null);
+    user.setEnabled(firstUser);
     user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
     user.setDateCreated(DATE_FORMATTER.format(LocalDate.now()));
-    Role userRole = null;
-    if (this.userRepository.count() <= 0) {
-      user.setEnabled(true);
-      userRole = roleRepository.findByRole(ADMIN_ROLE);
-    } else {
-      userRole = roleRepository.findByRole(USER_ROLE);
-    }
-    user.setRoles(new HashSet<>(Arrays.asList(userRole)));
+    Role role = roleRepository.findByRole(firstUser ? ADMIN_ROLE : USER_ROLE);
+    user.setRoles(new HashSet<>(Arrays.asList(role)));
     userRepository.save(user);
   }
 
