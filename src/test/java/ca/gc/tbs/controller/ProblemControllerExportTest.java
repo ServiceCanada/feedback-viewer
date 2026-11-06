@@ -183,6 +183,24 @@ class ProblemControllerExportTest {
             });
   }
 
+  @Test
+  void urlFilterIsMatchedAsPlainText() throws Exception {
+    request.setParameter("url", "(a+)+$");
+    givenRows(Stream.empty());
+    controller.exportExcel(request, new MockHttpServletResponse());
+    givenRows(Stream.empty());
+    controller.exportCSV(request, new MockHttpServletResponse());
+
+    ArgumentCaptor<Query> queries = ArgumentCaptor.forClass(Query.class);
+    verify(mongoTemplate, times(2)).stream(queries.capture(), eq(Problem.class));
+    for (Query query : queries.getAllValues()) {
+      assertThat(query.getQueryObject().get("url"))
+          .isInstanceOfSatisfying(
+              Pattern.class,
+              pattern -> assertThat(pattern.pattern()).isEqualTo("\\(a\\+\\)\\+\\$"));
+    }
+  }
+
   private void givenRows(Stream<Problem> rows) {
     when(mongoTemplate.stream(any(Query.class), eq(Problem.class))).thenReturn(rows);
   }

@@ -1,6 +1,7 @@
 package ca.gc.tbs.repository;
 
 import ca.gc.tbs.domain.TopTaskSurvey; // Import your domain class
+import ca.gc.tbs.util.RegexUtils;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class CustomTopTaskRepositoryImpl implements CustomTopTaskRepository {
   @Override
   public List<String> findTaskNamesBySearchWithFilters(String search, Criteria criteria) {
     // Add the task search regex to the existing criteria
-    Criteria taskSearchCriteria = Criteria.where("task").regex(search, "i");
+    Criteria taskSearchCriteria = Criteria.where("task").regex(RegexUtils.literal(search), "i");
     Criteria combinedCriteria = new Criteria().andOperator(criteria, taskSearchCriteria);
 
     Aggregation aggregation =

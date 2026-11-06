@@ -6,6 +6,7 @@ import ca.gc.tbs.repository.TopTaskRepository;
 import ca.gc.tbs.security.JWTUtil;
 import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
+import ca.gc.tbs.util.RegexUtils;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import jakarta.servlet.http.HttpServletRequest;
@@ -666,7 +667,7 @@ public class TopTaskController {
     if (comments != null
         && !comments.trim().isEmpty()
         && !"null".equalsIgnoreCase(comments.trim())) {
-      String escapedComment = escapeSpecialRegexCharacters(comments.trim());
+      String escapedComment = RegexUtils.literal(comments.trim());
       List<Criteria> commentCriteria = new ArrayList<>();
       commentCriteria.add(Criteria.where("taskImproveComment").regex(escapedComment, "i"));
       commentCriteria.add(Criteria.where("taskWhyNotComment").regex(escapedComment, "i"));
@@ -827,7 +828,7 @@ public class TopTaskController {
       criteria.and("language").is(language);
     }
     if (theme != null && !theme.isEmpty()) {
-      criteria.and("theme").regex(theme, "i");
+      criteria.and("theme").regex(RegexUtils.literal(theme), "i");
     }
     if (group != null && !group.isEmpty()) {
       criteria.and("grouping").is(group);
@@ -875,7 +876,7 @@ public class TopTaskController {
     }
 
     if (comments != null && !comments.isEmpty()) {
-      String escapedComment = escapeSpecialRegexCharacters(comments);
+      String escapedComment = RegexUtils.literal(comments);
       List<Criteria> commentCriteria = new ArrayList<>();
       commentCriteria.add(Criteria.where("taskImproveComment").regex(escapedComment, "i"));
       commentCriteria.add(Criteria.where("taskWhyNotComment").regex(escapedComment, "i"));
@@ -1046,7 +1047,7 @@ public class TopTaskController {
 
     if (url != null && !url.isEmpty()) {
       System.out.println("URL: " + url);
-      criteria.and("surveyReferrer").regex(url, "i");
+      criteria.and("surveyReferrer").regex(RegexUtils.literal(url), "i");
     }
     Query query = new Query(criteria);
     query
@@ -1169,13 +1170,5 @@ public class TopTaskController {
           .sorted()
           .collect(Collectors.toList());
     }
-  }
-
-  private String escapeSpecialRegexCharacters(String input) {
-    if (input == null) {
-      return null;
-    }
-    // Escape all regex metacharacters
-    return input.replaceAll("([\\\\.|^$|()\\[\\]{}*+?])", "\\\\$1");
   }
 }

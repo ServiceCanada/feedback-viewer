@@ -7,6 +7,7 @@ import ca.gc.tbs.service.ErrorKeywordService;
 import ca.gc.tbs.service.ProblemCacheService;
 import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
+import ca.gc.tbs.util.RegexUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -634,7 +635,7 @@ public class ProblemController {
 
     // URL filtering
     if (url != null && !url.isEmpty()) {
-      criteria.and("url").regex(url, "i");
+      criteria.and("url").regex(RegexUtils.literal(url), "i");
     }
 
     var query = new Query(criteria);
@@ -757,7 +758,7 @@ public class ProblemController {
       criteria.and("language").is(language);
     }
     if (url != null && !url.isEmpty()) {
-      criteria.and("url").regex(url, "i");
+      criteria.and("url").regex(RegexUtils.literal(url), "i");
     }
     if (department != null && !department.isEmpty()) {
       var matchingVariations = new HashSet<String>();
@@ -787,7 +788,7 @@ public class ProblemController {
     if (trimmedComments != null
         && !trimmedComments.isEmpty()
         && !"null".equalsIgnoreCase(trimmedComments)) {
-      String safeComments = escapeSpecialRegexCharacters(trimmedComments);
+      String safeComments = RegexUtils.literal(trimmedComments);
       regexCriteria.add(Criteria.where("problemDetails").regex(safeComments, "i"));
     }
 
@@ -852,7 +853,7 @@ public class ProblemController {
           .regex(Pattern.compile(Pattern.quote(language), Pattern.CASE_INSENSITIVE));
     }
     if (url != null && !url.isEmpty()) {
-      criteria.and("url").regex(url, "i");
+      criteria.and("url").regex(RegexUtils.literal(url), "i");
     }
     if (department != null && !department.isEmpty()) {
       var matchingVariations = new HashSet<String>();
@@ -881,7 +882,7 @@ public class ProblemController {
     if (comments != null
         && !comments.trim().isEmpty()
         && !"null".equalsIgnoreCase(comments.trim())) {
-      String safeComments = escapeSpecialRegexCharacters(comments.trim());
+      String safeComments = RegexUtils.literal(comments.trim());
       regexCriteria.add(Criteria.where("problemDetails").regex(safeComments, "i"));
     }
 
@@ -995,7 +996,7 @@ public class ProblemController {
 
     // URL filtering
     if (url != null && !url.isEmpty()) {
-      criteria.and("url").regex(url, "i"); // 'i' for case-insensitive matching
+      criteria.and("url").regex(RegexUtils.literal(url), "i"); // 'i' for case-insensitive matching
     }
     // Department filtering based on institutionMappings
     if (department != null && !department.isEmpty()) {
@@ -1031,7 +1032,7 @@ public class ProblemController {
     if (comments != null
         && !comments.trim().isEmpty()
         && !"null".equalsIgnoreCase(comments.trim())) {
-      String safeComments = escapeSpecialRegexCharacters(comments.trim());
+      String safeComments = RegexUtils.literal(comments.trim());
       regexCriteria.add(Criteria.where("problemDetails").regex(safeComments, "i"));
     }
     // error keywords filtering
@@ -1084,11 +1085,6 @@ public class ProblemController {
    * @param input The string to escape.
    * @return A string with special regex characters escaped.
    */
-  private String escapeSpecialRegexCharacters(String input) {
-    // Escape all regex metacharacters
-    return input.replaceAll("([\\\\.^$|()\\[\\]{}*+?])", "\\\\$1");
-  }
-
   private void setInstitution(DataTablesOutput<Problem> problems, String lang) {
     for (Problem problem : problems.getData()) {
       String currentInstitution = problem.getInstitution();
