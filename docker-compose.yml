@@ -48,6 +48,15 @@ services:
       mongodb:
         condition: service_healthy
 
+  # Formatters for everything but Java, for `make fmt` / `make fmt-check`.
+  # The profile keeps `docker-compose up` from starting it.
+  fmt:
+    build: docker/fmt
+    profiles: [tools]
+    working_dir: /app
+    volumes:
+      - .:/app
+
 volumes:
   mongodb_data:
   maven_repo:

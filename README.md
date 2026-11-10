@@ -74,11 +74,15 @@ the database and the other reuses it, so comments the job processes show up here
 
 ### Formatting
 
-Java code follows [Google Java Format](https://github.com/google/google-java-format). Run
-`make fmt` before committing; it formats every Java file using Docker, so you don't need Java
-installed. Pull requests fail the "Check formatting" check if anything is left unformatted;
-`make fmt-check` runs the same check locally. If you have Maven installed, `mvn spotless:apply`
-does the same as `make fmt`.
+Run `make fmt` before committing. It formats every file using Docker, so you don't need anything
+else installed:
+
+- Java with [Google Java Format](https://github.com/google/google-java-format) (Spotless)
+- XML, YAML, Markdown, JSON and JavaScript with Prettier (settings in `.prettierrc.yml`)
+- Python with Ruff and shell scripts with shfmt
+
+Pull requests fail the "Check formatting" check if anything is left unformatted; `make fmt-check`
+runs the same check locally. Minified libraries (`*.min.js`) are left alone.
 
 To format on save in VS Code, install the
 [Google Java Format for VS Code](https://marketplace.visualstudio.com/items?itemName=JoseVSeb.google-java-format-for-vs-code)

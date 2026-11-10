@@ -18,6 +18,12 @@ jobs:
           distribution: "temurin"
           cache: maven
 
-      # If this fails, run `make fmt` and commit the result.
+      # If either step fails, run `make fmt` and commit the result.
       - name: Check Java formatting
         run: mvn -q spotless:check
+
+      - name: Check formatting of other files
+        if: ${{ !cancelled() }}
+        run: |
+          docker build -q -t fmt docker/fmt
+          docker run --rm -v "$PWD":/app -w /app fmt sh docker/fmt/fmt.sh --check

@@ -1,0 +1,8 @@
+# Prettier settings for XML, YAML, Markdown, JSON and JavaScript (`make fmt`).
+overrides:
+  - files: "*.xml"
+    options:
+      tabWidth: 4
+      printWidth: 100
+      # Lets Prettier re-wrap XML text; nothing in our XML depends on exact whitespace.
+      xmlWhitespaceSensitivity: ignore
