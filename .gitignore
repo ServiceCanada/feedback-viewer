@@ -32,33 +32,9 @@ docker/.env
 *.iml
 .idea/
 .vscode/
-.settings
+
 # Other
 google-java-format-*.jar
-# Spring Boot files
-**/application.properties
-.DS_Store
-.settings/org.springframework.ide.eclipse.prefs
-.settings/org.eclipse.m2e.core.prefs
-.settings/org.eclipse.jdt.core.prefs
-.settings/org.eclipse.core.resources.prefs
-.project
-.gitignore
-.classpath
-PageSuccess.iml
-.idea/workspace.xml
-.idea/vcs.xml
-.idea/misc.xml
-.idea/.name
-.vscode/settings.json
-google-java-format-*.jar
-.idea/copilot.data.migration.ask.xml
-.idea/copilot.data.migration.ask2agent.xml
-.idea/copilot.data.migration.edit.xml
-.idea/copilot.data.migration.agent.xml
-.idea/compiler.xml
-.idea/encodings.xml
-.idea/jarRepositories.xml
 
 # Local task notes (contain infrastructure details; repo is public)
 tasks/
