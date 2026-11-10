@@ -1,7 +1,6 @@
 # Local development stack: `docker-compose up`, then open http://localhost:8080.
-# Builds and runs the app from source against a throwaway MongoDB, so no
-# application.properties or decrypted secrets are needed. The prod image is
-# built separately from docker/Dockerfile by CI.
+# Builds and runs the app from source with the local profile against the local MongoDB, so no
+# secrets are needed. The prod image is built separately from docker/Dockerfile by CI.
 #
 # The feedback-cj's docker-compose.yml uses the same project name, so locally the two
 # repos share one MongoDB, like prod: whichever starts first creates it, and rows the
@@ -39,13 +38,11 @@ services:
       - maven_repo:/root/.m2
       - /app/target # keep container build output out of the host's target/
     environment:
-      # Environment variables override application.properties, so a dev who has
-      # the decrypted prod file still talks to the local database here.
+      SPRING_PROFILES_ACTIVE: local
+      # Inside docker-compose the database's host name is "mongodb", not localhost.
       SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/pagesuccess
-      SPRING_DATA_MONGODB_DATABASE: pagesuccess
-      JWT_SECRET_KEY: local-dev-only-jwt-secret-not-for-prod
-      GC_IP_FILTER_ENABLED: "false"
-      SPRING_THREADS_VIRTUAL_ENABLED: "true"
+      # docker/dev.sh recompiles on save and relies on devtools to restart the app.
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
       SPRING_DEVTOOLS_RESTART_TRIGGER_FILE: .reloadtrigger
     depends_on:
       mongodb:

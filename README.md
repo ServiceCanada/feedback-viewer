@@ -134,9 +134,12 @@ The application should now be accessible at `http://localhost:8080`.
 
 ## Configuration
 
-The Feedback Viewer can be configured by modifying the following properties in the `application.properties` file:
+Settings live in `src/main/resources/application-local.properties` (local runs) and
+`application-prod.properties` (prod). Secrets are never committed: prod gets them as environment
+variables from GitHub Actions secrets, for example:
 
-- `spring.data.mongodb.uri`: The connection string for the MongoDB database.
+- `SPRING_DATA_MONGODB_URI`: the connection string for the MongoDB database.
+- `JWT_SECRET_KEY`: the key that signs API tokens.
 
 ## Contributing
 
