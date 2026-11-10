@@ -7,12 +7,18 @@ $(document).ready(function () {
 
   function buildFilterQueryString() {
     const params = [];
-    if ($("#section").val()) params.push("section=" + encodeURIComponent($("#section").val()));
-    if ($("#theme").val()) params.push("theme=" + encodeURIComponent($("#theme").val()));
-    if ($("#url").val()) params.push("url=" + encodeURIComponent($("#url").val()));
-    if ($("#language").val()) params.push("language=" + encodeURIComponent($("#language").val()));
-    if ($("#department").val()) params.push("department=" + encodeURIComponent($("#department").val()));
-    if ($("#comments").val()) params.push("comments=" + encodeURIComponent($("#comments").val()));
+    if ($("#section").val())
+      params.push("section=" + encodeURIComponent($("#section").val()));
+    if ($("#theme").val())
+      params.push("theme=" + encodeURIComponent($("#theme").val()));
+    if ($("#url").val())
+      params.push("url=" + encodeURIComponent($("#url").val()));
+    if ($("#language").val())
+      params.push("language=" + encodeURIComponent($("#language").val()));
+    if ($("#department").val())
+      params.push("department=" + encodeURIComponent($("#department").val()));
+    if ($("#comments").val())
+      params.push("comments=" + encodeURIComponent($("#comments").val()));
     if ($("#errorComments").is(":checked")) params.push("error_keyword=true");
 
     // dateRangePicker: include startDate/endDate if present
@@ -20,8 +26,13 @@ $(document).ready(function () {
       try {
         const dr = $("#dateRangePicker").data("daterangepicker");
         if (dr && dr.startDate && dr.endDate) {
-          params.push("startDate=" + encodeURIComponent(dr.startDate.format("YYYY-MM-DD")));
-          params.push("endDate=" + encodeURIComponent(dr.endDate.format("YYYY-MM-DD")));
+          params.push(
+            "startDate=" +
+              encodeURIComponent(dr.startDate.format("YYYY-MM-DD")),
+          );
+          params.push(
+            "endDate=" + encodeURIComponent(dr.endDate.format("YYYY-MM-DD")),
+          );
         }
       } catch (e) {
         // ignore if dateRangePicker not available yet
@@ -31,17 +42,17 @@ $(document).ready(function () {
     return params.length ? "?" + params.join("&") : "";
   }
 
-
   // Utility function to format numbers with comma separators
   function formatNumberWithCommas(number) {
-    if (number == null || number === '') return number;
+    if (number == null || number === "") return number;
     return parseInt(number).toLocaleString();
   }
 
   // Check if the 'lang' query parameter is set to 'fr'
   var isFrench = langSession === "fr";
   var now = new Date();
-  var formattedDate = now.getMonth() + 1 + "/" + now.getDate() + "/" + now.getFullYear();
+  var formattedDate =
+    now.getMonth() + 1 + "/" + now.getDate() + "/" + now.getFullYear();
   var formattedEarliestDate = moment(earliestDate).format("YYYY/MM/DD");
   var formattedLatestDate = moment(latestDate).format("YYYY/MM/DD");
   // Utility functions
@@ -74,25 +85,42 @@ $(document).ready(function () {
     // Format the earliest and latest dates in YYYY/MM/DD format
 
     // Reset the Date Range Picker to the initial dates with formatted strings
-    $("#dateRangePicker").data("daterangepicker").setStartDate(formattedEarliestDate);
-    $("#dateRangePicker").data("daterangepicker").setEndDate(formattedLatestDate);
+    $("#dateRangePicker")
+      .data("daterangepicker")
+      .setStartDate(formattedEarliestDate);
+    $("#dateRangePicker")
+      .data("daterangepicker")
+      .setEndDate(formattedLatestDate);
 
     // Update the display with formatted dates
-    $("#dateRangePicker").val(formattedEarliestDate + " - " + formattedLatestDate);
+    $("#dateRangePicker").val(
+      formattedEarliestDate + " - " + formattedLatestDate,
+    );
 
     // Reload the DataTable to reflect the reset filters
     table.ajax.reload();
-}
+  }
 
   function getLastFiscalQuarter() {
     let today = moment();
-    let fiscalYearStart = moment().month() < 3 ? moment().subtract(1, "year").month(3).startOf("month") : moment().month(3).startOf("month"); // Adjust based on fiscal year starting in April
+    let fiscalYearStart =
+      moment().month() < 3
+        ? moment().subtract(1, "year").month(3).startOf("month")
+        : moment().month(3).startOf("month"); // Adjust based on fiscal year starting in April
     let quarterStart, quarterEnd;
 
     // Determine the current fiscal quarter
-    if (today.isBetween(fiscalYearStart, fiscalYearStart.clone().add(2, "months").endOf("month"))) {
+    if (
+      today.isBetween(
+        fiscalYearStart,
+        fiscalYearStart.clone().add(2, "months").endOf("month"),
+      )
+    ) {
       // Last quarter is Q4 of the previous fiscal year
-      quarterStart = fiscalYearStart.clone().subtract(1, "year").add(9, "months");
+      quarterStart = fiscalYearStart
+        .clone()
+        .subtract(1, "year")
+        .add(9, "months");
       quarterEnd = fiscalYearStart.clone().subtract(1, "day");
     } else if (today.isBefore(fiscalYearStart.clone().add(6, "months"))) {
       // Last quarter is Q1
@@ -112,33 +140,35 @@ $(document).ready(function () {
   }
 
   // Initialize loading overlay
-  var loadingOverlay = createDataTableLoadingOverlay(isFrench, 'spinner');
+  var loadingOverlay = createDataTableLoadingOverlay(isFrench, "spinner");
 
   // Show loading overlay immediately for initial table load
   loadingOverlay.show();
 
   // DataTable initialization
   var table = new DataTable("#myTable", {
-    language: isFrench ? {
-      url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json",
-      lengthMenu: "Afficher _MENU_ entrées",
-      info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
-      paginate: {
-        first: "Premier",
-        last: "Dernier",
-        next: "Suivant",
-        previous: "Précédent"
-      }
-    } : {
-      lengthMenu: "Show _MENU_ entries",
-      info: "Showing _START_ to _END_ of _TOTAL_ entries",
-      paginate: {
-        first: "First",
-        last: "Last",
-        next: "Next",
-        previous: "Previous"
-      }
-    },
+    language: isFrench
+      ? {
+          url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json",
+          lengthMenu: "Afficher _MENU_ entrées",
+          info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+          paginate: {
+            first: "Premier",
+            last: "Dernier",
+            next: "Suivant",
+            previous: "Précédent",
+          },
+        }
+      : {
+          lengthMenu: "Show _MENU_ entries",
+          info: "Showing _START_ to _END_ of _TOTAL_ entries",
+          paginate: {
+            first: "First",
+            last: "Last",
+            next: "Next",
+            previous: "Previous",
+          },
+        },
     stripeClasses: [],
     bSortClasses: false,
     order: [[0, "desc"]],
@@ -162,24 +192,24 @@ $(document).ready(function () {
     ajax: {
       url: "/dashboardData",
       type: "GET",
-        dataSrc: function(json) {
-          return json.data;
-        },
+      dataSrc: function (json) {
+        return json.data;
+      },
       data: function (d) {
         d.language = $("#language").val();
         d.department = $("#department").val();
 
-          var commentsVal = $("#comments").val();
-          if (commentsVal && commentsVal.trim() !== "") {
-            d.comments = commentsVal.trim();
-          } else {
-            delete d.comments; // Remove the filter from request
-          }
+        var commentsVal = $("#comments").val();
+        if (commentsVal && commentsVal.trim() !== "") {
+          d.comments = commentsVal.trim();
+        } else {
+          delete d.comments; // Remove the filter from request
+        }
         d.section = $("#section").val();
         d.theme = $("#theme").val();
         d.url = $("#url").val();
         if ($("#errorComments").prop("checked")) {
-                  d.error_keyword = "true";  // Only send if checked
+          d.error_keyword = "true"; // Only send if checked
         }
 
         var dateRangePickerValue = $("#dateRangePicker").val();
@@ -192,18 +222,21 @@ $(document).ready(function () {
           delete d.startDate; // Ensure startDate is not included in the AJAX request
           delete d.endDate; // Ensure endDate is not included in the AJAX request
         }
-
       },
       error: function (xhr, error, thrown) {
-        alert(isFrench ? "Erreur lors de la récupération des données. Veuillez rafraîchir la page et réessayer." : "Error retrieving data. Please refresh the page and try again.");
+        alert(
+          isFrench
+            ? "Erreur lors de la récupération des données. Veuillez rafraîchir la page et réessayer."
+            : "Error retrieving data. Please refresh the page and try again.",
+        );
         console.log("xhr: " + xhr);
         console.log("error: " + error);
         console.log("thrown : " + thrown);
       },
     },
-    initComplete: function() {
+    initComplete: function () {
       // Move pagination controls outside the table wrapper
-      $('.table-controls-outside').insertAfter('.feedback-tool-data');
+      $(".table-controls-outside").insertAfter(".feedback-tool-data");
     },
     buttons: [
       {
@@ -211,7 +244,7 @@ $(document).ready(function () {
         className: "btn btn-default",
         action: function (e) {
           e.preventDefault();
-          downloadDashboardExport('/dashboard/exportCSV');
+          downloadDashboardExport("/dashboard/exportCSV");
         },
       },
       {
@@ -219,7 +252,7 @@ $(document).ready(function () {
         className: "btn btn-default",
         action: function (e) {
           e.preventDefault();
-          downloadDashboardExport('/dashboard/exportExcel');
+          downloadDashboardExport("/dashboard/exportExcel");
         },
       },
     ],
@@ -227,15 +260,15 @@ $(document).ready(function () {
     columns: [
       { data: "institution" }, // Dept (visible in table)
       { data: "url", render: SafeRender.link },
-      { 
+      {
         data: "urlEntries",
         render: function (data, type, row) {
           // Format numbers with comma separators for display
-          if (type === 'display' || type === 'type') {
+          if (type === "display" || type === "type") {
             return formatNumberWithCommas(data);
           }
           return data;
-        }
+        },
       },
       { data: "language", visible: false }, // Language (hidden in table, but in CSV)
       { data: "section", visible: false }, // Section (hidden in table, but in CSV)
@@ -245,13 +278,15 @@ $(document).ready(function () {
 
   // Attach loading overlay to DataTable events
   attachLoadingOverlay(table, {
-    loadingText: isFrench ? 'Chargement des données...' : 'Loading data...',
-    subtext: isFrench ? 'Veuillez patienter pendant que nous filtrons vos résultats' : 'Please wait while we filter your results',
-    spinnerType: 'spinner'
+    loadingText: isFrench ? "Chargement des données..." : "Loading data...",
+    subtext: isFrench
+      ? "Veuillez patienter pendant que nous filtrons vos résultats"
+      : "Please wait while we filter your results",
+    spinnerType: "spinner",
   });
 
   // Hide loading overlay after initial table draw
-  table.on('draw.dt', function() {
+  table.on("draw.dt", function () {
     loadingOverlay.hide();
   });
 
@@ -259,12 +294,15 @@ $(document).ready(function () {
     const qs = buildFilterQueryString();
     fetch("/pageFeedback/totalCommentsCount" + qs, { cache: "no-store" })
       .then((response) => {
-        if (!response.ok) throw new Error("Network response was not ok: " + response.status);
+        if (!response.ok)
+          throw new Error("Network response was not ok: " + response.status);
         return response.text();
       })
       .then((totalCommentsCount) => {
         // Update the total comments count in the <span class="number"> element with comma formatting
-        $(".stat .totalCommentCount").text(formatNumberWithCommas(totalCommentsCount));
+        $(".stat .totalCommentCount").text(
+          formatNumberWithCommas(totalCommentsCount),
+        );
       })
       .catch((err) => {
         console.warn("Something went wrong.", err);
@@ -275,12 +313,15 @@ $(document).ready(function () {
     const qs = buildFilterQueryString();
     fetch("/pageFeedback/totalPagesCount" + qs, { cache: "no-store" })
       .then((response) => {
-        if (!response.ok) throw new Error("Network response was not ok: " + response.status);
+        if (!response.ok)
+          throw new Error("Network response was not ok: " + response.status);
         return response.text();
       })
       .then((totalPagesCount) => {
         // Update the total pages count in the <span class="number"> element with comma formatting
-        $(".stat .totalPagesCount").text(formatNumberWithCommas(totalPagesCount));
+        $(".stat .totalPagesCount").text(
+          formatNumberWithCommas(totalPagesCount),
+        );
       })
       .catch((err) => {
         console.warn("Something went wrong.", err);
@@ -305,24 +346,62 @@ $(document).ready(function () {
         applyLabel: isFrench ? "Appliquer" : "Apply",
         customRangeLabel: isFrench ? "Période spécifique" : "Custom Range",
         firstDay: isFrench ? 1 : 0, // Start with Monday
-        daysOfWeek: isFrench ? ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"] : undefined, // Define days for French
-        monthNames: isFrench ? ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"] : undefined, // Define months for French
+        daysOfWeek: isFrench
+          ? ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"]
+          : undefined, // Define days for French
+        monthNames: isFrench
+          ? [
+              "Janvier",
+              "Février",
+              "Mars",
+              "Avril",
+              "Mai",
+              "Juin",
+              "Juillet",
+              "Août",
+              "Septembre",
+              "Octobre",
+              "Novembre",
+              "Décembre",
+            ]
+          : undefined, // Define months for French
       },
       ranges: {
-        [isFrench ? "Toutes les dates" : "All Dates"]: [moment(earliestDate), moment(latestDate)],
-        [isFrench ? "Hier" : "Yesterday"]: [moment().subtract(1, "days"), moment().subtract(1, "days")],
-        [isFrench ? "7 derniers jours" : "Last 7 Days"]: [moment().subtract(7, "days"), moment()],
-        [isFrench ? "30 derniers jours" : "Last 30 Days"]: [moment().subtract(30, "days"), moment()],
-        [isFrench ? "Ce mois-ci" : "This Month"]: [moment().startOf("month"), moment().endOf("month")],
-        [isFrench ? "Le mois dernier" : "Last Month"]: [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")],
-        [isFrench ? "Dernier trimestre" : "Last Quarter"]: getLastFiscalQuarter(),
+        [isFrench ? "Toutes les dates" : "All Dates"]: [
+          moment(earliestDate),
+          moment(latestDate),
+        ],
+        [isFrench ? "Hier" : "Yesterday"]: [
+          moment().subtract(1, "days"),
+          moment().subtract(1, "days"),
+        ],
+        [isFrench ? "7 derniers jours" : "Last 7 Days"]: [
+          moment().subtract(7, "days"),
+          moment(),
+        ],
+        [isFrench ? "30 derniers jours" : "Last 30 Days"]: [
+          moment().subtract(30, "days"),
+          moment(),
+        ],
+        [isFrench ? "Ce mois-ci" : "This Month"]: [
+          moment().startOf("month"),
+          moment().endOf("month"),
+        ],
+        [isFrench ? "Le mois dernier" : "Last Month"]: [
+          moment().subtract(1, "month").startOf("month"),
+          moment().subtract(1, "month").endOf("month"),
+        ],
+        [isFrench ? "Dernier trimestre" : "Last Quarter"]:
+          getLastFiscalQuarter(),
       },
     },
     function (start, end, label) {
-      $("#dateRangePicker").val(start.format("YYYY/MM/DD") + " - " + end.format("YYYY/MM/DD"));
+      $("#dateRangePicker").val(
+        start.format("YYYY/MM/DD") + " - " + end.format("YYYY/MM/DD"),
+      );
       // Reload the DataTable with the new date range from the input value.
       table.ajax.reload();
-    }
+    },
   );
 
   $("#dateRangePicker").on("cancel.daterangepicker", function (ev, picker) {
@@ -330,17 +409,19 @@ $(document).ready(function () {
     picker.setStartDate(moment(earliestDate));
     picker.setEndDate(moment(latestDate));
     // Update the input field to show the earliest and latest dates
-    $("#dateRangePicker").val(formattedEarliestDate + " - " + formattedLatestDate);
+    $("#dateRangePicker").val(
+      formattedEarliestDate + " - " + formattedLatestDate,
+    );
     // Reload DataTables to reflect the reset date range
     table.ajax.reload();
   });
 
   $("#downloadCSV").on("click", function () {
-    downloadDashboardExport('/dashboard/exportCSV');
+    downloadDashboardExport("/dashboard/exportCSV");
   });
 
   $("#downloadExcel").on("click", function () {
-    downloadDashboardExport('/dashboard/exportExcel');
+    downloadDashboardExport("/dashboard/exportExcel");
   });
 
   //  $(document).on("click", "a[href*='design.canada.ca'], a[href*='conception.canada.ca']", function (e) {
@@ -349,191 +430,225 @@ $(document).ready(function () {
   //  });
 
   tippy("#section-tool-tip", {
-    content: isFrench ? "Une valeur ajoutée manuellement à certaines pages" : "A value manually added to select pages",
+    content: isFrench
+      ? "Une valeur ajoutée manuellement à certaines pages"
+      : "A value manually added to select pages",
   });
 
   tippy("#theme-tool-tip", {
-    content: isFrench ? "Thèmes de navigation de Canada.ca " : "Canada.ca navigation themes ",
+    content: isFrench
+      ? "Thèmes de navigation de Canada.ca "
+      : "Canada.ca navigation themes ",
   });
   function calculateRollingAverage(data, windowSize) {
     let rollingAverages = [];
     for (let i = 0; i <= data.length - windowSize; i++) {
-        let windowData = data.slice(i, i + windowSize);
-        let windowSum = windowData.reduce((sum, value) => sum + value, 0);
-        let average = windowSum / windowSize;
-        rollingAverages.push(parseInt(average));
+      let windowData = data.slice(i, i + windowSize);
+      let windowSum = windowData.reduce((sum, value) => sum + value, 0);
+      let average = windowSum / windowSize;
+      rollingAverages.push(parseInt(average));
     }
     return rollingAverages;
-}
-let chartInstance = null;
-
-function fetchDataAndCreateChart() {
-  const errorKeywordChecked = $("#errorComments").prop("checked");
-  let url = "/chartData";
-  let params = [];
-
-  if (errorKeywordChecked) params.push("error_keyword=true");
-
-  const dateRangePickerValue = $("#dateRangePicker").val();
-  if (dateRangePickerValue) {
-    const dateRange = $("#dateRangePicker").data("daterangepicker");
-    params.push("startDate=" + encodeURIComponent(dateRange.startDate.format("YYYY-MM-DD")));
-    params.push("endDate=" + encodeURIComponent(dateRange.endDate.format("YYYY-MM-DD")));
   }
+  let chartInstance = null;
 
-  if ($("#language").val()) params.push("language=" + encodeURIComponent($("#language").val()));
-  if ($("#department").val()) params.push("department=" + encodeURIComponent($("#department").val()));
-  if ($("#comments").val()) params.push("comments=" + encodeURIComponent($("#comments").val()));
-  if ($("#section").val()) params.push("section=" + encodeURIComponent($("#section").val()));
-  if ($("#theme").val()) params.push("theme=" + encodeURIComponent($("#theme").val()));
-  if ($("#url").val()) params.push("url=" + encodeURIComponent($("#url").val()));
+  function fetchDataAndCreateChart() {
+    const errorKeywordChecked = $("#errorComments").prop("checked");
+    let url = "/chartData";
+    let params = [];
 
-  if (params.length > 0) url += "?" + params.join("&");
+    if (errorKeywordChecked) params.push("error_keyword=true");
 
-  fetch(url)
-    .then((response) => response.json())
-    .then((data) => {
-      const categories = data.map((item) => item.date);
-      const commentsData = data.map((item) => item.comments);
+    const dateRangePickerValue = $("#dateRangePicker").val();
+    if (dateRangePickerValue) {
+      const dateRange = $("#dateRangePicker").data("daterangepicker");
+      params.push(
+        "startDate=" +
+          encodeURIComponent(dateRange.startDate.format("YYYY-MM-DD")),
+      );
+      params.push(
+        "endDate=" + encodeURIComponent(dateRange.endDate.format("YYYY-MM-DD")),
+      );
+    }
 
-      const windowSize = 7;
-      const rollingAverages = calculateRollingAverage(commentsData, windowSize);
-      const paddedRollingAverages = new Array(windowSize - 1).fill(null).concat(rollingAverages);
+    if ($("#language").val())
+      params.push("language=" + encodeURIComponent($("#language").val()));
+    if ($("#department").val())
+      params.push("department=" + encodeURIComponent($("#department").val()));
+    if ($("#comments").val())
+      params.push("comments=" + encodeURIComponent($("#comments").val()));
+    if ($("#section").val())
+      params.push("section=" + encodeURIComponent($("#section").val()));
+    if ($("#theme").val())
+      params.push("theme=" + encodeURIComponent($("#theme").val()));
+    if ($("#url").val())
+      params.push("url=" + encodeURIComponent($("#url").val()));
 
-      if (chartInstance) {
-        chartInstance.destroy();
-      }
+    if (params.length > 0) url += "?" + params.join("&");
 
-      const ctx = document.getElementById("chartCanvas").getContext("2d");
-      chartInstance = new Chart(ctx, {
-        data: {
-          labels: categories,
-          datasets: [
-            {
-              type: "bar",
-              label: isFrench ? "Commentaires" : "Comments",
-              data: commentsData,
-              backgroundColor: "#2a78d6",       // categorical slot 1 (blue)
-              hoverBackgroundColor: "#2a78d6",
-              borderWidth: 0,
-              borderRadius: 4,
-              borderSkipped: "bottom",
-              maxBarThickness: 28,
-              categoryPercentage: 0.9,
-              barPercentage: 0.9,
-              order: 2,
-            },
-            {
-              type: "line",
-              label: isFrench ? "Moyenne mobile (7 jours)" : "Rolling Average (7 days)",
-              data: paddedRollingAverages,
-              borderColor: "#eb6834",           // categorical slot 8 (orange)
-              backgroundColor: "#eb6834",
-              borderWidth: 5,
-              pointRadius: 0,
-              pointHoverRadius: 4,
-              pointHoverBorderWidth: 0,
-              spanGaps: true,
-              tension: 0.35,
-              order: 1,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          layout: { padding: { top: 4, right: 8 } },
-          interaction: {
-            mode: "index",
-            intersect: false,
-          },
-          plugins: {
-            title: {
-              display: true,
-              text: isFrench ? "Commentaires par jour" : "Comments by day",
-              align: "start",
-              font: { size: 18, weight: "600" },
-              color: "#0b0b0b",                 // primary ink
-              padding: { bottom: 18 },
-            },
-            legend: {
-              position: "bottom",
-              labels: {
-                font: { size: 13 },
-                color: "#52514e",               // secondary ink
-                usePointStyle: true,
-                pointStyle: "circle",
-                boxWidth: 8,
-                boxHeight: 8,
-                padding: 18,
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        const categories = data.map((item) => item.date);
+        const commentsData = data.map((item) => item.comments);
+
+        const windowSize = 7;
+        const rollingAverages = calculateRollingAverage(
+          commentsData,
+          windowSize,
+        );
+        const paddedRollingAverages = new Array(windowSize - 1)
+          .fill(null)
+          .concat(rollingAverages);
+
+        if (chartInstance) {
+          chartInstance.destroy();
+        }
+
+        const ctx = document.getElementById("chartCanvas").getContext("2d");
+        chartInstance = new Chart(ctx, {
+          data: {
+            labels: categories,
+            datasets: [
+              {
+                type: "bar",
+                label: isFrench ? "Commentaires" : "Comments",
+                data: commentsData,
+                backgroundColor: "#2a78d6", // categorical slot 1 (blue)
+                hoverBackgroundColor: "#2a78d6",
+                borderWidth: 0,
+                borderRadius: 4,
+                borderSkipped: "bottom",
+                maxBarThickness: 28,
+                categoryPercentage: 0.9,
+                barPercentage: 0.9,
+                order: 2,
               },
+              {
+                type: "line",
+                label: isFrench
+                  ? "Moyenne mobile (7 jours)"
+                  : "Rolling Average (7 days)",
+                data: paddedRollingAverages,
+                borderColor: "#eb6834", // categorical slot 8 (orange)
+                backgroundColor: "#eb6834",
+                borderWidth: 5,
+                pointRadius: 0,
+                pointHoverRadius: 4,
+                pointHoverBorderWidth: 0,
+                spanGaps: true,
+                tension: 0.35,
+                order: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: { top: 4, right: 8 } },
+            interaction: {
+              mode: "index",
+              intersect: false,
             },
-            tooltip: {
-              backgroundColor: "#ffffff",
-              titleColor: "#0b0b0b",
-              bodyColor: "#52514e",
-              borderColor: "rgba(11,11,11,0.10)",
-              borderWidth: 1,
-              padding: 12,
-              cornerRadius: 6,
-              usePointStyle: true,
-              boxPadding: 6,
-              callbacks: {
-                label: function (context) {
-                  const val = context.parsed.y;
-                  if (val === null) return null;
-                  const suffix = isFrench ? " commentaires" : " comments";
-                  return context.dataset.label + ": " + formatNumberWithCommas(val) + suffix;
+            plugins: {
+              title: {
+                display: true,
+                text: isFrench ? "Commentaires par jour" : "Comments by day",
+                align: "start",
+                font: { size: 18, weight: "600" },
+                color: "#0b0b0b", // primary ink
+                padding: { bottom: 18 },
+              },
+              legend: {
+                position: "bottom",
+                labels: {
+                  font: { size: 13 },
+                  color: "#52514e", // secondary ink
+                  usePointStyle: true,
+                  pointStyle: "circle",
+                  boxWidth: 8,
+                  boxHeight: 8,
+                  padding: 18,
+                },
+              },
+              tooltip: {
+                backgroundColor: "#ffffff",
+                titleColor: "#0b0b0b",
+                bodyColor: "#52514e",
+                borderColor: "rgba(11,11,11,0.10)",
+                borderWidth: 1,
+                padding: 12,
+                cornerRadius: 6,
+                usePointStyle: true,
+                boxPadding: 6,
+                callbacks: {
+                  label: function (context) {
+                    const val = context.parsed.y;
+                    if (val === null) return null;
+                    const suffix = isFrench ? " commentaires" : " comments";
+                    return (
+                      context.dataset.label +
+                      ": " +
+                      formatNumberWithCommas(val) +
+                      suffix
+                    );
+                  },
                 },
               },
             },
-          },
-          scales: {
-            x: {
-              ticks: {
-                font: { size: 12 },
-                color: "#898781",               // muted axis ink
-                maxRotation: 45,
-                autoSkipPadding: 12,
+            scales: {
+              x: {
+                ticks: {
+                  font: { size: 12 },
+                  color: "#898781", // muted axis ink
+                  maxRotation: 45,
+                  autoSkipPadding: 12,
+                },
+                grid: { display: false },
+                border: { color: "#c3c2b7" }, // baseline
               },
-              grid: { display: false },
-              border: { color: "#c3c2b7" },      // baseline
+              y: {
+                min: 0,
+                title: {
+                  display: true,
+                  text: isFrench
+                    ? "Nombre de commentaires"
+                    : "Number of Comments",
+                  font: { size: 13, weight: "600" },
+                  color: "#52514e",
+                },
+                ticks: {
+                  font: { size: 12 },
+                  color: "#898781",
+                  padding: 8,
+                  callback: function (value) {
+                    return formatNumberWithCommas(value);
+                  },
+                },
+                grid: { color: "#e1e0d9", drawTicks: false }, // hairline gridlines
+                border: { display: false },
+              },
             },
-            y: {
-              min: 0,
-              title: {
-                display: true,
-                text: isFrench ? "Nombre de commentaires" : "Number of Comments",
-                font: { size: 13, weight: "600" },
-                color: "#52514e",
-              },
-              ticks: {
-                font: { size: 12 },
-                color: "#898781",
-                padding: 8,
-                callback: function (value) { return formatNumberWithCommas(value); },
-              },
-              grid: { color: "#e1e0d9", drawTicks: false },   // hairline gridlines
-              border: { display: false },
-            },
           },
-        },
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
       });
-    })
-    .catch((error) => {
-      console.error("Error fetching data: ", error);
-    });
-}
-
+  }
 
   var detailsElement = $("#filterDetails");
   var summaryElement = $("#filterSummary");
 
   detailsElement.on("toggle", function () {
     if (detailsElement.prop("open")) {
-      summaryElement.text(isFrench ? "Voir moins de filtres" : "See less filters");
+      summaryElement.text(
+        isFrench ? "Voir moins de filtres" : "See less filters",
+      );
     } else {
-      summaryElement.text(isFrench ? "Voir plus de filtres" : "See more filters");
+      summaryElement.text(
+        isFrench ? "Voir plus de filtres" : "See more filters",
+      );
     }
   });
 
@@ -542,30 +657,27 @@ function fetchDataAndCreateChart() {
   });
 
   // Handle error comments checkbox
-    $("#errorComments").on("change", function () {
-      const $label = $(this).closest('label');
-      if ($(this).is(':checked')) {
-        $label.addClass('active');
-      } else {
-        $label.removeClass('active');
-      }
-      table.ajax.reload();
-
-    });
+  $("#errorComments").on("change", function () {
+    const $label = $(this).closest("label");
+    if ($(this).is(":checked")) {
+      $label.addClass("active");
+    } else {
+      $label.removeClass("active");
+    }
+    table.ajax.reload();
+  });
 
   $("#comments, #url").on(
     "keyup",
     debounce(function (e) {
-         table.ajax.reload(); // Reload the table without resetting pagination
-    }, 800)
+      table.ajax.reload(); // Reload the table without resetting pagination
+    }, 800),
   );
 
   // Force recalculate column widths after window fully loads to prevent footer squishing
-  $(window).on('load', function() {
-    setTimeout(function() {
+  $(window).on("load", function () {
+    setTimeout(function () {
       table.columns.adjust().draw();
     }, 100);
   });
-
 });
-

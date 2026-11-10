@@ -54,9 +54,16 @@ Feedback lives in the `problem` collection. A row needs `processed: "true"` to a
 table, for example:
 
 ```js
-db.problem.insertOne({ url: "https://www.canada.ca/en/test.html", title: "Test page",
-  problemDetails: "Sample comment", institution: "ESDC", language: "en",
-  problemDate: "2026-10-29", timeStamp: "2026-10-29T12:00:00Z", processed: "true" })
+db.problem.insertOne({
+  url: "https://www.canada.ca/en/test.html",
+  title: "Test page",
+  problemDetails: "Sample comment",
+  institution: "ESDC",
+  language: "en",
+  problemDate: "2026-10-29",
+  timeStamp: "2026-10-29T12:00:00Z",
+  processed: "true",
+});
 ```
 
 New rows show in the table when you refresh the page. The total count above the table is cached
@@ -95,8 +102,8 @@ in `pom.xml`, or your editor and the check will disagree.
   "[java]": {
     "editor.defaultFormatter": "JoseVSeb.google-java-format-for-vs-code",
     "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": { "source.organizeImports": "never" }
-  }
+    "editor.codeActionsOnSave": { "source.organizeImports": "never" },
+  },
 }
 ```
 
@@ -108,13 +115,13 @@ redeploy.
 
 ### Everyday commands
 
-| Command | What it does |
-| --- | --- |
-| `docker-compose up -d` | Start everything in the background |
-| `docker-compose ps` | Check what's running |
+| Command                      | What it does                                            |
+| ---------------------------- | ------------------------------------------------------- |
+| `docker-compose up -d`       | Start everything in the background                      |
+| `docker-compose ps`          | Check what's running                                    |
 | `docker-compose restart app` | Restart the app (e.g. to update the cached total count) |
-| `docker-compose stop` | Stop everything; your data is kept |
-| `docker-compose down -v` | Stop and wipe the shared local database and Maven cache |
+| `docker-compose stop`        | Stop everything; your data is kept                      |
+| `docker-compose down -v`     | Stop and wipe the shared local database and Maven cache |
 
 ### Troubleshooting
 
@@ -122,7 +129,7 @@ redeploy.
 - **Port 8080 or 27017 is already in use:** stop whatever else is using it, such as a copy of the
   app started from your IDE or a local MongoDB. A stack started before the database was shared
   with feedback-cj runs under the old project name; stop it with `docker-compose -p feedback-viewer
-  down` (its data is kept).
+down` (its data is kept).
 - **A Java change doesn't show up:** check `docker-compose logs --since 5m app` for a compile error.
 - **Debugging:** a Java debugger can attach to `localhost:8000`.
 

@@ -8,7 +8,8 @@ $(document).ready(function () {
   // Check if the 'lang' query parameter is set to 'fr'
   var isFrench = langSession === "fr";
   var now = new Date();
-  var formattedDate = now.getMonth() + 1 + "/" + now.getDate() + "/" + now.getFullYear();
+  var formattedDate =
+    now.getMonth() + 1 + "/" + now.getDate() + "/" + now.getFullYear();
 
   // Utility functions
   function debounce(func, delay) {
@@ -30,7 +31,21 @@ $(document).ready(function () {
       data.length = 2147483647;
       dt.one("preDraw", function (e, settings) {
         if (button[0].className.indexOf("buttons-excel") >= 0) {
-          $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
+          $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config)
+            ? $.fn.dataTable.ext.buttons.excelHtml5.action.call(
+                self,
+                e,
+                dt,
+                button,
+                config,
+              )
+            : $.fn.dataTable.ext.buttons.excelFlash.action.call(
+                self,
+                e,
+                dt,
+                button,
+                config,
+              );
         }
         dt.one("preXhr", function (e, s, data) {
           // DataTables thinks the first item displayed is index 0, but we're not drawing that.
@@ -66,11 +81,22 @@ $(document).ready(function () {
 
   function getLastFiscalQuarter() {
     let today = moment();
-    let fiscalYearStart = moment().month() < 3 ? moment().subtract(1, "year").month(3).startOf("month") : moment().month(3).startOf("month");
+    let fiscalYearStart =
+      moment().month() < 3
+        ? moment().subtract(1, "year").month(3).startOf("month")
+        : moment().month(3).startOf("month");
     let quarterStart, quarterEnd;
 
-    if (today.isBetween(fiscalYearStart, fiscalYearStart.clone().add(2, "months").endOf("month"))) {
-      quarterStart = fiscalYearStart.clone().subtract(1, "year").add(9, "months");
+    if (
+      today.isBetween(
+        fiscalYearStart,
+        fiscalYearStart.clone().add(2, "months").endOf("month"),
+      )
+    ) {
+      quarterStart = fiscalYearStart
+        .clone()
+        .subtract(1, "year")
+        .add(9, "months");
       quarterEnd = fiscalYearStart.clone().subtract(1, "day");
     } else if (today.isBefore(fiscalYearStart.clone().add(6, "months"))) {
       quarterStart = fiscalYearStart;
@@ -101,30 +127,72 @@ $(document).ready(function () {
           applyLabel: isFrench ? "Appliquer" : "Apply",
           customRangeLabel: isFrench ? "Période spécifique" : "Custom Range",
           firstDay: isFrench ? 1 : 0,
-          daysOfWeek: isFrench ? ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"] : undefined,
-          monthNames: isFrench ? ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"] : undefined,
+          daysOfWeek: isFrench
+            ? ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"]
+            : undefined,
+          monthNames: isFrench
+            ? [
+                "Janvier",
+                "Février",
+                "Mars",
+                "Avril",
+                "Mai",
+                "Juin",
+                "Juillet",
+                "Août",
+                "Septembre",
+                "Octobre",
+                "Novembre",
+                "Décembre",
+              ]
+            : undefined,
         },
         ranges: {
-          [isFrench ? "Toutes les dates" : "All Dates"]: [moment(earliestDate), moment(latestDate)],
+          [isFrench ? "Toutes les dates" : "All Dates"]: [
+            moment(earliestDate),
+            moment(latestDate),
+          ],
           [isFrench ? "Aujourd'hui" : "Today"]: [moment(), moment()],
-          [isFrench ? "Hier" : "Yesterday"]: [moment().subtract(1, "days"), moment().subtract(1, "days")],
-          [isFrench ? "7 derniers jours" : "Last 7 Days"]: [moment().subtract(6, "days"), moment()],
-          [isFrench ? "30 derniers jours" : "Last 30 Days"]: [moment().subtract(29, "days"), moment()],
-          [isFrench ? "Ce mois-ci" : "This Month"]: [moment().startOf("month"), moment().endOf("month")],
-          [isFrench ? "Le mois dernier" : "Last Month"]: [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")],
-          [isFrench ? "Dernier trimestre" : "Last Quarter"]: getLastFiscalQuarter(),
+          [isFrench ? "Hier" : "Yesterday"]: [
+            moment().subtract(1, "days"),
+            moment().subtract(1, "days"),
+          ],
+          [isFrench ? "7 derniers jours" : "Last 7 Days"]: [
+            moment().subtract(6, "days"),
+            moment(),
+          ],
+          [isFrench ? "30 derniers jours" : "Last 30 Days"]: [
+            moment().subtract(29, "days"),
+            moment(),
+          ],
+          [isFrench ? "Ce mois-ci" : "This Month"]: [
+            moment().startOf("month"),
+            moment().endOf("month"),
+          ],
+          [isFrench ? "Le mois dernier" : "Last Month"]: [
+            moment().subtract(1, "month").startOf("month"),
+            moment().subtract(1, "month").endOf("month"),
+          ],
+          [isFrench ? "Dernier trimestre" : "Last Quarter"]:
+            getLastFiscalQuarter(),
         },
       },
       function (start, end, label) {
-        $("#dateRangePicker").val(start.format("YYYY/MM/DD") + " - " + end.format("YYYY/MM/DD"));
+        $("#dateRangePicker").val(
+          start.format("YYYY/MM/DD") + " - " + end.format("YYYY/MM/DD"),
+        );
         table.ajax.reload();
-      }
+      },
     );
 
     $("#dateRangePicker").on("cancel.daterangepicker", function (ev, picker) {
       picker.setStartDate(moment(earliestDate));
       picker.setEndDate(moment(latestDate));
-      $("#dateRangePicker").val(moment(earliestDate).format("YYYY/MM/DD") + " - " + moment(latestDate).format("YYYY/MM/DD"));
+      $("#dateRangePicker").val(
+        moment(earliestDate).format("YYYY/MM/DD") +
+          " - " +
+          moment(latestDate).format("YYYY/MM/DD"),
+      );
       table.ajax.reload();
     });
   }
@@ -133,11 +201,15 @@ $(document).ready(function () {
     var dateRangePicker = $("#dateRangePicker").data("daterangepicker");
     dateRangePicker.setStartDate(moment(earliestDate));
     dateRangePicker.setEndDate(moment(latestDate));
-    $("#dateRangePicker").val(moment(earliestDate).format("YYYY/MM/DD") + " - " + moment(latestDate).format("YYYY/MM/DD"));
+    $("#dateRangePicker").val(
+      moment(earliestDate).format("YYYY/MM/DD") +
+        " - " +
+        moment(latestDate).format("YYYY/MM/DD"),
+    );
   }
 
   // Initialize loading overlay
-  var loadingOverlay = createDataTableLoadingOverlay(isFrench, 'spinner');
+  var loadingOverlay = createDataTableLoadingOverlay(isFrench, "spinner");
 
   // Show loading overlay immediately for initial table load
   loadingOverlay.show();
@@ -148,7 +220,9 @@ $(document).ready(function () {
     settings: {
       hideSelected: false,
       keepOrder: true,
-      placeholderText: isFrench ? "Filtrer par titre de page complet ou partiel" : "Filter by full or partial page title",
+      placeholderText: isFrench
+        ? "Filtrer par titre de page complet ou partiel"
+        : "Filter by full or partial page title",
       searchText: isFrench ? "Aucun résultat trouvé" : "No results found",
       searchPlaceholder: isFrench ? "Recherche" : "Search",
       searchingText: isFrench ? "Recherche en cours..." : "Searching...",
@@ -160,27 +234,36 @@ $(document).ready(function () {
           clearTimeout(pageSelect.debounceTimer);
           pageSelect.debounceTimer = setTimeout(() => {
             if (search.length < 2) {
-              return reject(isFrench ? "La recherche doit comporter au moins 2 caractères" : "Search must be at least 2 characters");
+              return reject(
+                isFrench
+                  ? "La recherche doit comporter au moins 2 caractères"
+                  : "Search must be at least 2 characters",
+              );
             }
 
             fetch("/pageTitles?search=" + encodeURIComponent(search))
-              .then(response => response.json())
-              .then(data => {
+              .then((response) => response.json())
+              .then((data) => {
                 const options = data
-                  .filter(title => !currentData.some(optionData => optionData.value === title))
-                  .map(title => ({ text: title, value: title }));
+                  .filter(
+                    (title) =>
+                      !currentData.some(
+                        (optionData) => optionData.value === title,
+                      ),
+                  )
+                  .map((title) => ({ text: title, value: title }));
                 resolve(options);
               })
-              .catch(error => reject(error));
+              .catch((error) => reject(error));
           }, 800);
         });
       },
-      onChange: function(selectedValue) {
+      onChange: function (selectedValue) {
         console.log("Pages changed:", selectedValue);
-        if (typeof table !== 'undefined') {
+        if (typeof table !== "undefined") {
           table.ajax.reload();
         }
-      }
+      },
     },
   });
 
@@ -194,29 +277,30 @@ $(document).ready(function () {
     }
   }
 
-
   // DataTable initialization
   var table = new DataTable("#myTable", {
-    language: isFrench ? {
-      url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json",
-      lengthMenu: "Afficher _MENU_ entrées",
-      info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
-      paginate: {
-        first: "Premier",
-        last: "Dernier",
-        next: "Suivant",
-        previous: "Précédent"
-      }
-    } : {
-      lengthMenu: "Show _MENU_ entries",
-      info: "Showing _START_ to _END_ of _TOTAL_ entries",
-      paginate: {
-        first: "First",
-        last: "Last",
-        next: "Next",
-        previous: "Previous"
-      }
-    },
+    language: isFrench
+      ? {
+          url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json",
+          lengthMenu: "Afficher _MENU_ entrées",
+          info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+          paginate: {
+            first: "Premier",
+            last: "Dernier",
+            next: "Suivant",
+            previous: "Précédent",
+          },
+        }
+      : {
+          lengthMenu: "Show _MENU_ entries",
+          info: "Showing _START_ to _END_ of _TOTAL_ entries",
+          paginate: {
+            first: "First",
+            last: "Last",
+            next: "Next",
+            previous: "Previous",
+          },
+        },
     stripeClasses: [],
     bSortClasses: false,
     order: [[0, "desc"]],
@@ -243,8 +327,8 @@ $(document).ready(function () {
         d.theme = $("#theme").val();
         d.url = $("#url").val();
         if ($("#errorComments").prop("checked")) {
-          d.error_keyword = "true";  // Only send if checked
-      }
+          d.error_keyword = "true"; // Only send if checked
+        }
         const selectedPages = getSelectedPages();
         console.log("Selected pages:", selectedPages);
 
@@ -264,50 +348,56 @@ $(document).ready(function () {
         }
       },
       error: function (xhr, error, thrown) {
-        alert(isFrench ? "Erreur lors de la récupération des données. Veuillez rafraîchir la page et réessayer." : "Error retrieving data. Please refresh the page and try again.");
+        alert(
+          isFrench
+            ? "Erreur lors de la récupération des données. Veuillez rafraîchir la page et réessayer."
+            : "Error retrieving data. Please refresh the page and try again.",
+        );
         console.log("xhr: " + xhr);
         console.log("error: " + error);
         console.log("thrown : " + thrown);
       },
     },
-    initComplete: function() {
+    initComplete: function () {
       // Move pagination controls outside the table wrapper
-      $('.table-controls-outside').insertAfter('.feedback-tool-data');
+      $(".table-controls-outside").insertAfter(".feedback-tool-data");
     },
     buttons: [
       {
-        extend: 'csvHtml5',
-        className: 'btn btn-default',
-        text: isFrench ? 'Télécharger CSV' : 'Download CSV',
+        extend: "csvHtml5",
+        className: "btn btn-default",
+        text: isFrench ? "Télécharger CSV" : "Download CSV",
         action: function (e, dt, button, config) {
           e.preventDefault();
-          var url = new URL(window.location.origin + '/exportCSV');
+          var url = new URL(window.location.origin + "/exportCSV");
           var params = getFilterParams();
-          Object.keys(params).forEach(key => {
-             if (key === 'titles' && Array.isArray(params[key])) {
-               params[key].forEach(title => {
-                 url.searchParams.append('titles[]', title);
-               });
-             } else {
-               url.searchParams.append(key, params[key]);
-             }
-           });
+          Object.keys(params).forEach((key) => {
+            if (key === "titles" && Array.isArray(params[key])) {
+              params[key].forEach((title) => {
+                url.searchParams.append("titles[]", title);
+              });
+            } else {
+              url.searchParams.append(key, params[key]);
+            }
+          });
 
-           window.location.href = url.toString();
-          }
+          window.location.href = url.toString();
+        },
       },
       {
-        extend: 'excelHtml5',
-        className: 'btn btn-default',
-        text: isFrench ? 'Télécharger Excel' : 'Download Excel',
+        extend: "excelHtml5",
+        className: "btn btn-default",
+        text: isFrench ? "Télécharger Excel" : "Download Excel",
         action: function (e, dt, button, config) {
           e.preventDefault();
-          var url = new URL(window.location.origin + '/exportExcel');
+          var url = new URL(window.location.origin + "/exportExcel");
           var params = getFilterParams();
-          Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+          Object.keys(params).forEach((key) =>
+            url.searchParams.append(key, params[key]),
+          );
           window.location.href = url.toString();
-        }
-      }
+        },
+      },
     ],
     columnDefs: SafeRender.columnDefs,
     columns: [
@@ -331,17 +421,19 @@ $(document).ready(function () {
 
   // Attach loading overlay to DataTable events
   attachLoadingOverlay(table, {
-    loadingText: isFrench ? 'Chargement des données...' : 'Loading data...',
-    subtext: isFrench ? 'Veuillez patienter pendant que nous filtrons vos résultats' : 'Please wait while we filter your results',
-    spinnerType: 'spinner'
+    loadingText: isFrench ? "Chargement des données..." : "Loading data...",
+    subtext: isFrench
+      ? "Veuillez patienter pendant que nous filtrons vos résultats"
+      : "Please wait while we filter your results",
+    spinnerType: "spinner",
   });
 
   // Hide loading overlay and update total comments count after table draw
-  table.on('draw.dt', function(e, settings) {
+  table.on("draw.dt", function (e, settings) {
     loadingOverlay.hide();
     // Update total comments count using settings._iRecordsDisplay (filtered count)
     var count = settings._iRecordsDisplay || 0;
-    $('.totalCommentsCount').text(count.toLocaleString());
+    $(".totalCommentsCount").text(count.toLocaleString());
   });
 
   $(".reset-filters").on("click", resetFilters);
@@ -349,25 +441,33 @@ $(document).ready(function () {
   initializeDateRangePicker();
 
   $("#downloadCSV").on("click", function () {
-    var url = new URL(window.location.origin + '/exportCSV');
+    var url = new URL(window.location.origin + "/exportCSV");
     var params = getFilterParams();
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    Object.keys(params).forEach((key) =>
+      url.searchParams.append(key, params[key]),
+    );
     window.location.href = url.toString();
   });
 
   $("#downloadExcel").on("click", function () {
-    var url = new URL(window.location.origin + '/exportExcel');
+    var url = new URL(window.location.origin + "/exportExcel");
     var params = getFilterParams();
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    Object.keys(params).forEach((key) =>
+      url.searchParams.append(key, params[key]),
+    );
     window.location.href = url.toString();
   });
 
   tippy("#section-tool-tip", {
-    content: isFrench ? "Une valeur ajoutée manuellement à certaines pages" : "A value manually added to select pages",
+    content: isFrench
+      ? "Une valeur ajoutée manuellement à certaines pages"
+      : "A value manually added to select pages",
   });
 
   tippy("#theme-tool-tip", {
-    content: isFrench ? "Thèmes de navigation de Canada.ca " : "Canada.ca navigation themes ",
+    content: isFrench
+      ? "Thèmes de navigation de Canada.ca "
+      : "Canada.ca navigation themes ",
   });
 
   var detailsElement = $("#filterDetails");
@@ -375,9 +475,13 @@ $(document).ready(function () {
 
   detailsElement.on("toggle", function () {
     if (detailsElement.prop("open")) {
-      summaryElement.text(isFrench ? "Voir moins de filtres" : "See less filters");
+      summaryElement.text(
+        isFrench ? "Voir moins de filtres" : "See less filters",
+      );
     } else {
-      summaryElement.text(isFrench ? "Voir plus de filtres" : "See more filters");
+      summaryElement.text(
+        isFrench ? "Voir plus de filtres" : "See more filters",
+      );
     }
   });
 
@@ -387,11 +491,11 @@ $(document).ready(function () {
 
   // Handle error comments checkbox
   $("#errorComments").on("change", function () {
-    const $label = $(this).closest('label');
-    if ($(this).is(':checked')) {
-      $label.addClass('active');
+    const $label = $(this).closest("label");
+    if ($(this).is(":checked")) {
+      $label.addClass("active");
     } else {
-      $label.removeClass('active');
+      $label.removeClass("active");
     }
     table.ajax.reload();
   });
@@ -400,12 +504,12 @@ $(document).ready(function () {
     "keyup",
     debounce(function (e) {
       table.ajax.reload();
-    }, 800)
+    }, 800),
   );
 
   // Force recalculate column widths after window fully loads to prevent footer squishing
-  $(window).on('load', function() {
-    setTimeout(function() {
+  $(window).on("load", function () {
+    setTimeout(function () {
       table.columns.adjust().draw();
     }, 100);
   });
@@ -419,7 +523,7 @@ $(document).ready(function () {
       comments: $("#comments").val(),
       section: $("#section").val(),
       theme: $("#theme").val(),
-      url: $("#url").val()
+      url: $("#url").val(),
     };
 
     const selectedPages = getSelectedPages();
@@ -429,9 +533,9 @@ $(document).ready(function () {
 
     var dateRangePickerValue = $("#dateRangePicker").val();
     if (dateRangePickerValue) {
-      var dateRange = $("#dateRangePicker").data('daterangepicker');
-      params.startDate = dateRange.startDate.format('YYYY-MM-DD');
-      params.endDate = dateRange.endDate.format('YYYY-MM-DD');
+      var dateRange = $("#dateRangePicker").data("daterangepicker");
+      params.startDate = dateRange.startDate.format("YYYY-MM-DD");
+      params.endDate = dateRange.endDate.format("YYYY-MM-DD");
     }
 
     return params;
