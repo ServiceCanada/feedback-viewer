@@ -5,6 +5,7 @@ import ca.gc.tbs.service.DashboardService;
 import ca.gc.tbs.service.ErrorKeywordService;
 import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
+import ca.gc.tbs.util.RegexUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -765,7 +766,7 @@ public class DashboardController {
                   section.toLowerCase(), Collections.singletonList(section)));
     }
     if (language != null && !language.isEmpty()) criteria.and("language").is(language);
-    if (url != null && !url.isEmpty()) criteria.and("url").regex(url, "i");
+    if (url != null && !url.isEmpty()) criteria.and("url").regex(RegexUtils.literal(url), "i");
     if (department != null && !department.isEmpty()) {
       var variations = new HashSet<String>();
       for (List<String> list : institutionMappings.values()) {
@@ -851,10 +852,6 @@ public class DashboardController {
     }
   }
 
-  private String escapeSpecialRegexCharacters(String input) {
-    return input.replaceAll("([\\\\.^$|()\\[\\]{}*+?])", "\\\\$1");
-  }
-
   private Criteria applyRegexCriteria(Criteria criteria, String comments, boolean error_keyword) {
     var regexCriteria = new ArrayList<Criteria>();
     if (error_keyword) {
@@ -872,8 +869,7 @@ public class DashboardController {
         && !comments.trim().isEmpty()
         && !"null".equalsIgnoreCase(comments.trim())) {
       regexCriteria.add(
-          Criteria.where("problemDetails")
-              .regex(escapeSpecialRegexCharacters(comments.trim()), "i"));
+          Criteria.where("problemDetails").regex(RegexUtils.literal(comments.trim()), "i"));
     }
     if (!regexCriteria.isEmpty()) {
       criteria =

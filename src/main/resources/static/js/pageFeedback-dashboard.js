@@ -223,15 +223,10 @@ $(document).ready(function () {
         },
       },
     ],
+    columnDefs: SafeRender.columnDefs,
     columns: [
       { data: "institution" }, // Dept (visible in table)
-      {
-        data: "url",
-        render: function (data, type, row) {
-          // Wrap any content of the 'url' column with an anchor tag
-          return '<a href="' + data + '" target="_blank">' + data + "</a>";
-        },
-      },
+      { data: "url", render: SafeRender.link },
       { 
         data: "urlEntries",
         render: function (data, type, row) {

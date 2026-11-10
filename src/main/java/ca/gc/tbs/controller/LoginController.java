@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
@@ -42,15 +43,9 @@ public class LoginController {
     return modelAndView;
   }
 
-  @GetMapping("/checkExists")
-  public @ResponseBody String checkExists(@RequestParam String email) {
-    // verify that one has not already been created.
-    User userExists = userService.findUserByEmail(email);
-    if (userExists != null) {
-      return "true";
-    } else {
-      return "false";
-    }
+  @InitBinder("user")
+  void restrictSignupFields(WebDataBinder binder) {
+    binder.setAllowedFields("email", "password", "institution");
   }
 
   @RequestMapping(value = "/signup", method = RequestMethod.POST)

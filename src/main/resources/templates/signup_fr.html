@@ -5,7 +5,7 @@
 	<form class="formsignin" th:action="@{/signup}" method="post">
 		<div class="form-group">
 			<label for="email"> <span class="field-name">email</span></label> <input name="email" id="email"
-				class="form-control exists" placeholder="email" required="required" />
+				class="form-control" placeholder="email" required="required" />
 		</div>
 		<div class="form-group">
 			<label for="password">Password</label> <input type="password" name="password" id="password"
@@ -22,43 +22,5 @@
 </div>
 
 
-<th:block layout:fragment="script">
-	<script th:inline="javascript">
-		// custom code for the form
-		$(document).on("wb-ready.wb", function (e) {
-
-			// add a method. calls one built-in method, too.
-			jQuery.validator.addMethod("exists", function (value, element) {
-				var response = false;
-				jQuery.ajax({
-					contentType: "text",
-					async: false,
-					type: "GET",
-					url: 'checkExists' + "?email=" + $("#email").val(),
-					success: function (result) {
-						if (result === "false") {
-							response = true;
-						} else {
-							response = false;
-						}
-					},
-					error: function (result) {
-						response = true;
-					}
-				});
-
-				return response;
-			}, "Email address already registered.");
-
-			// connect it to a css class
-			jQuery.validator.addClassRules({
-				exists: {
-					exists: true
-				}
-			});
-
-		});
-	</script>
-</th:block>
 
 </html>

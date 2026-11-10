@@ -309,6 +309,7 @@ $(document).ready(function () {
         }
       }
     ],
+    columnDefs: SafeRender.columnDefs,
     columns: [
       { data: "problemDate", width: "8%" },
       { data: "problemDetails", width: "35%" },
@@ -317,9 +318,7 @@ $(document).ready(function () {
       {
         data: "url",
         width: "27%",
-        render: function (data, type, row) {
-          return '<a href="' + data + '" target="_blank">' + data + "</a>";
-        },
+        render: SafeRender.link,
       },
       { data: "timeStamp", visible: false },
       { data: "language", visible: false },
