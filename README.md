@@ -54,20 +54,42 @@ Feedback lives in the `problem` collection. A row needs `processed: "true"` to a
 table, for example:
 
 ```js
-db.problem.insertOne({ url: "https://www.canada.ca/en/test.html", title: "Test page",
-  problemDetails: "Sample comment", institution: "ESDC", language: "en",
-  problemDate: "2026-10-29", timeStamp: "2026-10-29T12:00:00Z", processed: "true" })
+db.problem.insertOne({
+  url: "https://www.canada.ca/en/test.html",
+  title: "Test page",
+  problemDetails: "Sample comment",
+  institution: "ESDC",
+  language: "en",
+  problemDate: "2026-10-29",
+  timeStamp: "2026-10-29T12:00:00Z",
+  processed: "true",
+});
 ```
 
-The app counts rows when it starts, so run `docker-compose restart app` after adding data.
+New rows show in the table when you refresh the page. The total count above the table is cached
+when the app starts, so run `docker-compose restart app` if you need it to match.
+
+### Sharing the database with feedback-cj
+
+Locally this shares one MongoDB with the feedback-cj cron job, like prod: both repos'
+`docker-compose.yml` files use the project name `pagesuccess`. Whichever you start first creates
+the database and the other reuses it, so comments the job processes show up here.
+
+- **`docker-compose down -v` wipes the shared database**, the cron job's data included.
+- **"Found orphan containers ([pagesuccess-job-1])"** is expected after running the cron job: it's
+  part of the same project but not of this file. Don't pass `--remove-orphans`.
 
 ### Formatting
 
-Java code follows [Google Java Format](https://github.com/google/google-java-format). Run
-`make fmt` before committing; it formats every Java file using Docker, so you don't need Java
-installed. Pull requests fail the "Check formatting" check if anything is left unformatted;
-`make fmt-check` runs the same check locally. If you have Maven installed, `mvn spotless:apply`
-does the same as `make fmt`.
+Run `make fmt` before committing. It formats every file using Docker, so you don't need anything
+else installed:
+
+- Java with [Google Java Format](https://github.com/google/google-java-format) (Spotless)
+- XML, YAML, Markdown, JSON and JavaScript with Prettier (settings in `.prettierrc.yml`)
+- Python with Ruff and shell scripts with shfmt
+
+Pull requests fail the "Check formatting" check if anything is left unformatted; `make fmt-check`
+runs the same check locally. Minified libraries (`*.min.js`) are left alone.
 
 To format on save in VS Code, install the
 [Google Java Format for VS Code](https://marketplace.visualstudio.com/items?itemName=JoseVSeb.google-java-format-for-vs-code)
@@ -80,8 +102,8 @@ in `pom.xml`, or your editor and the check will disagree.
   "[java]": {
     "editor.defaultFormatter": "JoseVSeb.google-java-format-for-vs-code",
     "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": { "source.organizeImports": "never" }
-  }
+    "editor.codeActionsOnSave": { "source.organizeImports": "never" },
+  },
 }
 ```
 
@@ -93,19 +115,21 @@ redeploy.
 
 ### Everyday commands
 
-| Command | What it does |
-| --- | --- |
-| `docker-compose up -d` | Start everything in the background |
-| `docker-compose ps` | Check what's running |
-| `docker-compose restart app` | Restart the app (e.g. after adding data) |
-| `docker-compose stop` | Stop everything; your data is kept |
-| `docker-compose down -v` | Stop and wipe the local database and Maven cache |
+| Command                      | What it does                                            |
+| ---------------------------- | ------------------------------------------------------- |
+| `docker-compose up -d`       | Start everything in the background                      |
+| `docker-compose ps`          | Check what's running                                    |
+| `docker-compose restart app` | Restart the app (e.g. to update the cached total count) |
+| `docker-compose stop`        | Stop everything; your data is kept                      |
+| `docker-compose down -v`     | Stop and wipe the shared local database and Maven cache |
 
 ### Troubleshooting
 
 - **`docker: 'compose' is not a docker command`:** use `docker-compose` (with a hyphen) instead.
 - **Port 8080 or 27017 is already in use:** stop whatever else is using it, such as a copy of the
-  app started from your IDE or a local MongoDB.
+  app started from your IDE or a local MongoDB. A stack started before the database was shared
+  with feedback-cj runs under the old project name; stop it with `docker-compose -p feedback-viewer
+down` (its data is kept).
 - **A Java change doesn't show up:** check `docker-compose logs --since 5m app` for a compile error.
 - **Debugging:** a Java debugger can attach to `localhost:8000`.
 
@@ -121,9 +145,12 @@ The application should now be accessible at `http://localhost:8080`.
 
 ## Configuration
 
-The Feedback Viewer can be configured by modifying the following properties in the `application.properties` file:
+Settings live in `src/main/resources/application-local.properties` (local runs) and
+`application-prod.properties` (prod). Secrets are never committed: prod gets them as environment
+variables from GitHub Actions secrets, for example:
 
-- `spring.data.mongodb.uri`: The connection string for the MongoDB database.
+- `SPRING_DATA_MONGODB_URI`: the connection string for the MongoDB database.
+- `JWT_SECRET_KEY`: the key that signs API tokens.
 
 ## Contributing
 
