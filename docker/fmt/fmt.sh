@@ -17,7 +17,7 @@ prettier $prettier_mode --log-level warn \
   "**/*.{xml,yml,yaml,md,json,js}" || status=1
 
 # Python and shell, wherever they are. Shell settings come from .editorconfig.
-files() { find . \( -path ./.git -o -path ./target -o -path ./node_modules \) -prune -o -name "$1" -print; }
+files() { find . \( -path ./.git -o -path ./target -o -path ./node_modules -o -name .terragrunt-cache \) -prune -o -name "$1" -print; }
 py=$(files '*.py')
 sh=$(files '*.sh')
 if [ -n "$py" ]; then ruff format $ruff_mode $py || status=1; fi
