@@ -310,7 +310,8 @@ public class BadWordController {
       if (changed) {
         repository.save(entry);
         badWordsService.reload();
-        LOG.info("Updated badword entry: id={}", id);
+        String sanitizedIdForLog = id == null ? null : id.replace('\n', '_').replace('\r', '_');
+        LOG.info("Updated badword entry: id={}", sanitizedIdForLog);
       }
 
       return "Success";
@@ -336,7 +337,8 @@ public class BadWordController {
       repository.deleteById(id);
       badWordsService.reload();
 
-      LOG.info("Deleted badword entry: id={}", id);
+      String sanitizedIdForLog = id == null ? null : id.replace('\n', '_').replace('\r', '_');
+      LOG.info("Deleted badword entry: id={}", sanitizedIdForLog);
       return "Success";
     } catch (Exception e) {
       LOG.error("Error deleting badword entry", e);

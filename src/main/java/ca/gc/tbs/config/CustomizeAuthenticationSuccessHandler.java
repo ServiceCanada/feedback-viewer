@@ -48,7 +48,9 @@ public class CustomizeAuthenticationSuccessHandler extends SimpleUrlAuthenticati
 
     // Use the DefaultSavedRequest URL
     String targetUrl = savedRequest.getRedirectUrl();
-    logger.debug("Redirecting to DefaultSavedRequest Url: " + targetUrl);
+    String sanitizedUrlForLog =
+        targetUrl == null ? null : targetUrl.replace('\n', '_').replace('\r', '_');
+    logger.debug("Redirecting to DefaultSavedRequest Url: " + sanitizedUrlForLog);
     getRedirectStrategy().sendRedirect(request, response, targetUrl);
   }
 
