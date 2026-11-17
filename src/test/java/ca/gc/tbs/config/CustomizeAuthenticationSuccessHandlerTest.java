@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,13 +18,14 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 
 class CustomizeAuthenticationSuccessHandlerTest {
 
-  @Test
-  void externalSavedUrlIsNotFollowed() throws Exception {
+  @ParameterizedTest
+  @ValueSource(strings = {"http://evil.com/harvest", "//evil.com/harvest", "/\\evil.com/harvest"})
+  void externalSavedUrlIsNotFollowed(String savedUrl) throws Exception {
     CustomizeAuthenticationSuccessHandler handler = new CustomizeAuthenticationSuccessHandler();
 
     // Saved request points to an external host
     SavedRequest savedRequest = mock(SavedRequest.class);
-    when(savedRequest.getRedirectUrl()).thenReturn("http://evil.com/harvest");
+    when(savedRequest.getRedirectUrl()).thenReturn(savedUrl);
 
     RequestCache requestCache = mock(RequestCache.class);
     HttpServletRequest request = mock(HttpServletRequest.class);

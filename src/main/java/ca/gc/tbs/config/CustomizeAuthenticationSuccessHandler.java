@@ -59,6 +59,10 @@ public class CustomizeAuthenticationSuccessHandler extends SimpleUrlAuthenticati
   }
 
   private boolean isSameOrigin(String url, HttpServletRequest request) {
+    // Browsers treat "//host" and "/\host" as a link to another host
+    if (url.startsWith("//") || url.startsWith("/\\")) {
+      return false;
+    }
     if (url.startsWith("/")) {
       return true;
     }

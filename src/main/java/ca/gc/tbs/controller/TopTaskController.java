@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -743,7 +742,6 @@ public class TopTaskController {
           "Top task survey",
           EXPORT_COLUMNS,
           TopTaskController::exportValues,
-          UnaryOperator.identity(),
           StreamingExport.WhenEmpty.NO_CONTENT);
 
   @GetMapping("/exportTopTaskExcel")
