@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.14</version>
+        <version>3.5.16</version>
         <relativePath />
         <!-- lookup parent from repository -->
     </parent>
@@ -23,7 +23,8 @@
         <!-- Security overrides for Dependabot alerts -->
         <assertj.version>3.27.7</assertj.version>
         <commons-lang3.version>3.18.0</commons-lang3.version>
-        <logback.version>1.5.32</logback.version>
+        <logback.version>1.5.34</logback.version>
+        <jackson-bom.version>2.21.8</jackson-bom.version>
         <tomcat.version>11.0.29</tomcat.version>
         <jaxen.version>2.0.3</jaxen.version>
         <log4j2.version>2.25.5</log4j2.version>
