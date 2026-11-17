@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.bson.Document;
@@ -698,7 +697,6 @@ public class ProblemController {
           "Page feedback",
           EXPORT_COLUMNS,
           ProblemController::exportValues,
-          UnaryOperator.identity(),
           StreamingExport.WhenEmpty.HEADER_ONLY);
 
   @GetMapping("/exportExcel")

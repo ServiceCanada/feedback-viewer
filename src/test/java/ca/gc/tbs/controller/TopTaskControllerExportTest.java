@@ -165,7 +165,7 @@ class TopTaskControllerExportTest {
       CSVRecord first = records.get(0);
       assertThat(first.get("Date Time")).isEqualTo("2026-07-01");
       assertThat(first.get("Task Improve Comment")).isEqualTo(comment);
-      assertThat(first.get("Task Why Not Comment")).isEqualTo("=1+1");
+      assertThat(first.get("Task Why Not Comment")).isEqualTo("'=1+1");
       assertThat(first.get("Sampling Task")).isEqualTo("Sampling task");
 
       CSVRecord second = records.get(1);

@@ -986,7 +986,6 @@ public class DashboardController {
               p.getSection(),
               p.getTheme()
             },
-        DashboardController::sanitizeCsvValue,
         StreamingExport.WhenEmpty.HEADER_ONLY);
   }
 
@@ -1039,18 +1038,6 @@ public class DashboardController {
     var criteria =
         buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
     return applyRegexCriteria(criteria, comments, error_keyword);
-  }
-
-  // Keeps spreadsheet apps from running a value as a formula; StreamingExport quotes it afterwards
-  private static String sanitizeCsvValue(String value) {
-    String sanitized = value.replace("\t", " ").replace("\r", "");
-    if (!sanitized.isEmpty()) {
-      char firstChar = sanitized.charAt(0);
-      if (firstChar == '=' || firstChar == '+' || firstChar == '-' || firstChar == '@') {
-        sanitized = "'" + sanitized;
-      }
-    }
-    return sanitized;
   }
 
   private String buildExportFilename(String lang, String extension) {

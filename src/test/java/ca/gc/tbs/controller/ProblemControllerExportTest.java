@@ -105,6 +105,23 @@ class ProblemControllerExportTest {
   }
 
   @Test
+  void csvKeepsCommentsThatLookLikeFormulasFromRunning() throws Exception {
+    givenRows(Stream.of(problem("=HYPERLINK(\"x\")"), problem("-1"), problem("@SUM(A1)")));
+    MockHttpServletResponse response = new MockHttpServletResponse();
+
+    controller.exportCSV(request, response);
+
+    try (CSVParser parser =
+        CSVParser.parse(
+            response.getContentAsString(StandardCharsets.UTF_8).substring(1),
+            CSVFormat.DEFAULT.builder().setHeader().setSkipHeaderRecord(true).get())) {
+      assertThat(parser.getRecords())
+          .extracting(r -> r.get("Problem Details"))
+          .containsExactly("'=HYPERLINK(\"x\")", "'-1", "'@SUM(A1)");
+    }
+  }
+
+  @Test
   void excelKeepsItsFileNameSheetAndValues() throws Exception {
     givenRows(Stream.of(problem("=1+1")));
     MockHttpServletResponse response = new MockHttpServletResponse();

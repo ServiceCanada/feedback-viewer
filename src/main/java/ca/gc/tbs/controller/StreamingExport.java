@@ -10,7 +10,6 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 import org.apache.commons.io.output.CloseShieldOutputStream;
@@ -59,7 +58,6 @@ final class StreamingExport<T> {
   private final String name;
   private final String[] columns;
   private final Function<T, Object[]> cells;
-  private final UnaryOperator<String> csvSanitizer;
   private final WhenEmpty whenEmpty;
 
   /**
@@ -67,19 +65,12 @@ final class StreamingExport<T> {
    * @param columns the header row
    * @param cells one row's cells in column order: strings, numbers (written as numeric cells) or
    *     null for an empty cell
-   * @param csvSanitizer applied to each string before it is quoted for the CSV
    * @param whenEmpty what to send when there are no rows
    */
-  StreamingExport(
-      String name,
-      String[] columns,
-      Function<T, Object[]> cells,
-      UnaryOperator<String> csvSanitizer,
-      WhenEmpty whenEmpty) {
+  StreamingExport(String name, String[] columns, Function<T, Object[]> cells, WhenEmpty whenEmpty) {
     this.name = name;
     this.columns = columns;
     this.cells = cells;
-    this.csvSanitizer = csvSanitizer;
     this.whenEmpty = whenEmpty;
   }
 
@@ -275,8 +266,20 @@ final class StreamingExport<T> {
       line.append(value);
       return;
     }
-    String text = csvSanitizer.apply((String) value);
+    String text = neutralizeFormula((String) value);
     line.append('"').append(text.replace("\"", "\"\"")).append('"');
+  }
+
+  // Keeps spreadsheet apps from running a value as a formula; the caller quotes it afterwards
+  private static String neutralizeFormula(String value) {
+    String sanitized = value.replace("\t", " ").replace("\r", "");
+    if (!sanitized.isEmpty()) {
+      char firstChar = sanitized.charAt(0);
+      if (firstChar == '=' || firstChar == '+' || firstChar == '-' || firstChar == '@') {
+        sanitized = "'" + sanitized;
+      }
+    }
+    return sanitized;
   }
 
   private static long elapsedMillis(long startNanos) {
