@@ -310,7 +310,8 @@ public class BadWordController {
       if (changed) {
         repository.save(entry);
         badWordsService.reload();
-        LOG.info("Updated badword entry: id={}", id);
+        String sanitizedIdForLog = id == null ? null : id.replace('\n', '_').replace('\r', '_');
+        LOG.info("Updated badword entry: id={}", sanitizedIdForLog);
       }
 
       return "Success";
