@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 # id-token lets the run request a short-lived OIDC token to present to
 # Azure, in place of a stored service principal secret.
 permissions:
@@ -11,6 +12,8 @@ permissions:
 
 jobs:
   build:
+    # Manual runs deploy too, so only allow them from main.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
