@@ -32,7 +32,8 @@ public class BadWords {
   private final Set<String> allowedWords = Collections.newSetFromMap(new ConcurrentHashMap<>());
   private final Set<String> errorKeywords = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-  // Combined set of all words to filter (profanity + threats)
+  // Words to mask. Only profanity: threat words stay visible so the daily threat report and
+  // reviewers can see them.
   private final Set<String> allFilterWords = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
   private Pattern filterPattern;
@@ -96,7 +97,6 @@ public class BadWords {
           entry -> {
             String word = entry.getWord().trim().toLowerCase();
             threatWords.add(word);
-            allFilterWords.add(word);
           });
 
       // Load allowed words
@@ -189,8 +189,8 @@ public class BadWords {
   }
 
   /**
-   * Censors profanity and threats in the given text by replacing them with asterisks. Words in the
-   * allowed words list are never censored.
+   * Censors profanity in the given text by replacing it with asterisks. Threat words are not
+   * censored. Words in the allowed words list are never censored.
    *
    * @param text The text to censor
    * @return The censored text
