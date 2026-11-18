@@ -30,6 +30,17 @@
         <log4j2.version>2.25.5</log4j2.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- Pulled in by Thymeleaf; pinned past known vulnerabilities -->
+            <dependency>
+                <groupId>ognl</groupId>
+                <artifactId>ognl</artifactId>
+                <version>3.4.13</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
